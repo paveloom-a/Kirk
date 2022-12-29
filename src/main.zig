@@ -1,15 +1,13 @@
 const std = @import("std");
 
+const libuv = @import("libuv");
+
 /// Run the program
-pub fn main() void {
-    // Import the `libuv` library
-    const c = @cImport({
-        @cInclude("uv.h");
-    });
+pub fn main() !void {
     // Initialize the loop
-    var loop: *c.uv_loop_t = c.uv_default_loop();
-    defer _ = c.uv_loop_close(loop);
+    var loop = try libuv.Loop.init(std.heap.page_allocator);
+    defer loop.deinit();
     // Run the loop
     std.debug.print("Using the default loop.\n", .{});
-    _ = c.uv_run(loop, c.UV_RUN_DEFAULT);
+    loop.run();
 }
