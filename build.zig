@@ -8,12 +8,12 @@ pub fn build(b: *std.build.Builder) !void {
     // Add standard release options
     const mode = b.standardReleaseOptions();
     // Add the `libuv` library
-    const lib = b.addStaticLibrary("libuv", "src/lib.zig");
+    const lib = b.addStaticLibrary("libuv", "src/libuv/lib.zig");
     lib.setBuildMode(mode);
     lib.install();
     // Add the unit tests
     const unit_tests_step = b.step("test", "Run the unit tests");
-    const unit_tests = b.addTest("src/lib.zig");
+    const unit_tests = b.addTest("src/libuv/lib.zig");
     unit_tests.setBuildMode(mode);
     unit_tests_step.dependOn(&unit_tests.step);
     unit_tests.test_evented_io = true;
@@ -54,7 +54,7 @@ pub fn build(b: *std.build.Builder) !void {
     // Add the packages
     const libuv_pkg = std.build.Pkg{
         .name = "libuv",
-        .source = .{ .path = "src/lib.zig" },
+        .source = .{ .path = "src/libuv/lib.zig" },
         .dependencies = &[_]std.build.Pkg{},
     };
     exe.addPackage(libuv_pkg);
