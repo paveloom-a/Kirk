@@ -8,6 +8,7 @@ pub fn main() !void {
     var loop = try libuv.Loop.init(std.heap.page_allocator);
     defer loop.deinit();
     // Run the loop
-    std.debug.print("Using the default loop.\n", .{});
-    loop.run();
+    try loop.run(libuv.RunMode.DEFAULT);
+    // Close the loop
+    try loop.close();
 }
