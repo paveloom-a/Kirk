@@ -3,165 +3,165 @@ const c = @import("c.zig").c;
 /// A `libuv` error
 pub const Error = error{
     /// Argument list too long
-    E2BIG,
+    UV_E2BIG,
     /// Permission denied
-    EACCES,
+    UV_EACCES,
     /// Address already in use
-    EADDRINUSE,
+    UV_EADDRINUSE,
     /// Address not available
-    EADDRNOTAVAIL,
+    UV_EADDRNOTAVAIL,
     /// Address family not supported
-    EAFNOSUPPORT,
+    UV_EAFNOSUPPORT,
     /// Resource temporarily unavailable
-    EAGAIN,
+    UV_EAGAIN,
     /// Address family not supported
-    EAI_ADDRFAMILY,
+    UV_EAI_ADDRFAMILY,
     /// Temporary failure
-    EAI_AGAIN,
+    UV_EAI_AGAIN,
     /// Bad `ai_flags` value
-    EAI_BADFLAGS,
+    UV_EAI_BADFLAGS,
     /// Invalid value for hints
-    EAI_BADHINTS,
+    UV_EAI_BADHINTS,
     /// Request canceled
-    EAI_CANCELED,
+    UV_EAI_CANCELED,
     /// Permanent failure
-    EAI_FAIL,
+    UV_EAI_FAIL,
     /// `ai_family` not supported
-    EAI_FAMILY,
+    UV_EAI_FAMILY,
     /// Out of memory
-    EAI_MEMORY,
+    UV_EAI_MEMORY,
     /// No address
-    EAI_NODATA,
+    UV_EAI_NODATA,
     /// Unknown node or service
-    EAI_NONAME,
+    UV_EAI_NONAME,
     /// Argument buffer overflow
-    EAI_OVERFLOW,
+    UV_EAI_OVERFLOW,
     /// Resolved protocol is unknown
-    EAI_PROTOCOL,
+    UV_EAI_PROTOCOL,
     /// Service not available for socket type
-    EAI_SERVICE,
+    UV_EAI_SERVICE,
     /// Socket type not supported
-    EAI_SOCKTYPE,
+    UV_EAI_SOCKTYPE,
     /// Connection already in progress
-    EALREADY,
+    UV_EALREADY,
     /// Bad file descriptor
-    EBADF,
+    UV_EBADF,
     /// Resource busy or locked
-    EBUSY,
+    UV_EBUSY,
     /// Operation canceled
-    ECANCELED,
+    UV_ECANCELED,
     /// Invalid Unicode character
-    ECHARSET,
+    UV_ECHARSET,
     /// Software caused connection abort
-    ECONNABORTED,
+    UV_ECONNABORTED,
     /// Connection refused
-    ECONNREFUSED,
+    UV_ECONNREFUSED,
     /// Connection reset by peer
-    ECONNRESET,
+    UV_ECONNRESET,
     /// Destination address required
-    EDESTADDRREQ,
+    UV_EDESTADDRREQ,
     /// File already exists
-    EEXIST,
+    UV_EEXIST,
     /// Bad address in system call argument
-    EFAULT,
+    UV_EFAULT,
     /// File too large
-    EFBIG,
+    UV_EFBIG,
     /// Host is unreachable
-    EHOSTUNREACH,
+    UV_EHOSTUNREACH,
     /// Interrupted system call
-    EINTR,
+    UV_EINTR,
     /// Invalid argument
-    EINVAL,
+    UV_EINVAL,
     /// I/O error
-    EIO,
+    UV_EIO,
     /// Socket is already connected
-    EISCONN,
+    UV_EISCONN,
     /// Illegal operation on a directory
-    EISDIR,
+    UV_EISDIR,
     /// Too many symbolic links encountered
-    ELOOP,
+    UV_ELOOP,
     /// Too many open files
-    EMFILE,
+    UV_EMFILE,
     /// Message too long
-    EMSGSIZE,
+    UV_EMSGSIZE,
     /// Name too long
-    ENAMETOOLONG,
+    UV_ENAMETOOLONG,
     /// Network is down
-    ENETDOWN,
+    UV_ENETDOWN,
     /// Network is unreachable
-    ENETUNREACH,
+    UV_ENETUNREACH,
     /// File table overflow
-    ENFILE,
+    UV_ENFILE,
     /// No buffer space available
-    ENOBUFS,
+    UV_ENOBUFS,
     /// No such device
-    ENODEV,
+    UV_ENODEV,
     /// No such file or directory
-    ENOENT,
+    UV_ENOENT,
     /// Not enough memory
-    ENOMEM,
+    UV_ENOMEM,
     /// Machine is not on the network
-    ENONET,
+    UV_ENONET,
     /// Protocol not available
-    ENOPROTOOPT,
+    UV_ENOPROTOOPT,
     /// No space left on device
-    ENOSPC,
+    UV_ENOSPC,
     /// Function not implemented
-    ENOSYS,
+    UV_ENOSYS,
     /// Socket is not connected
-    ENOTCONN,
+    UV_ENOTCONN,
     /// Not a directory
-    ENOTDIR,
+    UV_ENOTDIR,
     /// Directory not empty
-    ENOTEMPTY,
+    UV_ENOTEMPTY,
     /// Socket operation on non-socket
-    ENOTSOCK,
+    UV_ENOTSOCK,
     /// Operation not supported on socket
-    ENOTSUP,
+    UV_ENOTSUP,
     /// Value too large for defined data type
-    EOVERFLOW,
+    UV_EOVERFLOW,
     /// Operation not permitted
-    EPERM,
+    UV_EPERM,
     /// Broken pipe
-    EPIPE,
+    UV_EPIPE,
     /// Protocol error
-    EPROTO,
+    UV_EPROTO,
     /// Protocol not supported
-    EPROTONOSUPPORT,
+    UV_EPROTONOSUPPORT,
     /// Protocol wrong type for socket
-    EPROTOTYPE,
+    UV_EPROTOTYPE,
     /// Result too large
-    ERANGE,
+    UV_ERANGE,
     /// Read-only file system
-    EROFS,
+    UV_EROFS,
     /// Cannot send after transport endpoint shutdown
-    ESHUTDOWN,
+    UV_ESHUTDOWN,
     /// Invalid seek
-    ESPIPE,
+    UV_ESPIPE,
     /// No such process
-    ESRCH,
+    UV_ESRCH,
     /// Connection timed out
-    ETIMEDOUT,
+    UV_ETIMEDOUT,
     /// Text file is busy
-    ETXTBSY,
+    UV_ETXTBSY,
     /// Cross-device link not permitted
-    EXDEV,
+    UV_EXDEV,
     /// Unknown error
-    UNKNOWN,
+    UV_UNKNOWN,
     /// End of file
-    EOF,
+    UV_EOF,
     /// No such device or address
-    ENXIO,
+    UV_ENXIO,
     /// Too many links
-    EMLINK,
+    UV_EMLINK,
     /// Inappropriate ioctl for device
-    ENOTTY,
+    UV_ENOTTY,
     /// Inappropriate file type or format
-    EFTYPE,
+    UV_EFTYPE,
     /// Illegal byte sequence
-    EILSEQ,
+    UV_EILSEQ,
     /// Socket type not supported
-    ESOCKTNOSUPPORT,
+    UV_ESOCKTNOSUPPORT,
 };
 
 /// If there is an error, create an appropriate error variant
@@ -171,86 +171,86 @@ pub const Error = error{
 pub fn check(res: c_int) Error!void {
     if (res >= 0) return;
     return switch (res) {
-        c.UV_E2BIG => Error.E2BIG,
-        c.UV_EACCES => Error.EACCES,
-        c.UV_EADDRINUSE => Error.EADDRINUSE,
-        c.UV_EADDRNOTAVAIL => Error.EADDRNOTAVAIL,
-        c.UV_EAFNOSUPPORT => Error.EAFNOSUPPORT,
-        c.UV_EAGAIN => Error.EAGAIN,
-        c.UV_EAI_ADDRFAMILY => Error.EAI_ADDRFAMILY,
-        c.UV_EAI_AGAIN => Error.EAI_AGAIN,
-        c.UV_EAI_BADFLAGS => Error.EAI_BADFLAGS,
-        c.UV_EAI_BADHINTS => Error.EAI_BADHINTS,
-        c.UV_EAI_CANCELED => Error.EAI_CANCELED,
-        c.UV_EAI_FAIL => Error.EAI_FAIL,
-        c.UV_EAI_FAMILY => Error.EAI_FAMILY,
-        c.UV_EAI_MEMORY => Error.EAI_MEMORY,
-        c.UV_EAI_NODATA => Error.EAI_NODATA,
-        c.UV_EAI_NONAME => Error.EAI_NONAME,
-        c.UV_EAI_OVERFLOW => Error.EAI_OVERFLOW,
-        c.UV_EAI_PROTOCOL => Error.EAI_PROTOCOL,
-        c.UV_EAI_SERVICE => Error.EAI_SERVICE,
-        c.UV_EAI_SOCKTYPE => Error.EAI_SOCKTYPE,
-        c.UV_EALREADY => Error.EALREADY,
-        c.UV_EBADF => Error.EBADF,
-        c.UV_EBUSY => Error.EBUSY,
-        c.UV_ECANCELED => Error.ECANCELED,
-        c.UV_ECHARSET => Error.ECHARSET,
-        c.UV_ECONNABORTED => Error.ECONNABORTED,
-        c.UV_ECONNREFUSED => Error.ECONNREFUSED,
-        c.UV_ECONNRESET => Error.ECONNRESET,
-        c.UV_EDESTADDRREQ => Error.EDESTADDRREQ,
-        c.UV_EEXIST => Error.EEXIST,
-        c.UV_EFAULT => Error.EFAULT,
-        c.UV_EFBIG => Error.EFBIG,
-        c.UV_EHOSTUNREACH => Error.EHOSTUNREACH,
-        c.UV_EINTR => Error.EINTR,
-        c.UV_EINVAL => Error.EINVAL,
-        c.UV_EIO => Error.EIO,
-        c.UV_EISCONN => Error.EISCONN,
-        c.UV_EISDIR => Error.EISDIR,
-        c.UV_ELOOP => Error.ELOOP,
-        c.UV_EMFILE => Error.EMFILE,
-        c.UV_EMSGSIZE => Error.EMSGSIZE,
-        c.UV_ENAMETOOLONG => Error.ENAMETOOLONG,
-        c.UV_ENETDOWN => Error.ENETDOWN,
-        c.UV_ENETUNREACH => Error.ENETUNREACH,
-        c.UV_ENFILE => Error.ENFILE,
-        c.UV_ENOBUFS => Error.ENOBUFS,
-        c.UV_ENODEV => Error.ENODEV,
-        c.UV_ENOENT => Error.ENOENT,
-        c.UV_ENOMEM => Error.ENOMEM,
-        c.UV_ENONET => Error.ENONET,
-        c.UV_ENOPROTOOPT => Error.ENOPROTOOPT,
-        c.UV_ENOSPC => Error.ENOSPC,
-        c.UV_ENOSYS => Error.ENOSYS,
-        c.UV_ENOTCONN => Error.ENOTCONN,
-        c.UV_ENOTDIR => Error.ENOTDIR,
-        c.UV_ENOTEMPTY => Error.ENOTEMPTY,
-        c.UV_ENOTSOCK => Error.ENOTSOCK,
-        c.UV_ENOTSUP => Error.ENOTSUP,
-        c.UV_EOVERFLOW => Error.EOVERFLOW,
-        c.UV_EPERM => Error.EPERM,
-        c.UV_EPIPE => Error.EPIPE,
-        c.UV_EPROTO => Error.EPROTO,
-        c.UV_EPROTONOSUPPORT => Error.EPROTONOSUPPORT,
-        c.UV_EPROTOTYPE => Error.EPROTOTYPE,
-        c.UV_ERANGE => Error.ERANGE,
-        c.UV_EROFS => Error.EROFS,
-        c.UV_ESHUTDOWN => Error.ESHUTDOWN,
-        c.UV_ESPIPE => Error.ESPIPE,
-        c.UV_ESRCH => Error.ESRCH,
-        c.UV_ETIMEDOUT => Error.ETIMEDOUT,
-        c.UV_ETXTBSY => Error.ETXTBSY,
-        c.UV_EXDEV => Error.EXDEV,
-        c.UV_UNKNOWN => Error.UNKNOWN,
-        c.UV_EOF => Error.EOF,
-        c.UV_ENXIO => Error.ENXIO,
-        c.UV_EMLINK => Error.EMLINK,
-        c.UV_ENOTTY => Error.ENOTTY,
-        c.UV_EFTYPE => Error.EFTYPE,
-        c.UV_EILSEQ => Error.EILSEQ,
-        c.UV_ESOCKTNOSUPPORT => Error.ESOCKTNOSUPPORT,
+        c.UV_E2BIG => Error.UV_E2BIG,
+        c.UV_EACCES => Error.UV_EACCES,
+        c.UV_EADDRINUSE => Error.UV_EADDRINUSE,
+        c.UV_EADDRNOTAVAIL => Error.UV_EADDRNOTAVAIL,
+        c.UV_EAFNOSUPPORT => Error.UV_EAFNOSUPPORT,
+        c.UV_EAGAIN => Error.UV_EAGAIN,
+        c.UV_EAI_ADDRFAMILY => Error.UV_EAI_ADDRFAMILY,
+        c.UV_EAI_AGAIN => Error.UV_EAI_AGAIN,
+        c.UV_EAI_BADFLAGS => Error.UV_EAI_BADFLAGS,
+        c.UV_EAI_BADHINTS => Error.UV_EAI_BADHINTS,
+        c.UV_EAI_CANCELED => Error.UV_EAI_CANCELED,
+        c.UV_EAI_FAIL => Error.UV_EAI_FAIL,
+        c.UV_EAI_FAMILY => Error.UV_EAI_FAMILY,
+        c.UV_EAI_MEMORY => Error.UV_EAI_MEMORY,
+        c.UV_EAI_NODATA => Error.UV_EAI_NODATA,
+        c.UV_EAI_NONAME => Error.UV_EAI_NONAME,
+        c.UV_EAI_OVERFLOW => Error.UV_EAI_OVERFLOW,
+        c.UV_EAI_PROTOCOL => Error.UV_EAI_PROTOCOL,
+        c.UV_EAI_SERVICE => Error.UV_EAI_SERVICE,
+        c.UV_EAI_SOCKTYPE => Error.UV_EAI_SOCKTYPE,
+        c.UV_EALREADY => Error.UV_EALREADY,
+        c.UV_EBADF => Error.UV_EBADF,
+        c.UV_EBUSY => Error.UV_EBUSY,
+        c.UV_ECANCELED => Error.UV_ECANCELED,
+        c.UV_ECHARSET => Error.UV_ECHARSET,
+        c.UV_ECONNABORTED => Error.UV_ECONNABORTED,
+        c.UV_ECONNREFUSED => Error.UV_ECONNREFUSED,
+        c.UV_ECONNRESET => Error.UV_ECONNRESET,
+        c.UV_EDESTADDRREQ => Error.UV_EDESTADDRREQ,
+        c.UV_EEXIST => Error.UV_EEXIST,
+        c.UV_EFAULT => Error.UV_EFAULT,
+        c.UV_EFBIG => Error.UV_EFBIG,
+        c.UV_EHOSTUNREACH => Error.UV_EHOSTUNREACH,
+        c.UV_EINTR => Error.UV_EINTR,
+        c.UV_EINVAL => Error.UV_EINVAL,
+        c.UV_EIO => Error.UV_EIO,
+        c.UV_EISCONN => Error.UV_EISCONN,
+        c.UV_EISDIR => Error.UV_EISDIR,
+        c.UV_ELOOP => Error.UV_ELOOP,
+        c.UV_EMFILE => Error.UV_EMFILE,
+        c.UV_EMSGSIZE => Error.UV_EMSGSIZE,
+        c.UV_ENAMETOOLONG => Error.UV_ENAMETOOLONG,
+        c.UV_ENETDOWN => Error.UV_ENETDOWN,
+        c.UV_ENETUNREACH => Error.UV_ENETUNREACH,
+        c.UV_ENFILE => Error.UV_ENFILE,
+        c.UV_ENOBUFS => Error.UV_ENOBUFS,
+        c.UV_ENODEV => Error.UV_ENODEV,
+        c.UV_ENOENT => Error.UV_ENOENT,
+        c.UV_ENOMEM => Error.UV_ENOMEM,
+        c.UV_ENONET => Error.UV_ENONET,
+        c.UV_ENOPROTOOPT => Error.UV_ENOPROTOOPT,
+        c.UV_ENOSPC => Error.UV_ENOSPC,
+        c.UV_ENOSYS => Error.UV_ENOSYS,
+        c.UV_ENOTCONN => Error.UV_ENOTCONN,
+        c.UV_ENOTDIR => Error.UV_ENOTDIR,
+        c.UV_ENOTEMPTY => Error.UV_ENOTEMPTY,
+        c.UV_ENOTSOCK => Error.UV_ENOTSOCK,
+        c.UV_ENOTSUP => Error.UV_ENOTSUP,
+        c.UV_EOVERFLOW => Error.UV_EOVERFLOW,
+        c.UV_EPERM => Error.UV_EPERM,
+        c.UV_EPIPE => Error.UV_EPIPE,
+        c.UV_EPROTO => Error.UV_EPROTO,
+        c.UV_EPROTONOSUPPORT => Error.UV_EPROTONOSUPPORT,
+        c.UV_EPROTOTYPE => Error.UV_EPROTOTYPE,
+        c.UV_ERANGE => Error.UV_ERANGE,
+        c.UV_EROFS => Error.UV_EROFS,
+        c.UV_ESHUTDOWN => Error.UV_ESHUTDOWN,
+        c.UV_ESPIPE => Error.UV_ESPIPE,
+        c.UV_ESRCH => Error.UV_ESRCH,
+        c.UV_ETIMEDOUT => Error.UV_ETIMEDOUT,
+        c.UV_ETXTBSY => Error.UV_ETXTBSY,
+        c.UV_EXDEV => Error.UV_EXDEV,
+        c.UV_UNKNOWN => Error.UV_UNKNOWN,
+        c.UV_EOF => Error.UV_EOF,
+        c.UV_ENXIO => Error.UV_ENXIO,
+        c.UV_EMLINK => Error.UV_EMLINK,
+        c.UV_ENOTTY => Error.UV_ENOTTY,
+        c.UV_EFTYPE => Error.UV_EFTYPE,
+        c.UV_EILSEQ => Error.UV_EILSEQ,
+        c.UV_ESOCKTNOSUPPORT => Error.UV_ESOCKTNOSUPPORT,
         else => unreachable,
     };
 }
