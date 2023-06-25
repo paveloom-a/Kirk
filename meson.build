@@ -42,11 +42,11 @@ add_project_arguments(cc.get_supported_arguments(cc_flags), language: 'c')
 add_project_dependencies(dependencies, language: 'c')
 
 source_files = [
-  'src/main.c',
+  'src/groovy-main.c',
 ]
 
 executable = executable(
-  'main',
+  'groovy',
   source_files,
   override_options: override_options,
 )
