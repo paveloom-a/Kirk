@@ -1,7 +1,5 @@
-# Zig
-zig-cache
-zig-out
-
-# Zigmod
-.zigmod
-deps.zig
+*.out
+.cache
+.direnv
+.null-ls*
+compile_commands.json

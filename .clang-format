@@ -1,0 +1,12 @@
+AlignAfterOpenBracket: BlockIndent
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: Empty
+BinPackArguments: false
+BinPackParameters: false
+IncludeBlocks: Regroup
+IndentPPDirectives: AfterHash
+IndentWidth: 4
+InsertBraces: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+SeparateDefinitionBlocks: Always
