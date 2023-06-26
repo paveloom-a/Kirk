@@ -34,6 +34,7 @@
           pkgs.shellcheck
         ];
         buildInputs = [
+          pkgs.appstream-glib
           pkgs.blueprint-compiler
           pkgs.desktop-file-utils
           pkgs.gtk4

@@ -11,6 +11,20 @@ project(
   ])
 
 gnome = import('gnome')
+i18n = import('i18n')
+
+app_name = 'Groovy'
+app_domain = 'groovy'
+app_id = 'paveloom.apps.' + app_name
+app_path = '/paveloom/apps/' + app_name + '/'
+app_version = meson.project_version()
+
+conf = configuration_data()
+conf.set('app_name', app_name)
+conf.set('app_domain', app_domain)
+conf.set('app_id', app_id)
+conf.set('app_path', app_path)
+conf.set('app_version', app_version)
 
 if get_option('buildtype') == 'release'
   cc_flags = []
@@ -20,6 +34,12 @@ if get_option('buildtype') == 'release'
     'warning_level=0',
   ]
 elif get_option('buildtype') == 'debug'
+  app_name += ' (Development)'
+  app_id += '.Devel'
+  app_version += '-' + run_command(
+    'git', 'rev-parse', '--short', 'HEAD',
+    check: true,
+  ).stdout().strip()
   cc_flags = [
     '-g3',
     '-U_FORTIFY_SOURCE',
@@ -44,6 +64,7 @@ add_project_arguments(cc.get_supported_arguments(cc_flags), language: 'c')
 add_project_dependencies(dependencies, language: 'c')
 
 subdir('data')
+subdir('po')
 
 sources = files(
   'src/main.c',
@@ -58,13 +79,20 @@ executable = executable(
 )
 
 if get_option('buildtype') == 'debug'
-  clang_check = find_program('clang-check')
-  cppcheck = find_program('cppcheck')
-  cpplint = find_program('cpplint')
+  find_program('clang-check')
+  find_program('cppcheck')
+  find_program('cpplint')
+  find_program('desktop-file-validate')
+  find_program('appstream-util')
   custom_target('lint',
       depends: executable,
       output: 'lint',
       command: 'lint.bash',
+      env: {
+        'APP_ID': app_id,
+        'MESON_CURRENT_BUILD_DIR': meson.current_build_dir(),
+        'MESON_PROJECT_SOURCE_ROOT': meson.project_source_root(),
+      },
       console: true,
       build_always_stale: true,
       build_by_default: true,

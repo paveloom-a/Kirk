@@ -3,3 +3,4 @@
 .direnv
 .null-ls*
 compile_commands.json
+install
