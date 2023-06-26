@@ -21,16 +21,31 @@ static void print_hello(GtkWidget *widget, gpointer data) {
 }
 
 static void activate(GtkApplication *app, gpointer user_data) {
-    GtkWidget *window;
-    GtkWidget *button;
+    GtkBuilder *builder = gtk_builder_new();
+    gtk_builder_add_from_resource(
+        builder,
+        "/paveloom/apps/Groovy/gtk/builder.ui",
+        NULL
+    );
 
-    window = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(window), "Window");
-    gtk_window_set_default_size(GTK_WINDOW(window), 200, 200);
+    GObject *window = gtk_builder_get_object(builder, "window");
+    gtk_window_set_application(GTK_WINDOW(window), app);
 
-    button = gtk_button_new_with_label("Hello, world!");
-    g_signal_connect(button, "clicked", G_CALLBACK(print_hello), NULL);
-    gtk_window_set_child(GTK_WINDOW(window), button);
+    GObject *button_1 = gtk_builder_get_object(builder, "button_1");
+    g_signal_connect(button_1, "clicked", G_CALLBACK(print_hello), NULL);
+
+    GObject *button_2 = gtk_builder_get_object(builder, "button_2");
+    g_signal_connect(button_2, "clicked", G_CALLBACK(print_hello), NULL);
+
+    GObject *quit_button = gtk_builder_get_object(builder, "quit_button");
+    g_signal_connect_swapped(
+        quit_button,
+        "clicked",
+        G_CALLBACK(gtk_window_destroy),
+        window
+    );
+
+    g_object_unref(builder);
 
     gtk_window_present(GTK_WINDOW(window));
 }
@@ -40,7 +55,7 @@ int main(int argc, char **argv) {
     int status;
 
     app = gtk_application_new(
-        "paveloom.apps.groovy",
+        "paveloom.apps.Groovy",
         G_APPLICATION_DEFAULT_FLAGS
     );
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);

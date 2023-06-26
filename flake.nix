@@ -30,7 +30,9 @@
           pkgs.clang-tools_16
           pkgs.cppcheck
           pkgs.cpplint
+          pkgs.desktop-file-utils
           pkgs.gnome.devhelp
+          pkgs.libxml2
         ];
         buildInputs = [
           pkgs.gtk4

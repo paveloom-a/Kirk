@@ -10,6 +10,8 @@ project(
     'c_std=c2x',
   ])
 
+gnome = import('gnome')
+
 if get_option('buildtype') == 'release'
   cc_flags = []
   override_options = [
@@ -41,14 +43,23 @@ cc = meson.get_compiler('c')
 add_project_arguments(cc.get_supported_arguments(cc_flags), language: 'c')
 add_project_dependencies(dependencies, language: 'c')
 
-source_files = [
+groovy_resources = gnome.compile_resources(
+  'groovy-resources',
+  'src/resources/groovy.gresource.xml',
+  c_name: 'groovy',
+  source_dir: 'src/resources'
+)
+
+groovy_sources = [
   'src/groovy-main.c',
+  groovy_resources,
 ]
 
 executable = executable(
   'groovy',
-  source_files,
+  groovy_sources,
   override_options: override_options,
+  install: true,
 )
 
 if get_option('buildtype') == 'debug'
@@ -68,3 +79,9 @@ if get_option('buildtype') == 'debug'
       build_by_default: true,
   )
 endif
+
+gnome.post_install(
+  gtk_update_icon_cache: true,
+  glib_compile_schemas: true,
+  update_desktop_database: true
+)
