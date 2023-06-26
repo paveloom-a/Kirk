@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-mapfile -t SOURCES < \
-  <(find \
-      "$MESON_PROJECT_SOURCE_ROOT/src" \
-      -type f \
-      -name "*.c" -o -name "*.h" \
-      -not -name "groovy-resources.*")
+ROOT=$(dirname "$0");
+SRC=$ROOT/src
+
+mapfile -t SOURCES < <(
+  find \
+    "$SRC" \
+    -type f \
+    -name "*.c" -o -name "*.h")
 
 clang-check --analyze "${SOURCES[@]}"
 

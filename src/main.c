@@ -24,7 +24,7 @@ static void activate(GtkApplication *app, gpointer user_data) {
     GtkBuilder *builder = gtk_builder_new();
     gtk_builder_add_from_resource(
         builder,
-        "/paveloom/apps/Groovy/gtk/builder.ui",
+        "/paveloom/apps/Groovy/ui/main.ui",
         NULL
     );
 

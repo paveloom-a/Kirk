@@ -43,21 +43,16 @@ cc = meson.get_compiler('c')
 add_project_arguments(cc.get_supported_arguments(cc_flags), language: 'c')
 add_project_dependencies(dependencies, language: 'c')
 
-groovy_resources = gnome.compile_resources(
-  'groovy-resources',
-  'src/resources/groovy.gresource.xml',
-  c_name: 'groovy',
-  source_dir: 'src/resources'
-)
+subdir('data')
 
-groovy_sources = [
-  'src/groovy-main.c',
-  groovy_resources,
-]
+sources = files(
+  'src/main.c',
+)
 
 executable = executable(
   'groovy',
-  groovy_sources,
+  sources,
+  resources,
   override_options: override_options,
   install: true,
 )
@@ -71,10 +66,6 @@ if get_option('buildtype') == 'debug'
       output: 'lint',
       command: 'lint.bash',
       console: true,
-      env: {
-        'MESON_PROJECT_SOURCE_ROOT': meson.project_source_root(),
-        'MESON_CURRENT_BUILD_DIR': meson.current_build_dir(),
-      },
       build_always_stale: true,
       build_by_default: true,
   )

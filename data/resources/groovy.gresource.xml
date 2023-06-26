@@ -20,6 +20,6 @@
 
 <gresources>
   <gresource prefix="/paveloom/apps/Groovy">
-    <file preprocess="xml-stripblanks" compressed="true">gtk/builder.ui</file>
+    <file preprocess="xml-stripblanks" compressed="true">ui/main.ui</file>
   </gresource>
 </gresources>

@@ -30,12 +30,14 @@
           pkgs.clang-tools_16
           pkgs.cppcheck
           pkgs.cpplint
-          pkgs.desktop-file-utils
           pkgs.gnome.devhelp
-          pkgs.libxml2
+          pkgs.shellcheck
         ];
         buildInputs = [
+          pkgs.blueprint-compiler
+          pkgs.desktop-file-utils
           pkgs.gtk4
+          pkgs.libxml2
           pkgs.meson
           pkgs.ninja
           pkgs.pkg-config
