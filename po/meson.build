@@ -1,1 +1,1 @@
-i18n.gettext(app_domain)
+i18n.gettext(APP_DOMAIN)

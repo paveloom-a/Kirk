@@ -1,10 +1,10 @@
 desktop_file = i18n.merge_file(
   input: configure_file(
     input: files('paveloom.apps.Groovy.desktop.in.in'),
-    output: f'@app_id@.desktop.in',
+    output: f'@APP_ID@.desktop.in',
     configuration: conf,
   ),
-  output: f'@app_id@.desktop',
+  output: f'@APP_ID@.desktop',
   type: 'desktop',
   po_dir: '../po',
   install: true,
@@ -15,10 +15,10 @@ appstream_file = i18n.merge_file(
   input:
   configure_file(
     input: files('paveloom.apps.Groovy.metainfo.xml.in.in'),
-    output: f'@app_id@.metainfo.xml.in',
+    output: f'@APP_ID@.metainfo.xml.in',
     configuration: conf,
   ),
-  output: f'@app_id@.metainfo.xml',
+  output: f'@APP_ID@.metainfo.xml',
   po_dir: '../po',
   install: true,
   install_dir: get_option('datadir') / 'metainfo'
@@ -27,7 +27,7 @@ appstream_file = i18n.merge_file(
 install_data(
   configure_file(
     input: files('paveloom.apps.Groovy.gschema.xml.in'),
-    output: f'@app_id@.gschema.xml',
+    output: f'@APP_ID@.gschema.xml',
     configuration: conf,
   ),
   install_dir: get_option('datadir') / 'glib-2.0' / 'schemas',

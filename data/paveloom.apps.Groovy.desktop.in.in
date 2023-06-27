@@ -15,10 +15,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 [Desktop Entry]
-Name=@app_name@
+Name=@APP_NAME@
 Comment=WIP
 Exec=groovy
-Icon=@app_id@
+Icon=@APP_ID@
 Terminal=false
 Type=Application
 Categories=Music;GNOME;GTK;Audio;AudioVideo;

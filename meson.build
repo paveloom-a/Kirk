@@ -13,18 +13,11 @@ project(
 gnome = import('gnome')
 i18n = import('i18n')
 
-app_name = 'Groovy'
-app_domain = 'groovy'
-app_id = 'paveloom.apps.' + app_name
-app_path = '/paveloom/apps/' + app_name + '/'
-app_version = meson.project_version()
-
-conf = configuration_data()
-conf.set('app_name', app_name)
-conf.set('app_domain', app_domain)
-conf.set('app_id', app_id)
-conf.set('app_path', app_path)
-conf.set('app_version', app_version)
+APP_NAME = 'Groovy'
+APP_DOMAIN = 'groovy'
+APP_ID = 'paveloom.apps.' + APP_NAME
+APP_PATH = '/paveloom/apps/' + APP_NAME + '/'
+APP_VERSION = meson.project_version()
 
 if get_option('buildtype') == 'release'
   cc_flags = []
@@ -34,9 +27,9 @@ if get_option('buildtype') == 'release'
     'warning_level=0',
   ]
 elif get_option('buildtype') == 'debug'
-  app_name += ' (Development)'
-  app_id += '.Devel'
-  app_version += '-' + run_command(
+  APP_NAME += ' (Development)'
+  APP_ID += '.Devel'
+  APP_VERSION += '-' + run_command(
     'git', 'rev-parse', '--short', 'HEAD',
     check: true,
   ).stdout().strip()
@@ -55,6 +48,13 @@ elif get_option('buildtype') == 'debug'
   ]
 endif
 
+conf = configuration_data()
+conf.set('APP_NAME', APP_NAME)
+conf.set('APP_DOMAIN', APP_DOMAIN)
+conf.set('APP_ID', APP_ID)
+conf.set('APP_PATH', APP_PATH)
+conf.set('APP_VERSION', APP_VERSION)
+
 dependencies = [
   dependency('gtk4', version: '>=4.10.4', include_type: 'system'),
 ]
@@ -64,6 +64,7 @@ add_project_arguments(cc.get_supported_arguments(cc_flags), language: 'c')
 add_project_dependencies(dependencies, language: 'c')
 
 subdir('data')
+subdir('include')
 subdir('po')
 
 sources = files(
@@ -75,21 +76,25 @@ executable = executable(
   sources,
   resources,
   override_options: override_options,
+  include_directories: [
+    include_dir,
+  ],
   install: true,
 )
 
 if get_option('buildtype') == 'debug'
+  find_program('appstream-util')
   find_program('clang-check')
   find_program('cppcheck')
   find_program('cpplint')
   find_program('desktop-file-validate')
-  find_program('appstream-util')
+  find_program('glib-compile-schemas')
   custom_target('lint',
       depends: executable,
       output: 'lint',
       command: 'lint.bash',
       env: {
-        'APP_ID': app_id,
+        'APP_ID': APP_ID,
         'MESON_CURRENT_BUILD_DIR': meson.current_build_dir(),
         'MESON_PROJECT_SOURCE_ROOT': meson.project_source_root(),
       },

@@ -19,24 +19,24 @@
 -->
 
 <component type="desktop">
-  <id>@app_id@</id>
-  <name>@app_name@</name>
+  <id>@APP_ID@</id>
+  <name>@APP_NAME@</name>
   <summary>Summary of the program</summary>
   <developer_name>Pavel Sobolev</developer_name>
-  <launchable type="desktop-id">@app_id@.desktop</launchable>
+  <launchable type="desktop-id">@APP_ID@.desktop</launchable>
   <update_contact>paveloom@riseup.net</update_contact>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
   <description>
     <p>Description of the program.</p>
   </description>
-  <translation type="gettext">@app_domain@</translation>
+  <translation type="gettext">@APP_DOMAIN@</translation>
   <content_rating type="oars-1.1"/>
   <screenshots>
     <screenshot></screenshot>
   </screenshots>
-  <url type="homepage">https://github.com/paveloom-a/@app_name@</url>
-  <url type="bugtracker">https://github.com/paveloom-a/@app_name@/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc</url>
+  <url type="homepage">https://github.com/paveloom-a/@APP_NAME@</url>
+  <url type="bugtracker">https://github.com/paveloom-a/@APP_NAME@/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc</url>
   <categories>
     <category>Music</category>
   </categories>

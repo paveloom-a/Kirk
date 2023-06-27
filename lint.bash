@@ -6,6 +6,9 @@ mapfile -t SOURCES < <(
     -type f \
     -name "*.c" -o -name "*.h")
 
+appstream-util validate \
+  "$MESON_CURRENT_BUILD_DIR/data/$APP_ID.metainfo.xml"
+
 clang-check --analyze "${SOURCES[@]}"
 
 cppcheck \
@@ -20,9 +23,6 @@ cppcheck \
 cpplint --verbose=0 --quiet "${SOURCES[@]}"
 
 desktop-file-validate "$MESON_CURRENT_BUILD_DIR/data/$APP_ID.desktop"
-
-appstream-util validate \
-  "$MESON_CURRENT_BUILD_DIR/data/$APP_ID.metainfo.xml"
 
 glib-compile-schemas \
   --strict \

@@ -18,6 +18,6 @@
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<schemalist gettext-domain="@app_domain@">
-  <schema id="@app_id@" path="@app_path@"></schema>
+<schemalist gettext-domain="@APP_DOMAIN@">
+  <schema id="@APP_ID@" path="@APP_PATH@"></schema>
 </schemalist>
