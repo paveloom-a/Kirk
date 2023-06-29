@@ -20,6 +20,8 @@ using Gtk 4.0;
 
 ApplicationWindow window {
   title: "Groovy";
+  default-width: 200;
+  default-height: 200;
 
   Box box {
     halign: center;
@@ -30,8 +32,8 @@ ApplicationWindow window {
         label: "Button 1";
 
         layout {
-          column: "0";
-          row: "0";
+          column: 0;
+          row: 0;
         }
       }
 
@@ -39,8 +41,8 @@ ApplicationWindow window {
         label: "Button 2";
 
         layout {
-          column: "1";
-          row: "0";
+          column: 1;
+          row: 0;
         }
       }
 
@@ -48,9 +50,9 @@ ApplicationWindow window {
         label: "Quit";
 
         layout {
-          column: "0";
-          row: "1";
-          column-span: "2";
+          column: 0;
+          row: 1;
+          column-span: 2;
         }
       }
     }

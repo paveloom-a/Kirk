@@ -13,11 +13,12 @@ clang-check --analyze "${SOURCES[@]}"
 
 cppcheck \
   --enable=all \
+  --check-level=exhaustive \
   --inconclusive \
-  --platform=unix64 \
   --quiet \
-  --suppress=missingInclude \
+  --suppress=missingIncludeSystem \
   --verbose \
+  -I "$MESON_CURRENT_BUILD_DIR" \
   "${SOURCES[@]}"
 
 cpplint --verbose=0 --quiet "${SOURCES[@]}"
@@ -35,4 +36,5 @@ while read -r potfile; do
   fi
 done < "$MESON_PROJECT_SOURCE_ROOT/po/POTFILES"
 
-true
+# Generate a pseudo-output
+touch "$MESON_CURRENT_BUILD_DIR/lint"

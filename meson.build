@@ -72,9 +72,9 @@ sources = files(
 )
 
 executable = executable(
-  'groovy',
-  sources,
+  meson.project_name(),
   resources,
+  sources,
   override_options: override_options,
   include_directories: [
     include_dir,
@@ -99,8 +99,6 @@ if get_option('buildtype') == 'debug'
         'MESON_PROJECT_SOURCE_ROOT': meson.project_source_root(),
       },
       console: true,
-      build_always_stale: true,
-      build_by_default: true,
   )
 endif
 

@@ -9,4 +9,5 @@ IndentPPDirectives: AfterHash
 IndentWidth: 4
 InsertBraces: true
 KeepEmptyLinesAtTheStartOfBlocks: false
+PenaltyReturnTypeOnItsOwnLine: 999
 SeparateDefinitionBlocks: Always

@@ -24,7 +24,7 @@ static void print_hello(GtkWidget *widget, gpointer data) {
     g_print("Hello, world!\n");
 }
 
-static void activate(GtkApplication *app, gpointer user_data) {
+static void activate(GtkApplication *app, gpointer data) {
     GtkBuilder *builder = gtk_builder_new();
     gtk_builder_add_from_resource(builder, APP_PATH "ui/main.ui", NULL);
 
@@ -45,19 +45,14 @@ static void activate(GtkApplication *app, gpointer user_data) {
         window
     );
 
-    g_object_unref(builder);
-
     gtk_window_present(GTK_WINDOW(window));
+
+    g_object_unref(builder);
 }
 
 int main(int argc, char **argv) {
-    GtkApplication *app;
-    int status;
-
-    app = gtk_application_new(APP_ID, G_APPLICATION_DEFAULT_FLAGS);
+    GtkApplication *app =
+        gtk_application_new(APP_ID, G_APPLICATION_DEFAULT_FLAGS);
     g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-    status = g_application_run(G_APPLICATION(app), argc, argv);
-    g_object_unref(app);
-
-    return status;
+    return g_application_run(G_APPLICATION(app), argc, argv);
 }
