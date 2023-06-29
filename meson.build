@@ -1,7 +1,10 @@
 project(
   'groovy',
   'c',
-  version: '0.1.0',
+  version: run_command(
+    'grep', '-Po', '(?<=version = ").*(?=")', 'flake.nix',
+    check: true,
+  ).stdout().strip(),
   license: 'GPL-3.0-or-later',
   license_files: 'LICENSE.md',
   meson_version: '>=1.1.0',
@@ -27,12 +30,6 @@ if get_option('buildtype') == 'release'
     'warning_level=0',
   ]
 elif get_option('buildtype') == 'debug'
-  APP_NAME += ' (Development)'
-  APP_ID += '.Devel'
-  APP_VERSION += '-' + run_command(
-    'git', 'rev-parse', '--short', 'HEAD',
-    check: true,
-  ).stdout().strip()
   cc_flags = [
     '-g3',
     '-U_FORTIFY_SOURCE',

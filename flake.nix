@@ -20,29 +20,36 @@
           };
         };
       };
+      nativeBuildInputsRelease = [
+        pkgs.blueprint-compiler
+        pkgs.desktop-file-utils
+        pkgs.libxml2
+        pkgs.meson
+        pkgs.ninja
+        pkgs.pkg-config
+      ];
+      nativeBuildInputsDebug = [
+        pkgs.appstream-glib
+        pkgs.bashInteractive
+        pkgs.ccache
+        pkgs.clang-analyzer
+        pkgs.clang-tools_16
+        pkgs.cppcheck
+        pkgs.cpplint
+        pkgs.gnome.devhelp
+        pkgs.shellcheck
+      ];
+      buildInputs = [
+        pkgs.gtk4
+      ];
     in {
       devShells.default = ccacheStdenv.mkDerivation {
-        name = "shell";
-        nativeBuildInputs = [
-          pkgs.bashInteractive
-          pkgs.ccache
-          pkgs.clang-analyzer
-          pkgs.clang-tools_16
-          pkgs.cppcheck
-          pkgs.cpplint
-          pkgs.gnome.devhelp
-          pkgs.shellcheck
-        ];
-        buildInputs = [
-          pkgs.appstream-glib
-          pkgs.blueprint-compiler
-          pkgs.desktop-file-utils
-          pkgs.gtk4
-          pkgs.libxml2
-          pkgs.meson
-          pkgs.ninja
-          pkgs.pkg-config
-        ];
+        name = "groovy-shell";
+
+        inherit buildInputs;
+
+        nativeBuildInputs = nativeBuildInputsRelease ++ nativeBuildInputsDebug;
+
         env = {
           ASAN_OPTIONS = "abort_on_error=1:halt_on_error=1";
           LSAN_OPTIONS = "print_suppressions=0:suppressions=../suppr.txt";
@@ -52,6 +59,18 @@
             pkgs.gtk4
           ];
         };
+      };
+      packages.default = pkgs.stdenv.mkDerivation {
+        pname = "groovy";
+        version = "0.1.0";
+
+        src = ./.;
+
+        inherit buildInputs;
+
+        nativeBuildInputs = nativeBuildInputsRelease;
+
+        mesonBuildType = "release";
       };
     });
 }
