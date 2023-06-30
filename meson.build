@@ -53,6 +53,7 @@ conf.set('APP_PATH', APP_PATH)
 conf.set('APP_VERSION', APP_VERSION)
 
 dependencies = [
+  dependency('glib-2.0', version: '>=2.76.3', include_type: 'system'),
   dependency('gtk4', version: '>=4.10.4', include_type: 'system'),
 ]
 

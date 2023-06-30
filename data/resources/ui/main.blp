@@ -26,35 +26,14 @@ ApplicationWindow window {
   Box box {
     halign: center;
     valign: center;
+    orientation: vertical;
 
-    Grid grid {
-      Button button_1 {
-        label: "Button 1";
+    Button great_button {
+      label: "Great";
+    }
 
-        layout {
-          column: 0;
-          row: 0;
-        }
-      }
-
-      Button button_2 {
-        label: "Button 2";
-
-        layout {
-          column: 1;
-          row: 0;
-        }
-      }
-
-      Button quit_button {
-        label: "Quit";
-
-        layout {
-          column: 0;
-          row: 1;
-          column-span: 2;
-        }
-      }
+    Button quit_button {
+      label: "Quit";
     }
   }
 }

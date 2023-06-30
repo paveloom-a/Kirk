@@ -31,11 +31,8 @@ static void activate(GtkApplication *app, gpointer data) {
     GObject *window = gtk_builder_get_object(builder, "window");
     gtk_window_set_application(GTK_WINDOW(window), app);
 
-    GObject *button_1 = gtk_builder_get_object(builder, "button_1");
-    g_signal_connect(button_1, "clicked", G_CALLBACK(print_hello), NULL);
-
-    GObject *button_2 = gtk_builder_get_object(builder, "button_2");
-    g_signal_connect(button_2, "clicked", G_CALLBACK(print_hello), NULL);
+    GObject *great_button = gtk_builder_get_object(builder, "great_button");
+    g_signal_connect(great_button, "clicked", G_CALLBACK(print_hello), NULL);
 
     GObject *quit_button = gtk_builder_get_object(builder, "quit_button");
     g_signal_connect_swapped(

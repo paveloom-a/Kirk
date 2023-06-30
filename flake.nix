@@ -13,12 +13,13 @@
         inherit system;
       };
       llvm = pkgs.llvmPackages_16;
-      ccacheStdenv = pkgs.ccacheStdenv.override {
-        stdenv = llvm.stdenv.override {
-          cc = llvm.stdenv.cc.override {
-            inherit (llvm) bintools;
-          };
+      llvmStdenv = llvm.stdenv.override {
+        cc = llvm.stdenv.cc.override {
+          inherit (llvm) bintools;
         };
+      };
+      ccacheStdenv = pkgs.ccacheStdenv.override {
+        stdenv = llvmStdenv;
       };
       nativeBuildInputsRelease = [
         pkgs.blueprint-compiler
@@ -60,7 +61,7 @@
           ];
         };
       };
-      packages.default = pkgs.stdenv.mkDerivation {
+      packages.default = llvmStdenv.mkDerivation {
         pname = "groovy";
         version = "0.1.0";
 
