@@ -1,4 +1,4 @@
-subdir('ui')
+subdir('gtk')
 
 resources = gnome.compile_resources(
   'resources',

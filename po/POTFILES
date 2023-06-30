@@ -1,5 +1,5 @@
 data/paveloom.apps.Groovy.metainfo.xml.in.in
 data/paveloom.apps.Groovy.desktop.in.in
 data/paveloom.apps.Groovy.gschema.xml.in
-data/resources/ui/main.blp
+data/resources/gtk/main.blp
 src/main.c

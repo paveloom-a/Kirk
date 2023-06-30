@@ -26,13 +26,13 @@ static void print_hello(GtkWidget *widget, gpointer data) {
 
 static void activate(GtkApplication *app, gpointer data) {
     GtkBuilder *builder = gtk_builder_new();
-    gtk_builder_add_from_resource(builder, APP_PATH "ui/main.ui", NULL);
+    gtk_builder_add_from_resource(builder, APP_PATH "gtk/main.ui", NULL);
 
     GObject *window = gtk_builder_get_object(builder, "window");
     gtk_window_set_application(GTK_WINDOW(window), app);
 
-    GObject *great_button = gtk_builder_get_object(builder, "great_button");
-    g_signal_connect(great_button, "clicked", G_CALLBACK(print_hello), NULL);
+    GObject *greet_button = gtk_builder_get_object(builder, "greet_button");
+    g_signal_connect(greet_button, "clicked", G_CALLBACK(print_hello), NULL);
 
     GObject *quit_button = gtk_builder_get_object(builder, "quit_button");
     g_signal_connect_swapped(
