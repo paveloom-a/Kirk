@@ -19,7 +19,7 @@ i18n = import('i18n')
 APP_NAME = 'Groovy'
 APP_DOMAIN = 'groovy'
 APP_ID = 'paveloom.apps.' + APP_NAME
-APP_PATH = '/paveloom/apps/' + APP_NAME + '/'
+APP_RESOURCES_PATH = '/paveloom/apps/' + APP_NAME + '/'
 APP_VERSION = meson.project_version()
 
 if get_option('buildtype') == 'release'
@@ -49,11 +49,10 @@ conf = configuration_data()
 conf.set('APP_NAME', APP_NAME)
 conf.set('APP_DOMAIN', APP_DOMAIN)
 conf.set('APP_ID', APP_ID)
-conf.set('APP_PATH', APP_PATH)
+conf.set('APP_RESOURCES_PATH', APP_RESOURCES_PATH)
 conf.set('APP_VERSION', APP_VERSION)
 
 dependencies = [
-  dependency('glib-2.0', version: '>=2.76.3', include_type: 'system'),
   dependency('gtk4', version: '>=4.10.4', include_type: 'system'),
 ]
 
@@ -66,6 +65,8 @@ subdir('include')
 subdir('po')
 
 sources = files(
+  'src/groovy-application-window.c',
+  'src/groovy-application.c',
   'src/main.c',
 )
 
@@ -97,6 +98,8 @@ if get_option('buildtype') == 'debug'
         'MESON_PROJECT_SOURCE_ROOT': meson.project_source_root(),
       },
       console: true,
+      build_always_stale: true,
+      build_by_default: true,
   )
 endif
 

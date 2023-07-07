@@ -6,3 +6,5 @@
         - https://docs.gtk.org/gtk4/running.html#profiling
 3. `GtkApplication` can automatically load the resources for menus and a shortcuts window
     - https://docs.gtk.org/gtk4/class.Application.html#automatic-resources
+4. Accessibility
+    - https://docs.gtk.org/gtk4/section-accessibility.html

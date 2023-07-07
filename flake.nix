@@ -38,7 +38,10 @@
         pkgs.cppcheck
         pkgs.cpplint
         pkgs.gnome.devhelp
+        pkgs.ltex-ls
         pkgs.shellcheck
+        pkgs.yamlfmt
+        pkgs.yamllint
       ];
       buildInputs = [
         pkgs.gtk4

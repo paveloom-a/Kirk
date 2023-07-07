@@ -18,12 +18,16 @@
 
 #pragma once
 
-#define APP_DOMAIN "@APP_DOMAIN@"
+#include <gtk/gtk.h>
 
-#define APP_ID "@APP_ID@"
+#define GROOVY_TYPE_APPLICATION groovy_application_get_type()
 
-#define APP_NAME "@APP_NAME@"
+G_DECLARE_FINAL_TYPE(
+    GroovyApplication,
+    groovy_application,
+    GROOVY,
+    APPLICATION,
+    GtkApplication
+)
 
-#define APP_RESOURCES_PATH "@APP_RESOURCES_PATH@"
-
-#define APP_VERSION "@APP_VERSION@"
+GroovyApplication *groovy_application_new();

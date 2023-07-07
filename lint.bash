@@ -12,13 +12,16 @@ appstream-util validate \
 clang-check --analyze "${SOURCES[@]}"
 
 cppcheck \
-  --enable=all \
   --check-level=exhaustive \
+  --enable=all \
   --inconclusive \
+  --library=gtk \
   --quiet \
   --suppress=missingIncludeSystem \
+  --suppress=unusedFunction \
   --verbose \
   -I "$MESON_CURRENT_BUILD_DIR" \
+  -I "$MESON_PROJECT_SOURCE_ROOT" \
   "${SOURCES[@]}"
 
 cpplint --verbose=0 --quiet "${SOURCES[@]}"
@@ -35,6 +38,3 @@ while read -r potfile; do
     echo "No such file: $MESON_PROJECT_SOURCE_ROOT/$potfile"
   fi
 done < "$MESON_PROJECT_SOURCE_ROOT/po/POTFILES"
-
-# Generate a pseudo-output
-touch "$MESON_CURRENT_BUILD_DIR/lint"

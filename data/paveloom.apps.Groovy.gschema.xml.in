@@ -21,5 +21,5 @@
 -->
 
 <schemalist gettext-domain="@APP_DOMAIN@">
-  <schema id="@APP_ID@" path="@APP_PATH@"></schema>
+  <schema id="@APP_ID@" path="@APP_RESOURCES_PATH@"></schema>
 </schemalist>

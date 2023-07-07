@@ -16,14 +16,26 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#pragma once
+using Gtk 4.0;
 
-#define APP_DOMAIN "@APP_DOMAIN@"
+template $GroovyApplicationWindow : ApplicationWindow {
+  title: "Groovy";
+  default-width: 200;
+  default-height: 200;
 
-#define APP_ID "@APP_ID@"
+  Box box {
+    halign: center;
+    valign: center;
+    orientation: vertical;
 
-#define APP_NAME "@APP_NAME@"
+    Button greet_button {
+      label: "Greet the world";
+      clicked => $greet_button_clicked();
+    }
 
-#define APP_RESOURCES_PATH "@APP_RESOURCES_PATH@"
-
-#define APP_VERSION "@APP_VERSION@"
+    Button quit_button {
+      label: "Quit";
+      clicked => $gtk_window_destroy() swapped;
+    }
+  }
+}

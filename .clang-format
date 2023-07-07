@@ -11,3 +11,4 @@ InsertBraces: true
 KeepEmptyLinesAtTheStartOfBlocks: false
 PenaltyReturnTypeOnItsOwnLine: 999
 SeparateDefinitionBlocks: Always
+SpacesBeforeTrailingComments: 2

@@ -16,24 +16,20 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using Gtk 4.0;
+#pragma once
 
-ApplicationWindow window {
-  title: "Groovy";
-  default-width: 200;
-  default-height: 200;
+#include "src/groovy-application.h"
 
-  Box box {
-    halign: center;
-    valign: center;
-    orientation: vertical;
+#include <gtk/gtk.h>
 
-    Button greet_button {
-      label: "Greet the world";
-    }
+#define GROOVY_TYPE_APPLICATION_WINDOW groovy_application_window_get_type()
 
-    Button quit_button {
-      label: "Quit";
-    }
-  }
-}
+G_DECLARE_FINAL_TYPE(
+    GroovyApplicationWindow,
+    groovy_application_window,
+    GROOVY,
+    APPLICATION_WINDOW,
+    GtkApplicationWindow
+)
+
+GroovyApplicationWindow *groovy_application_window_new(GroovyApplication *app);
