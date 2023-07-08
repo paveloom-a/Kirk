@@ -29,7 +29,7 @@ struct _GroovyApplication {
 
 G_DEFINE_TYPE(GroovyApplication, groovy_application, GTK_TYPE_APPLICATION)
 
-static void groovy_application_init(GroovyApplication *app) {}
+static void groovy_application_init(GroovyApplication *self) {}
 
 static void quit_activated(
     GSimpleAction *action,
@@ -39,40 +39,42 @@ static void quit_activated(
     g_application_quit(G_APPLICATION(user_data));
 }
 
-static GActionEntry app_action_entries[] = {
-    {.name = "quit", .activate = quit_activated},
-};
+static void groovy_application_startup(GApplication *g_app) {
+    GroovyApplication *self = GROOVY_APPLICATION(g_app);
 
-static void groovy_application_startup(GApplication *app) {
-    G_APPLICATION_CLASS(groovy_application_parent_class)->startup(app);
+    G_APPLICATION_CLASS(groovy_application_parent_class)->startup(g_app);
 
+    const GActionEntry entries[] = {
+        {.name = "quit", .activate = quit_activated},
+    };
     g_action_map_add_action_entries(
-        G_ACTION_MAP(app),
-        app_action_entries,
-        G_N_ELEMENTS(app_action_entries),
-        app
+        G_ACTION_MAP(self),
+        entries,
+        G_N_ELEMENTS(entries),
+        self
     );
 
-    const char *quit_accels[2] = {"<primary>q", NULL};
+    const char *quit_accels[] = {"<primary>q", NULL};
     gtk_application_set_accels_for_action(
-        GTK_APPLICATION(app),
+        GTK_APPLICATION(self),
         "app.quit",
         quit_accels
     );
 }
 
-static void groovy_application_activate(GApplication *app) {
-    GroovyApplicationWindow *win =
-        groovy_application_window_new(GROOVY_APPLICATION(app));
+static void groovy_application_activate(GApplication *g_app) {
+    GroovyApplication *self = GROOVY_APPLICATION(g_app);
+
+    GroovyApplicationWindow *win = groovy_application_window_new(self);
     gtk_window_present(GTK_WINDOW(win));
 }
 
-static void groovy_application_class_init(GroovyApplicationClass *app_class) {
-    G_APPLICATION_CLASS(app_class)->startup = groovy_application_startup;
-    G_APPLICATION_CLASS(app_class)->activate = groovy_application_activate;
+static void groovy_application_class_init(GroovyApplicationClass *klass) {
+    G_APPLICATION_CLASS(klass)->startup = groovy_application_startup;
+    G_APPLICATION_CLASS(klass)->activate = groovy_application_activate;
 }
 
-GroovyApplication *groovy_application_new(void) {
+GroovyApplication *groovy_application_new() {
     return g_object_new(
         GROOVY_TYPE_APPLICATION,
         "application-id",

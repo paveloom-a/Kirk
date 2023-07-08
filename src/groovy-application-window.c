@@ -19,7 +19,6 @@
 #include "src/groovy-application-window.h"
 
 #include "include/config.h"
-#include "src/groovy-application.h"
 
 #include <gtk/gtk.h>
 
@@ -36,8 +35,8 @@ G_DEFINE_TYPE(
     GTK_TYPE_APPLICATION_WINDOW
 )
 
-static void groovy_application_window_init(GroovyApplicationWindow *app_win) {
-    gtk_widget_init_template(GTK_WIDGET(app_win));
+static void groovy_application_window_init(GroovyApplicationWindow *self) {
+    gtk_widget_init_template(GTK_WIDGET(self));
 }
 
 static void greet_button_clicked(GtkButton *button, gpointer user_data) {
@@ -45,10 +44,10 @@ static void greet_button_clicked(GtkButton *button, gpointer user_data) {
 }
 
 static void groovy_application_window_dispose(GObject *gobject) {
-    GroovyApplicationWindow *app_win = GROOVY_APPLICATION_WINDOW(gobject);
+    GroovyApplicationWindow *self = GROOVY_APPLICATION_WINDOW(gobject);
 
     gtk_widget_dispose_template(
-        GTK_WIDGET(app_win),
+        GTK_WIDGET(self),
         GROOVY_TYPE_APPLICATION_WINDOW
     );
 
@@ -56,32 +55,32 @@ static void groovy_application_window_dispose(GObject *gobject) {
 }
 
 static void groovy_application_window_class_init(
-    GroovyApplicationWindowClass *app_win_class
+    GroovyApplicationWindowClass *klass
 ) {
     gtk_widget_class_set_template_from_resource(
-        GTK_WIDGET_CLASS(app_win_class),
+        GTK_WIDGET_CLASS(klass),
         APP_RESOURCES_PATH "gtk/groovy-application-window.ui"
     );
 
-    G_OBJECT_CLASS(app_win_class)->dispose = groovy_application_window_dispose;
+    G_OBJECT_CLASS(klass)->dispose = groovy_application_window_dispose;
 
     gtk_widget_class_bind_template_child(
-        GTK_WIDGET_CLASS(app_win_class),
+        GTK_WIDGET_CLASS(klass),
         GroovyApplicationWindow,
         greet_button
     );
     gtk_widget_class_bind_template_child(
-        GTK_WIDGET_CLASS(app_win_class),
+        GTK_WIDGET_CLASS(klass),
         GroovyApplicationWindow,
         quit_button
     );
 
     gtk_widget_class_bind_template_callback(
-        GTK_WIDGET_CLASS(app_win_class),
+        GTK_WIDGET_CLASS(klass),
         greet_button_clicked
     );
     gtk_widget_class_bind_template_callback(
-        GTK_WIDGET_CLASS(app_win_class),
+        GTK_WIDGET_CLASS(klass),
         gtk_window_destroy
     );
 }

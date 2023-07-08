@@ -22,6 +22,8 @@
 
 #include <gtk/gtk.h>
 
+G_BEGIN_DECLS
+
 #define GROOVY_TYPE_APPLICATION_WINDOW groovy_application_window_get_type()
 
 G_DECLARE_FINAL_TYPE(
@@ -33,3 +35,5 @@ G_DECLARE_FINAL_TYPE(
 )
 
 GroovyApplicationWindow *groovy_application_window_new(GroovyApplication *app);
+
+G_END_DECLS

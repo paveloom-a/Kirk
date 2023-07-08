@@ -20,6 +20,8 @@
 
 #include <gtk/gtk.h>
 
+G_BEGIN_DECLS
+
 #define GROOVY_TYPE_APPLICATION groovy_application_get_type()
 
 G_DECLARE_FINAL_TYPE(
@@ -31,3 +33,5 @@ G_DECLARE_FINAL_TYPE(
 )
 
 GroovyApplication *groovy_application_new();
+
+G_END_DECLS
