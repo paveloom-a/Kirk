@@ -18,24 +18,37 @@
 
 using Gtk 4.0;
 
-template $GroovyApplicationWindow : Gtk.ApplicationWindow {
-  title: "Groovy";
-  default-width: 200;
-  default-height: 200;
+using Adw 1;
 
-  Box box {
-    halign: center;
-    valign: center;
+template $GroovyApplicationWindow : Adw.ApplicationWindow {
+  title: "Groovy";
+  default-width: 210;
+  default-height: 210;
+  width-request: 210;
+  height-request: 210;
+
+  content: Box {
     orientation: vertical;
 
-    Button greet_button {
-      label: "Greet the world";
-      clicked => $greet_button_clicked();
-    }
+    Adw.HeaderBar {}
 
-    Button quit_button {
-      label: "Quit";
-      clicked => $gtk_window_destroy() swapped;
+    Box {
+      orientation: vertical;
+      halign: center;
+      valign: center;
+      vexpand: true;
+
+      Button greet_button {
+        styles ["suggested-action"]
+        label: "Greet the world";
+        clicked => $greet_button_clicked();
+      }
+
+      Button quit_button {
+        styles ["destructive-action"]
+        label: "Quit";
+        clicked => $gtk_window_destroy() swapped;
+      }
     }
-  }
+  };
 }

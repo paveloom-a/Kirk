@@ -20,10 +20,10 @@
 
 #include "include/config.h"
 
-#include <gtk/gtk.h>
+#include <adwaita.h>
 
 struct _GroovyApplicationWindow {
-    GtkApplicationWindow parent;
+    AdwApplicationWindow parent;
 
     GtkWidget greet_button;
     GtkWidget quit_button;
@@ -32,7 +32,7 @@ struct _GroovyApplicationWindow {
 G_DEFINE_TYPE(
     GroovyApplicationWindow,
     groovy_application_window,
-    GTK_TYPE_APPLICATION_WINDOW
+    ADW_TYPE_APPLICATION_WINDOW
 )
 
 static void groovy_application_window_init(GroovyApplicationWindow *self) {

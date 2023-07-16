@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include <gtk/gtk.h>
+#include <adwaita.h>
 
 G_BEGIN_DECLS
 
@@ -29,7 +29,7 @@ G_DECLARE_FINAL_TYPE(
     groovy_application,
     GROOVY,
     APPLICATION,
-    GtkApplication
+    AdwApplication
 )
 
 GroovyApplication *groovy_application_new();

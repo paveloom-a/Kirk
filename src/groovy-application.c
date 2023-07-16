@@ -21,13 +21,13 @@
 #include "include/config.h"
 #include "src/groovy-application-window.h"
 
-#include <gtk/gtk.h>
+#include <adwaita.h>
 
 struct _GroovyApplication {
-    GtkApplication parent;
+    AdwApplication parent;
 };
 
-G_DEFINE_TYPE(GroovyApplication, groovy_application, GTK_TYPE_APPLICATION)
+G_DEFINE_TYPE(GroovyApplication, groovy_application, ADW_TYPE_APPLICATION)
 
 static void groovy_application_init(GroovyApplication *self) {}
 

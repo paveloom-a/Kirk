@@ -20,7 +20,7 @@
 
 #include "src/groovy-application.h"
 
-#include <gtk/gtk.h>
+#include <adwaita.h>
 
 G_BEGIN_DECLS
 
@@ -31,7 +31,7 @@ G_DECLARE_FINAL_TYPE(
     groovy_application_window,
     GROOVY,
     APPLICATION_WINDOW,
-    GtkApplicationWindow
+    AdwApplicationWindow
 )
 
 GroovyApplicationWindow *groovy_application_window_new(GroovyApplication *app);

@@ -8,3 +8,6 @@
     - https://docs.gtk.org/gtk4/class.Application.html#automatic-resources
 4. Accessibility
     - https://docs.gtk.org/gtk4/section-accessibility.html
+5. Try to get more informative logging
+    - https://docs.gtk.org/glib/logging.html
+        - Proper reference is available via Devhelp

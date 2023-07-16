@@ -38,13 +38,14 @@
         pkgs.cppcheck
         pkgs.cpplint
         pkgs.gnome.devhelp
+        pkgs.libadwaita.devdoc
         pkgs.ltex-ls
         pkgs.shellcheck
         pkgs.yamlfmt
         pkgs.yamllint
       ];
       buildInputs = [
-        pkgs.gtk4
+        pkgs.libadwaita
       ];
     in {
       devShells.default = ccacheStdenv.mkDerivation {

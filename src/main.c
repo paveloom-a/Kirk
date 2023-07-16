@@ -18,7 +18,7 @@
 
 #include "src/groovy-application.h"
 
-#include <gtk/gtk.h>
+#include <adwaita.h>
 
 int main(int argc, char **argv) {
     return g_application_run(

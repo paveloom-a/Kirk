@@ -53,7 +53,7 @@ conf.set('APP_RESOURCES_PATH', APP_RESOURCES_PATH)
 conf.set('APP_VERSION', APP_VERSION)
 
 dependencies = [
-  dependency('gtk4', version: '>=4.10.4', include_type: 'system'),
+  dependency('libadwaita-1', version: '>=1.3.3', include_type: 'system'),
 ]
 
 cc = meson.get_compiler('c')
