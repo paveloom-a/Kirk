@@ -27,8 +27,12 @@
    _gtk_css_corner_value_get_y: assertion 'corner->class == &GTK_CSS_VALUE_CORNER' failed
    ```
 
-   This was fixed upstream: https://gitlab.gnome.org/GNOME/gtk/-/issues/5892
+   Fixed upstream: https://gitlab.gnome.org/GNOME/gtk/-/issues/5892
 
 2. Preferences leak memory after closing the window or after using the search.
-   The backtrace only shows that the memory came from the template initialization.
-   No clue why it wasn't freed, though.
+
+   Reported here: https://gitlab.gnome.org/GNOME/libadwaita/-/issues/704
+
+3. Transient dialogs shift on subsequent view calls.
+
+   Reported here: https://gitlab.gnome.org/GNOME/gtk/-/issues/4636
