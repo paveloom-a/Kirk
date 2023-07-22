@@ -43,46 +43,42 @@ static void greet_button_clicked(GtkButton *button, gpointer user_data) {
     g_print("Hello, world!\n");
 }
 
-static void groovy_application_window_dispose(GObject *gobject) {
-    GroovyApplicationWindow *self = GROOVY_APPLICATION_WINDOW(gobject);
+static void groovy_application_window_dispose(GObject *object) {
+    GroovyApplicationWindow *self = GROOVY_APPLICATION_WINDOW(object);
 
     gtk_widget_dispose_template(
         GTK_WIDGET(self),
         GROOVY_TYPE_APPLICATION_WINDOW
     );
 
-    G_OBJECT_CLASS(groovy_application_window_parent_class)->dispose(gobject);
+    G_OBJECT_CLASS(groovy_application_window_parent_class)->dispose(object);
 }
 
 static void groovy_application_window_class_init(
     GroovyApplicationWindowClass *klass
 ) {
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+
     gtk_widget_class_set_template_from_resource(
-        GTK_WIDGET_CLASS(klass),
+        widget_class,
         APP_RESOURCES_PATH "gtk/groovy-application-window.ui"
     );
 
     G_OBJECT_CLASS(klass)->dispose = groovy_application_window_dispose;
 
     gtk_widget_class_bind_template_child(
-        GTK_WIDGET_CLASS(klass),
+        widget_class,
         GroovyApplicationWindow,
         greet_button
     );
     gtk_widget_class_bind_template_child(
-        GTK_WIDGET_CLASS(klass),
+        widget_class,
         GroovyApplicationWindow,
         quit_button
     );
 
-    gtk_widget_class_bind_template_callback(
-        GTK_WIDGET_CLASS(klass),
-        greet_button_clicked
-    );
-    gtk_widget_class_bind_template_callback(
-        GTK_WIDGET_CLASS(klass),
-        gtk_window_destroy
-    );
+    gtk_widget_class_bind_template_callback(widget_class, greet_button_clicked);
+    gtk_widget_class_bind_template_callback(widget_class, gtk_window_destroy);
 }
 
 GroovyApplicationWindow *groovy_application_window_new(GroovyApplication *app) {

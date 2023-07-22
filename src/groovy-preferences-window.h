@@ -16,33 +16,27 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "include/config.h"
-#include "src/groovy-application.h"
+#pragma once
+
+#include "src/groovy-application-window.h"
 
 #include <adwaita.h>
 
-// Necessary for debug builds when the GSettings schema is not installed yet
-static void try_override_schema_dir() {
-    g_autoptr(GError) error = NULL;
-    g_autofree gchar *process_cwd_path =
-        g_file_read_link("/proc/self/cwd", &error);
+G_BEGIN_DECLS
 
-    if (error) {
-        g_error("Error reading link: %s", error->message);
-    }
+#define GROOVY_TYPE_PREFERENCES_WINDOW groovy_preferences_window_get_type()
 
-    g_autofree gchar *gsettings_schema_dir =
-        g_build_filename(process_cwd_path, "data", NULL);
-    g_setenv("GSETTINGS_SCHEMA_DIR", gsettings_schema_dir, FALSE);
-}
+G_DECLARE_FINAL_TYPE(
+    GroovyPreferencesWindow,
+    groovy_preferences_window,
+    GROOVY,
+    PREFERENCES_WINDOW,
+    AdwPreferencesWindow
+)
 
-int main(int argc, char **argv) {
-#ifdef APP_DEBUG_MODE_ON
-    try_override_schema_dir();
-#endif
-    return g_application_run(
-        G_APPLICATION(groovy_application_new()),
-        argc,
-        argv
-    );
-}
+GroovyPreferencesWindow *groovy_preferences_window_new(
+    GroovyApplication *app,
+    GroovyApplicationWindow *app_win
+);
+
+G_END_DECLS

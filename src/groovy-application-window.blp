@@ -22,15 +22,23 @@ using Adw 1;
 
 template $GroovyApplicationWindow : Adw.ApplicationWindow {
   title: "Groovy";
-  default-width: 210;
-  default-height: 210;
-  width-request: 210;
-  height-request: 210;
+  default-width: 250;
+  default-height: 250;
+  width-request: 250;
+  height-request: 250;
 
   content: Box {
     orientation: vertical;
 
-    Adw.HeaderBar {}
+    Adw.HeaderBar {
+      [end]
+      MenuButton {
+        icon-name: "open-menu-symbolic";
+        tooltip-text: _("Main Menu");
+        primary: true;
+        menu-model: menubar;
+      }
+    }
 
     Box {
       orientation: vertical;
@@ -40,15 +48,34 @@ template $GroovyApplicationWindow : Adw.ApplicationWindow {
 
       Button greet_button {
         styles ["suggested-action"]
-        label: "Greet the world";
+        label: _("Greet the world");
         clicked => $greet_button_clicked();
       }
 
       Button quit_button {
         styles ["destructive-action"]
-        label: "Quit";
+        label: _("Quit");
         clicked => $gtk_window_destroy() swapped;
       }
     }
   };
+}
+
+menu menubar {
+  section {
+    item {
+      label: _("Preferences");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("Keyboard Shortcuts");
+      action: "app.shortcuts";
+    }
+
+    item {
+      label: _("About App");
+      action: "app.about";
+    }
+  }
 }

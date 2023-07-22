@@ -28,8 +28,10 @@
         pkgs.meson
         pkgs.ninja
         pkgs.pkg-config
+        pkgs.wrapGAppsHook4
       ];
       nativeBuildInputsDebug = [
+        pkgs.alejandra
         pkgs.appstream-glib
         pkgs.bashInteractive
         pkgs.ccache
@@ -40,7 +42,9 @@
         pkgs.gnome.devhelp
         pkgs.libadwaita.devdoc
         pkgs.ltex-ls
+        pkgs.nil
         pkgs.shellcheck
+        pkgs.valgrind
         pkgs.yamlfmt
         pkgs.yamllint
       ];
@@ -56,7 +60,7 @@
         nativeBuildInputs = nativeBuildInputsRelease ++ nativeBuildInputsDebug;
 
         env = {
-          ASAN_OPTIONS = "abort_on_error=1:halt_on_error=1";
+          ASAN_OPTIONS = "abort_on_error=1:halt_on_error=1:fast_unwind_on_malloc=1";
           LSAN_OPTIONS = "print_suppressions=0:suppressions=../suppr.txt";
           UBSAN_OPTIONS = "abort_on_error=1:halt_on_error=1";
           XDG_DATA_DIRS = pkgs.lib.makeSearchPathOutput "devdoc" "share" [

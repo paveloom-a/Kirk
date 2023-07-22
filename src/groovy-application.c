@@ -20,6 +20,7 @@
 
 #include "include/config.h"
 #include "src/groovy-application-window.h"
+#include "src/groovy-preferences-window.h"
 
 #include <adwaita.h>
 
@@ -31,6 +32,18 @@ G_DEFINE_TYPE(GroovyApplication, groovy_application, ADW_TYPE_APPLICATION)
 
 static void groovy_application_init(GroovyApplication *self) {}
 
+static void preferences_activated(
+    GSimpleAction *action,
+    GVariant *parameter,
+    gpointer user_data
+) {
+    GroovyApplication *self = GROOVY_APPLICATION(user_data);
+    GtkWindow *win = gtk_application_get_active_window(GTK_APPLICATION(self));
+    GroovyPreferencesWindow *prefs =
+        groovy_preferences_window_new(self, GROOVY_APPLICATION_WINDOW(win));
+    gtk_window_present(GTK_WINDOW(prefs));
+}
+
 static void quit_activated(
     GSimpleAction *action,
     GVariant *parameter,
@@ -39,12 +52,13 @@ static void quit_activated(
     g_application_quit(G_APPLICATION(user_data));
 }
 
-static void groovy_application_startup(GApplication *g_app) {
-    GroovyApplication *self = GROOVY_APPLICATION(g_app);
+static void groovy_application_startup(GApplication *app) {
+    GroovyApplication *self = GROOVY_APPLICATION(app);
 
-    G_APPLICATION_CLASS(groovy_application_parent_class)->startup(g_app);
+    G_APPLICATION_CLASS(groovy_application_parent_class)->startup(app);
 
     const GActionEntry entries[] = {
+        {.name = "preferences", .activate = preferences_activated},
         {.name = "quit", .activate = quit_activated},
     };
     g_action_map_add_action_entries(
@@ -52,6 +66,13 @@ static void groovy_application_startup(GApplication *g_app) {
         entries,
         G_N_ELEMENTS(entries),
         self
+    );
+
+    const char *preferences_accels[] = {"<primary>comma", NULL};
+    gtk_application_set_accels_for_action(
+        GTK_APPLICATION(self),
+        "app.preferences",
+        preferences_accels
     );
 
     const char *quit_accels[] = {"<primary>q", NULL};
@@ -62,8 +83,8 @@ static void groovy_application_startup(GApplication *g_app) {
     );
 }
 
-static void groovy_application_activate(GApplication *g_app) {
-    GroovyApplication *self = GROOVY_APPLICATION(g_app);
+static void groovy_application_activate(GApplication *app) {
+    GroovyApplication *self = GROOVY_APPLICATION(app);
 
     GroovyApplicationWindow *win = groovy_application_window_new(self);
     gtk_window_present(GTK_WINDOW(win));

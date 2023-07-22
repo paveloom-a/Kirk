@@ -21,6 +21,7 @@ APP_DOMAIN = 'groovy'
 APP_ID = 'paveloom.apps.' + APP_NAME
 APP_RESOURCES_PATH = '/paveloom/apps/' + APP_NAME + '/'
 APP_VERSION = meson.project_version()
+APP_DEBUG_MODE_ON = get_option('buildtype') == 'debug'
 
 if get_option('buildtype') == 'release'
   cc_flags = []
@@ -31,6 +32,7 @@ if get_option('buildtype') == 'release'
   ]
 elif get_option('buildtype') == 'debug'
   cc_flags = [
+    '-ferror-limit=500',
     '-g3',
     '-U_FORTIFY_SOURCE',
     '-Wconversion',
@@ -51,6 +53,7 @@ conf.set('APP_DOMAIN', APP_DOMAIN)
 conf.set('APP_ID', APP_ID)
 conf.set('APP_RESOURCES_PATH', APP_RESOURCES_PATH)
 conf.set('APP_VERSION', APP_VERSION)
+conf.set10('APP_DEBUG_MODE_ON', APP_DEBUG_MODE_ON)
 
 dependencies = [
   dependency('libadwaita-1', version: '>=1.3.3', include_type: 'system'),
@@ -67,6 +70,7 @@ subdir('po')
 sources = files(
   'src/groovy-application-window.c',
   'src/groovy-application.c',
+  'src/groovy-preferences-window.c',
   'src/main.c',
 )
 
@@ -99,7 +103,6 @@ if get_option('buildtype') == 'debug'
       },
       console: true,
       build_always_stale: true,
-      build_by_default: true,
   )
 endif
 

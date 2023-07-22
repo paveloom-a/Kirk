@@ -1,5 +1,6 @@
 blp_file_names = [
   'groovy-application-window.blp',
+  'groovy-preferences-window.blp',
 ]
 
 blp_files = []
