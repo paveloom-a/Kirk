@@ -21,35 +21,35 @@
       ccacheStdenv = pkgs.ccacheStdenv.override {
         stdenv = llvmStdenv;
       };
-      nativeBuildInputsRelease = [
-        pkgs.blueprint-compiler
-        pkgs.desktop-file-utils
-        pkgs.libxml2
-        pkgs.meson
-        pkgs.ninja
-        pkgs.pkg-config
-        pkgs.wrapGAppsHook4
+      nativeBuildInputsRelease = with pkgs; [
+        blueprint-compiler
+        desktop-file-utils
+        libxml2
+        meson
+        ninja
+        pkg-config
+        wrapGAppsHook4
       ];
-      nativeBuildInputsDebug = [
-        pkgs.alejandra
-        pkgs.appstream-glib
-        pkgs.bashInteractive
-        pkgs.ccache
-        pkgs.clang-analyzer
-        pkgs.clang-tools_16
-        pkgs.cppcheck
-        pkgs.cpplint
-        pkgs.gnome.devhelp
-        pkgs.libadwaita.devdoc
-        pkgs.ltex-ls
-        pkgs.nil
-        pkgs.shellcheck
-        pkgs.valgrind
-        pkgs.yamlfmt
-        pkgs.yamllint
+      nativeBuildInputsDebug = with pkgs; [
+        alejandra
+        appstream-glib
+        bashInteractive
+        ccache
+        clang-analyzer
+        clang-tools_16
+        cppcheck
+        cpplint
+        gnome.devhelp
+        libadwaita.devdoc
+        ltex-ls
+        nil
+        shellcheck
+        valgrind
+        yamlfmt
+        yamllint
       ];
-      buildInputs = [
-        pkgs.libadwaita
+      buildInputs = with pkgs; [
+        libadwaita
       ];
     in {
       devShells.default = ccacheStdenv.mkDerivation {
