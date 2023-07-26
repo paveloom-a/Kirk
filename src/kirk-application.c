@@ -1,4 +1,4 @@
-// Groovy
+// Kirk
 // Copyright (C) 2023  Pavel Sobolev <paveloom@riseup.net>
 //
 // This program is free software: you can redistribute it and/or modify
@@ -16,31 +16,31 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "src/groovy-application.h"
+#include "src/kirk-application.h"
 
 #include "include/config.h"
-#include "src/groovy-application-window.h"
-#include "src/groovy-preferences-window.h"
+#include "src/kirk-application-window.h"
+#include "src/kirk-preferences-window.h"
 
 #include <adwaita.h>
 
-struct _GroovyApplication {
+struct _KirkApplication {
     AdwApplication parent;
 };
 
-G_DEFINE_TYPE(GroovyApplication, groovy_application, ADW_TYPE_APPLICATION)
+G_DEFINE_TYPE(KirkApplication, kirk_application, ADW_TYPE_APPLICATION)
 
-static void groovy_application_init(GroovyApplication *self) {}
+static void kirk_application_init(KirkApplication *self) {}
 
 static void preferences_activated(
     GSimpleAction *action,
     GVariant *parameter,
     gpointer user_data
 ) {
-    GroovyApplication *self = GROOVY_APPLICATION(user_data);
+    KirkApplication *self = KIRK_APPLICATION(user_data);
     GtkWindow *win = gtk_application_get_active_window(GTK_APPLICATION(self));
-    GroovyPreferencesWindow *prefs =
-        groovy_preferences_window_new(self, GROOVY_APPLICATION_WINDOW(win));
+    KirkPreferencesWindow *prefs =
+        kirk_preferences_window_new(self, KIRK_APPLICATION_WINDOW(win));
     gtk_window_present(GTK_WINDOW(prefs));
 }
 
@@ -52,10 +52,10 @@ static void quit_activated(
     g_application_quit(G_APPLICATION(user_data));
 }
 
-static void groovy_application_startup(GApplication *app) {
-    GroovyApplication *self = GROOVY_APPLICATION(app);
+static void kirk_application_startup(GApplication *app) {
+    KirkApplication *self = KIRK_APPLICATION(app);
 
-    G_APPLICATION_CLASS(groovy_application_parent_class)->startup(app);
+    G_APPLICATION_CLASS(kirk_application_parent_class)->startup(app);
 
     const GActionEntry entries[] = {
         {.name = "preferences", .activate = preferences_activated},
@@ -83,21 +83,21 @@ static void groovy_application_startup(GApplication *app) {
     );
 }
 
-static void groovy_application_activate(GApplication *app) {
-    GroovyApplication *self = GROOVY_APPLICATION(app);
+static void kirk_application_activate(GApplication *app) {
+    KirkApplication *self = KIRK_APPLICATION(app);
 
-    GroovyApplicationWindow *win = groovy_application_window_new(self);
+    KirkApplicationWindow *win = kirk_application_window_new(self);
     gtk_window_present(GTK_WINDOW(win));
 }
 
-static void groovy_application_class_init(GroovyApplicationClass *klass) {
-    G_APPLICATION_CLASS(klass)->startup = groovy_application_startup;
-    G_APPLICATION_CLASS(klass)->activate = groovy_application_activate;
+static void kirk_application_class_init(KirkApplicationClass *klass) {
+    G_APPLICATION_CLASS(klass)->startup = kirk_application_startup;
+    G_APPLICATION_CLASS(klass)->activate = kirk_application_activate;
 }
 
-GroovyApplication *groovy_application_new() {
+KirkApplication *kirk_application_new() {
     return g_object_new(
-        GROOVY_TYPE_APPLICATION,
+        KIRK_TYPE_APPLICATION,
         "application-id",
         APP_ID,
         "flags",

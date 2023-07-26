@@ -1,4 +1,4 @@
-// Groovy
+// Kirk
 // Copyright (C) 2023  Pavel Sobolev <paveloom@riseup.net>
 //
 // This program is free software: you can redistribute it and/or modify
@@ -16,63 +16,59 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "src/groovy-preferences-window.h"
+#include "src/kirk-preferences-window.h"
 
 #include "include/config.h"
 
 #include <adwaita.h>
 
-struct _GroovyPreferencesWindow {
+struct _KirkPreferencesWindow {
     AdwPreferencesWindow parent;
 
     GSettings *settings;
 };
 
 G_DEFINE_TYPE(
-    GroovyPreferencesWindow,
-    groovy_preferences_window,
+    KirkPreferencesWindow,
+    kirk_preferences_window,
     ADW_TYPE_PREFERENCES_WINDOW
 )
 
-static void groovy_preferences_window_init(GroovyPreferencesWindow *self) {
+static void kirk_preferences_window_init(KirkPreferencesWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     self->settings = g_settings_new(APP_ID);
 }
 
-static void groovy_preferences_window_dispose(GObject *object) {
-    GroovyPreferencesWindow *self = GROOVY_PREFERENCES_WINDOW(object);
+static void kirk_preferences_window_dispose(GObject *object) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(object);
 
     g_clear_object(&self->settings);
 
-    gtk_widget_dispose_template(
-        GTK_WIDGET(self),
-        GROOVY_TYPE_PREFERENCES_WINDOW
-    );
+    gtk_widget_dispose_template(GTK_WIDGET(self), KIRK_TYPE_PREFERENCES_WINDOW);
 
-    G_OBJECT_CLASS(groovy_preferences_window_parent_class)->dispose(object);
+    G_OBJECT_CLASS(kirk_preferences_window_parent_class)->dispose(object);
 }
 
-static void groovy_preferences_window_class_init(
-    GroovyPreferencesWindowClass *klass
+static void kirk_preferences_window_class_init(KirkPreferencesWindowClass *klass
 ) {
     GObjectClass *object_class = G_OBJECT_CLASS(klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
     gtk_widget_class_set_template_from_resource(
         widget_class,
-        APP_RESOURCES_PATH "gtk/groovy-preferences-window.ui"
+        APP_RESOURCES_PATH "gtk/kirk-preferences-window.ui"
     );
 
-    object_class->dispose = groovy_preferences_window_dispose;
+    object_class->dispose = kirk_preferences_window_dispose;
 }
 
-GroovyPreferencesWindow *groovy_preferences_window_new(
-    GroovyApplication *app,
-    GroovyApplicationWindow *app_win
+KirkPreferencesWindow *kirk_preferences_window_new(
+    KirkApplication *app,
+    KirkApplicationWindow *app_win
 ) {
     return g_object_new(
-        GROOVY_TYPE_PREFERENCES_WINDOW,
+        KIRK_TYPE_PREFERENCES_WINDOW,
         "application",
         app,
         "transient-for",

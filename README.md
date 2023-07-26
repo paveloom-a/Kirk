@@ -3,9 +3,9 @@
 #### Mirrors
 
 Repository:
-- [Codeberg](https://codeberg.org/paveloom-a/Groovy)
-- [GitHub](https://github.com/paveloom-a/Groovy)
-- [GitLab](https://gitlab.com/paveloom-g/apps/Groovy)
+- [Codeberg](https://codeberg.org/paveloom-a/Kirk)
+- [GitHub](https://github.com/paveloom-a/Kirk)
+- [GitLab](https://gitlab.com/paveloom-g/apps/Kirk)
 
 #### Develop
 
@@ -22,7 +22,7 @@ Then, to build in the `debug` mode, run
 ```bash
 meson debug
 cd debug
-ninja && ./groovy
+ninja && ./kirk
 ```
 
 To build in the `release` mode, run
@@ -30,5 +30,5 @@ To build in the `release` mode, run
 ```bash
 meson --buildtype=release release
 cd release
-ninja && ./groovy
+ninja && ./kirk
 ```

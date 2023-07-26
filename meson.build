@@ -1,5 +1,5 @@
 project(
-  'groovy',
+  'kirk',
   'c',
   version: run_command(
     'grep', '-Po', '(?<=version = ").*(?=")', 'flake.nix',
@@ -16,8 +16,8 @@ project(
 gnome = import('gnome')
 i18n = import('i18n')
 
-APP_NAME = 'Groovy'
-APP_DOMAIN = 'groovy'
+APP_NAME = 'Kirk'
+APP_DOMAIN = 'kirk'
 APP_ID = 'paveloom.apps.' + APP_NAME
 APP_RESOURCES_PATH = '/paveloom/apps/' + APP_NAME + '/'
 APP_VERSION = meson.project_version()
@@ -68,9 +68,9 @@ subdir('include')
 subdir('po')
 
 sources = files(
-  'src/groovy-application-window.c',
-  'src/groovy-application.c',
-  'src/groovy-preferences-window.c',
+  'src/kirk-application-window.c',
+  'src/kirk-application.c',
+  'src/kirk-preferences-window.c',
   'src/main.c',
 )
 

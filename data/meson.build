@@ -1,6 +1,6 @@
 desktop_file = i18n.merge_file(
   input: configure_file(
-    input: files('paveloom.apps.Groovy.desktop.in.in'),
+    input: files('paveloom.apps.Kirk.desktop.in.in'),
     output: f'@APP_ID@.desktop.in',
     configuration: conf,
   ),
@@ -14,7 +14,7 @@ desktop_file = i18n.merge_file(
 appstream_file = i18n.merge_file(
   input:
   configure_file(
-    input: files('paveloom.apps.Groovy.metainfo.xml.in.in'),
+    input: files('paveloom.apps.Kirk.metainfo.xml.in.in'),
     output: f'@APP_ID@.metainfo.xml.in',
     configuration: conf,
   ),
@@ -25,7 +25,7 @@ appstream_file = i18n.merge_file(
 )
 
 gsettings_schema = configure_file(
-  input: files('paveloom.apps.Groovy.gschema.xml.in'),
+  input: files('paveloom.apps.Kirk.gschema.xml.in'),
   output: f'@APP_ID@.gschema.xml',
   configuration: conf,
 )

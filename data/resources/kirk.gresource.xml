@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-  Groovy
+  Kirk
   Copyright (C) 2023  Pavel Sobolev <paveloom@riseup.net>
 
   This program is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 -->
 
 <gresources>
-  <gresource prefix="/paveloom/apps/Groovy">
-    <file preprocess="xml-stripblanks" compressed="true">gtk/groovy-application-window.ui</file>
-    <file preprocess="xml-stripblanks" compressed="true">gtk/groovy-preferences-window.ui</file>
+  <gresource prefix="/paveloom/apps/Kirk">
+    <file preprocess="xml-stripblanks" compressed="true">gtk/kirk-application-window.ui</file>
+    <file preprocess="xml-stripblanks" compressed="true">gtk/kirk-preferences-window.ui</file>
   </gresource>
 </gresources>

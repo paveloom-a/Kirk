@@ -1,5 +1,5 @@
 {
-  description = "Groovy";
+  description = "WIP";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -12,6 +12,7 @@
       pkgs = import nixpkgs {
         inherit system;
       };
+
       llvm = pkgs.llvmPackages_16;
       llvmStdenv = llvm.stdenv.override {
         cc = llvm.stdenv.cc.override {
@@ -21,6 +22,7 @@
       ccacheStdenv = pkgs.ccacheStdenv.override {
         stdenv = llvmStdenv;
       };
+
       nativeBuildInputsRelease = with pkgs; [
         blueprint-compiler
         desktop-file-utils
@@ -30,6 +32,7 @@
         pkg-config
         wrapGAppsHook4
       ];
+
       nativeBuildInputsDebug = with pkgs; [
         alejandra
         appstream-glib
@@ -48,12 +51,13 @@
         yamlfmt
         yamllint
       ];
+
       buildInputs = with pkgs; [
         libadwaita
       ];
     in {
       devShells.default = ccacheStdenv.mkDerivation {
-        name = "groovy-shell";
+        name = "kirk-env";
 
         inherit buildInputs;
 
@@ -69,8 +73,9 @@
           ];
         };
       };
+
       packages.default = llvmStdenv.mkDerivation {
-        pname = "groovy";
+        pname = "kirk";
         version = "0.1.0";
 
         src = ./.;

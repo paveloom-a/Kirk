@@ -1,4 +1,4 @@
-// Groovy
+// Kirk
 // Copyright (C) 2023  Pavel Sobolev <paveloom@riseup.net>
 //
 // This program is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include "include/config.h"
-#include "src/groovy-application.h"
+#include "src/kirk-application.h"
 
 #include <adwaita.h>
 
@@ -27,8 +27,8 @@ static void try_override_schema_dir() {
     g_autofree gchar *process_cwd_path =
         g_file_read_link("/proc/self/cwd", &error);
 
-    if (error) {
-        g_error("Error reading link: %s", error->message);
+    if (error != NULL) {
+        g_error("Error reading the link: %s", error->message);
     }
 
     g_autofree gchar *gsettings_schema_dir =
@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     try_override_schema_dir();
 #endif
     return g_application_run(
-        G_APPLICATION(groovy_application_new()),
+        G_APPLICATION(kirk_application_new()),
         argc,
         argv
     );

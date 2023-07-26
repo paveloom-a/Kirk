@@ -1,4 +1,4 @@
-// Groovy
+// Kirk
 // Copyright (C) 2023  Pavel Sobolev <paveloom@riseup.net>
 //
 // This program is free software: you can redistribute it and/or modify
@@ -18,25 +18,22 @@
 
 #pragma once
 
-#include "src/groovy-application-window.h"
+#include "src/kirk-application.h"
 
 #include <adwaita.h>
 
 G_BEGIN_DECLS
 
-#define GROOVY_TYPE_PREFERENCES_WINDOW groovy_preferences_window_get_type()
+#define KIRK_TYPE_APPLICATION_WINDOW kirk_application_window_get_type()
 
 G_DECLARE_FINAL_TYPE(
-    GroovyPreferencesWindow,
-    groovy_preferences_window,
-    GROOVY,
-    PREFERENCES_WINDOW,
-    AdwPreferencesWindow
+    KirkApplicationWindow,
+    kirk_application_window,
+    KIRK,
+    APPLICATION_WINDOW,
+    AdwApplicationWindow
 )
 
-GroovyPreferencesWindow *groovy_preferences_window_new(
-    GroovyApplication *app,
-    GroovyApplicationWindow *app_win
-);
+KirkApplicationWindow *kirk_application_window_new(KirkApplication *app);
 
 G_END_DECLS

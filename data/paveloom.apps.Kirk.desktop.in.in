@@ -1,4 +1,4 @@
-# Groovy
+# Kirk
 # Copyright (C) 2023  Pavel Sobolev <paveloom@riseup.net>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 [Desktop Entry]
 Name=@APP_NAME@
 Comment=WIP
-Exec=groovy
+Exec=kirk
 Icon=@APP_ID@
 Terminal=false
 Type=Application

@@ -1,6 +1,6 @@
 blp_file_names = [
-  'groovy-application-window.blp',
-  'groovy-preferences-window.blp',
+  'kirk-application-window.blp',
+  'kirk-preferences-window.blp',
 ]
 
 blp_files = []

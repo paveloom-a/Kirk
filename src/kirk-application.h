@@ -1,4 +1,4 @@
-// Groovy
+// Kirk
 // Copyright (C) 2023  Pavel Sobolev <paveloom@riseup.net>
 //
 // This program is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@
 
 G_BEGIN_DECLS
 
-#define GROOVY_TYPE_APPLICATION groovy_application_get_type()
+#define KIRK_TYPE_APPLICATION kirk_application_get_type()
 
 G_DECLARE_FINAL_TYPE(
-    GroovyApplication,
-    groovy_application,
-    GROOVY,
+    KirkApplication,
+    kirk_application,
+    KIRK,
     APPLICATION,
     AdwApplication
 )
 
-GroovyApplication *groovy_application_new();
+KirkApplication *kirk_application_new();
 
 G_END_DECLS
