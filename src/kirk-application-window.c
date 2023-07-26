@@ -25,6 +25,8 @@
 struct _KirkApplicationWindow {
     AdwApplicationWindow parent;
 
+    GSettings *settings;
+
     GtkWidget greet_button;
     GtkWidget quit_button;
 };
@@ -37,6 +39,30 @@ G_DEFINE_TYPE(
 
 static void kirk_application_window_init(KirkApplicationWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
+
+    self->settings = g_settings_new(APP_ID);
+
+    g_settings_bind(
+        self->settings,
+        "window-width",
+        G_OBJECT(self),
+        "default-width",
+        G_SETTINGS_BIND_DEFAULT
+    );
+    g_settings_bind(
+        self->settings,
+        "window-height",
+        G_OBJECT(self),
+        "default-height",
+        G_SETTINGS_BIND_DEFAULT
+    );
+    g_settings_bind(
+        self->settings,
+        "window-maximized",
+        G_OBJECT(self),
+        "maximized",
+        G_SETTINGS_BIND_DEFAULT
+    );
 }
 
 static void greet_button_clicked(GtkButton *button, gpointer user_data) {
@@ -46,15 +72,14 @@ static void greet_button_clicked(GtkButton *button, gpointer user_data) {
 static void kirk_application_window_dispose(GObject *object) {
     KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(object);
 
-    gtk_widget_dispose_template(
-        GTK_WIDGET(self),
-        KIRK_TYPE_APPLICATION_WINDOW
-    );
+    g_clear_object(&self->settings);
+
+    gtk_widget_dispose_template(GTK_WIDGET(self), KIRK_TYPE_APPLICATION_WINDOW);
 
     G_OBJECT_CLASS(kirk_application_window_parent_class)->dispose(object);
 }
 
-static void kirk_application_window_class_init(
+static void kirk_application_window_class_init(  //
     KirkApplicationWindowClass *klass
 ) {
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
@@ -82,10 +107,5 @@ static void kirk_application_window_class_init(
 }
 
 KirkApplicationWindow *kirk_application_window_new(KirkApplication *app) {
-    return g_object_new(
-        KIRK_TYPE_APPLICATION_WINDOW,
-        "application",
-        app,
-        NULL
-    );
+    return g_object_new(KIRK_TYPE_APPLICATION_WINDOW, "application", app, NULL);
 }

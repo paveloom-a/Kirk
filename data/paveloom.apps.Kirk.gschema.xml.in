@@ -21,5 +21,15 @@
 -->
 
 <schemalist gettext-domain="@APP_DOMAIN@">
-  <schema id="@APP_ID@" path="@APP_RESOURCES_PATH@"></schema>
+  <schema id="@APP_ID@" path="@APP_RESOURCES_PATH@">
+    <key name="window-height" type="i">
+      <default>250</default>
+    </key>
+    <key name="window-maximized" type="b">
+      <default>false</default>
+    </key>
+    <key name="window-width" type="i">
+      <default>250</default>
+    </key>
+  </schema>
 </schemalist>
