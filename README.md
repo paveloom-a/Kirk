@@ -32,3 +32,11 @@ meson --buildtype=release release
 cd release
 ninja && ./kirk
 ```
+
+Alternatively, you can build or run the Nix package via `nix build` and `nix run`, respectively.
+
+You might also want to create a symlink of the `compile_commands.json` file from the `debug` mode build directory in the root of the repository, so that the tooling can see it:
+
+```bash
+ln -s debug/compile_commands.json
+```
