@@ -64,9 +64,8 @@
         nativeBuildInputs = nativeBuildInputsRelease ++ nativeBuildInputsDebug;
 
         env = {
-          ASAN_OPTIONS = "abort_on_error=1:halt_on_error=1:fast_unwind_on_malloc=1";
-          LSAN_OPTIONS = "print_suppressions=0:suppressions=../suppr.txt";
-          UBSAN_OPTIONS = "abort_on_error=1:halt_on_error=1";
+          GLIB_SUPP_FILE = "${pkgs.glib.dev}/share/glib-2.0/valgrind/glib.supp";
+          GTK_SUPP_FILE = "${pkgs.gtk4}/share/gtk-4.0/valgrind/gtk.supp";
           XDG_DATA_DIRS = pkgs.lib.makeSearchPathOutput "devdoc" "share" [
             pkgs.glib
             pkgs.gtk4

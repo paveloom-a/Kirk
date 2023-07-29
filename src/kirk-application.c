@@ -26,25 +26,29 @@
 
 struct _KirkApplication {
     AdwApplication parent;
+
+    GSettings *settings;
 };
 
 G_DEFINE_TYPE(KirkApplication, kirk_application, ADW_TYPE_APPLICATION)
 
-static void kirk_application_init(KirkApplication *self) {}
+static void kirk_application_init(KirkApplication *self) {
+    self->settings = g_settings_new(APP_ID);
+}
 
-static void preferences_activated(
+static void open_preferences(
     GSimpleAction *action,
     GVariant *parameter,
     gpointer user_data
 ) {
     KirkApplication *self = KIRK_APPLICATION(user_data);
     GtkWindow *win = gtk_application_get_active_window(GTK_APPLICATION(self));
-    KirkPreferencesWindow *prefs =
+    KirkPreferencesWindow *prefs_win =
         kirk_preferences_window_new(self, KIRK_APPLICATION_WINDOW(win));
-    gtk_window_present(GTK_WINDOW(prefs));
+    gtk_window_present(GTK_WINDOW(prefs_win));
 }
 
-static void quit_activated(
+static void quit_application(
     GSimpleAction *action,
     GVariant *parameter,
     gpointer user_data
@@ -58,8 +62,8 @@ static void kirk_application_startup(GApplication *app) {
     G_APPLICATION_CLASS(kirk_application_parent_class)->startup(app);
 
     const GActionEntry entries[] = {
-        {.name = "preferences", .activate = preferences_activated},
-        {.name = "quit", .activate = quit_activated},
+        {.name = "preferences", .activate = open_preferences},
+        {.name = "quit", .activate = quit_application},
     };
     g_action_map_add_action_entries(
         G_ACTION_MAP(self),
@@ -83,16 +87,49 @@ static void kirk_application_startup(GApplication *app) {
     );
 }
 
+static void maybe_override_destination_folder_path(GSettings *settings) {
+    g_autofree const gchar *destination_folder_path =
+        g_settings_get_string(settings, "destination-folder-path");
+
+    if (destination_folder_path != NULL && destination_folder_path[0] != '\0') {
+        return;
+    }
+
+    const gchar *music_directory_path =
+        g_get_user_special_dir(G_USER_DIRECTORY_MUSIC);
+
+    if (music_directory_path != NULL) {
+        g_settings_set_string(
+            settings,
+            "destination-folder-path",
+            music_directory_path
+        );
+    }
+}
+
 static void kirk_application_activate(GApplication *app) {
     KirkApplication *self = KIRK_APPLICATION(app);
 
     KirkApplicationWindow *win = kirk_application_window_new(self);
     gtk_window_present(GTK_WINDOW(win));
+
+    maybe_override_destination_folder_path(self->settings);
+}
+
+static void kirk_application_shutdown(GApplication *app) {
+    KirkApplication *self = KIRK_APPLICATION(app);
+
+    g_clear_object(&self->settings);
+
+    G_APPLICATION_CLASS(kirk_application_parent_class)->shutdown(app);
 }
 
 static void kirk_application_class_init(KirkApplicationClass *klass) {
-    G_APPLICATION_CLASS(klass)->startup = kirk_application_startup;
-    G_APPLICATION_CLASS(klass)->activate = kirk_application_activate;
+    GApplicationClass *app_klass = G_APPLICATION_CLASS(klass);
+
+    app_klass->startup = kirk_application_startup;
+    app_klass->activate = kirk_application_activate;
+    app_klass->shutdown = kirk_application_shutdown;
 }
 
 KirkApplication *kirk_application_new() {

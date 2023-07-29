@@ -26,6 +26,8 @@ struct _KirkPreferencesWindow {
     AdwPreferencesWindow parent;
 
     GSettings *settings;
+
+    GtkWidget *destination_folder_entry_row;
 };
 
 G_DEFINE_TYPE(
@@ -34,10 +36,52 @@ G_DEFINE_TYPE(
     ADW_TYPE_PREFERENCES_WINDOW
 )
 
+static void select_destination_folder_finish(
+    GObject *source_object,
+    GAsyncResult *result,
+    gpointer user_data
+) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
+    GtkFileDialog *file_dialog = GTK_FILE_DIALOG(source_object);
+
+    g_autoptr(GFile) file =
+        gtk_file_dialog_select_folder_finish(file_dialog, result, NULL);
+
+    if (file == NULL) {
+        return;
+    }
+
+    const gchar *destination_folder_path = g_file_peek_path(file);
+    g_settings_set_string(
+        self->settings,
+        "destination-folder-path",
+        destination_folder_path
+    );
+}
+
+static void select_destination_folder(GtkButton *button, gpointer self) {
+    g_autoptr(GtkFileDialog) file_dialog = gtk_file_dialog_new();
+    gtk_file_dialog_select_folder(
+        file_dialog,
+        GTK_WINDOW(self),
+        NULL,
+        select_destination_folder_finish,
+        self
+    );
+}
+
 static void kirk_preferences_window_init(KirkPreferencesWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     self->settings = g_settings_new(APP_ID);
+
+    g_settings_bind(
+        self->settings,
+        "destination-folder-path",
+        G_OBJECT(self->destination_folder_entry_row),
+        "text",
+        G_SETTINGS_BIND_DEFAULT
+    );
 }
 
 static void kirk_preferences_window_dispose(GObject *object) {
@@ -61,6 +105,17 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass *klass
     );
 
     object_class->dispose = kirk_preferences_window_dispose;
+
+    gtk_widget_class_bind_template_child(
+        widget_class,
+        KirkPreferencesWindow,
+        destination_folder_entry_row
+    );
+
+    gtk_widget_class_bind_template_callback(
+        widget_class,
+        select_destination_folder
+    );
 }
 
 KirkPreferencesWindow *kirk_preferences_window_new(

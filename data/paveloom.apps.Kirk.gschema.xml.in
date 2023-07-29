@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
   Kirk
   Copyright (C) 2023  Pavel Sobolev <paveloom@riseup.net>
@@ -19,9 +18,11 @@
 
   SPDX-License-Identifier: GPL-3.0-or-later
 -->
-
 <schemalist gettext-domain="@APP_DOMAIN@">
   <schema id="@APP_ID@" path="@APP_RESOURCES_PATH@">
+    <key name="destination-folder-path" type="s">
+      <default>""</default>
+    </key>
     <key name="window-height" type="i">
       <default>250</default>
     </key>

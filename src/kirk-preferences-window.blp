@@ -21,22 +21,25 @@ using Gtk 4.0;
 using Adw 1;
 
 template $KirkPreferencesWindow : Adw.PreferencesWindow {
-  default-width: 800;
-  default-height: 600;
+  default-height: 400;
+  default-width: 400;
+  height-request: 400;
   title: _("Preferences");
+  width-request: 400;
 
   Adw.PreferencesPage {
 
     Adw.PreferencesGroup {
 
-      Adw.ActionRow {
-        title: _("Switch");
-        activatable-widget: switch;
+      Adw.EntryRow destination_folder_entry_row {
+        title: _("Destination folder");
 
         [suffix]
-        Switch switch {
-          halign: center;
+        Button {
+          icon-name: "folder-symbolic";
           valign: center;
+          clicked => $select_destination_folder();
+          styles ["flat"]
         }
       }
     }

@@ -42,7 +42,6 @@ elif get_option('buildtype') == 'debug'
     '-Wshadow',
   ]
   override_options = [
-    'b_sanitize=address,undefined',
     'warning_level=3',
   ]
 endif

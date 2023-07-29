@@ -21,9 +21,9 @@ using Gtk 4.0;
 using Adw 1;
 
 template $KirkApplicationWindow : Adw.ApplicationWindow {
-  title: "Kirk";
-  width-request: 250;
   height-request: 250;
+  title: _("Kirk");
+  width-request: 250;
 
   content: Box {
     orientation: vertical;
@@ -32,28 +32,28 @@ template $KirkApplicationWindow : Adw.ApplicationWindow {
       [end]
       MenuButton {
         icon-name: "open-menu-symbolic";
-        tooltip-text: _("Main Menu");
-        primary: true;
         menu-model: menubar;
+        primary: true;
+        tooltip-text: _("Main Menu");
       }
     }
 
     Box {
-      orientation: vertical;
       halign: center;
+      orientation: vertical;
       valign: center;
       vexpand: true;
 
       Button greet_button {
-        styles ["suggested-action"]
         label: _("Greet the world");
         clicked => $greet_button_clicked();
+        styles ["suggested-action"]
       }
 
       Button quit_button {
-        styles ["destructive-action"]
         label: _("Quit");
         clicked => $gtk_window_destroy() swapped;
+        styles ["destructive-action"]
       }
     }
   };
@@ -62,18 +62,18 @@ template $KirkApplicationWindow : Adw.ApplicationWindow {
 menu menubar {
   section {
     item {
-      label: _("Preferences");
       action: "app.preferences";
+      label: _("Preferences");
     }
 
     item {
-      label: _("Keyboard Shortcuts");
       action: "app.shortcuts";
+      label: _("Keyboard Shortcuts");
     }
 
     item {
-      label: _("About App");
       action: "app.about";
+      label: _("About App");
     }
   }
 }

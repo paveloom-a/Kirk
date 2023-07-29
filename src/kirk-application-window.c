@@ -27,8 +27,8 @@ struct _KirkApplicationWindow {
 
     GSettings *settings;
 
-    GtkWidget greet_button;
-    GtkWidget quit_button;
+    GtkWidget *greet_button;
+    GtkWidget *quit_button;
 };
 
 G_DEFINE_TYPE(

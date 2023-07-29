@@ -1,0 +1,105 @@
+# Kirk Valgrind suppressions file
+
+# gtk_file_dialog_select_folder
+{
+   gtk_file_dialog_select_folder.1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:g_malloc
+   fun:g_variant_get_strv
+   fun:g_variant_valist_get
+   fun:g_variant_get_va
+   fun:g_variant_lookup
+   fun:response_cb
+   fun:emit_signal_instance_in_idle_cb
+   fun:g_main_context_dispatch
+   fun:g_main_context_iterate.constprop.0
+   fun:g_main_context_iteration
+   fun:g_application_run
+}
+{
+   gtk_file_dialog_select_folder.2
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:g_malloc
+   fun:g_variant_new_from_children
+   fun:g_variant_builder_end
+   fun:parse_value_from_blob.isra.0
+   fun:parse_value_from_blob.isra.0
+   fun:g_dbus_message_new_from_blob
+   fun:_g_dbus_worker_do_read_cb
+   fun:g_task_return_now
+   fun:complete_in_idle_cb
+   fun:g_main_context_dispatch
+   fun:g_main_context_iterate.constprop.0
+}
+{
+   gtk_file_dialog_select_folder.3
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:g_malloc0
+   fun:g_type_create_instance
+   fun:g_object_new_internal
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:_g_local_file_info_get
+   fun:g_local_file_query_info
+   fun:query_info_async_thread
+   fun:g_task_thread_pool_thread
+   fun:g_thread_pool_thread_proxy
+   fun:g_thread_proxy
+}
+{
+   gtk_file_dialog_select_folder.4
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:g_type_create_instance
+   fun:g_object_new_internal
+   fun:g_object_new_valist
+   fun:g_object_new
+   fun:gtk_file_chooser_native_new
+   fun:create_file_chooser
+   fun:gtk_file_dialog_select_folder
+   fun:select_destination_folder
+   fun:_g_closure_invoke_va
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   gtk_file_dialog_select_folder.5
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:posix_memalign
+   fun:si_alloc_buffer_struct
+   fun:si_buffer_create
+   fun:u_upload_alloc
+   fun:st_upload_constants
+   fun:prepare_draw.constprop.0
+   fun:st_draw_gallium
+   fun:_mesa_draw_arrays.part.0
+   fun:_mesa_unmarshal_DrawArrays
+   fun:glthread_unmarshal_batch
+   fun:_mesa_glthread_finish
+   fun:dri_flush
+}
+
+# FcPatternObjectInsertElt
+{
+   FcPatternObjectInsertElt.1
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   fun:FcPatternObjectInsertElt
+   fun:FcConfigSubstituteWithPat
+}
+{
+   FcPatternObjectInsertElt.2
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   fun:FcPatternObjectInsertElt
+   fun:FcPatternObjectListAdd
+}

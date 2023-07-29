@@ -1,3 +1,0 @@
-# https://gitlab.freedesktop.org/fontconfig/fontconfig/-/issues/355
-# https://gitlab.gnome.org/GNOME/pango/-/issues/748
-leak:FcPatternObjectInsertElt
