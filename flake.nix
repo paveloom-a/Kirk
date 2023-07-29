@@ -43,9 +43,9 @@
         cppcheck
         cpplint
         gnome.devhelp
-        libadwaita.devdoc
         ltex-ls
         nil
+        nvd
         shellcheck
         valgrind
         yamlfmt
@@ -66,10 +66,11 @@
         env = {
           GLIB_SUPP_FILE = "${pkgs.glib.dev}/share/glib-2.0/valgrind/glib.supp";
           GTK_SUPP_FILE = "${pkgs.gtk4}/share/gtk-4.0/valgrind/gtk.supp";
-          XDG_DATA_DIRS = pkgs.lib.makeSearchPathOutput "devdoc" "share" [
-            pkgs.glib
-            pkgs.gtk4
-          ];
+          XDG_DATA_DIRS = pkgs.lib.makeSearchPathOutput "devdoc" "share" (with pkgs; [
+            glib
+            gtk4
+            libadwaita
+          ]);
         };
       };
 
