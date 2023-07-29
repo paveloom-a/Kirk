@@ -56,6 +56,26 @@ static void quit_application(
     g_application_quit(G_APPLICATION(user_data));
 }
 
+static void maybe_override_destination_folder_path(GSettings *settings) {
+    g_autofree const gchar *destination_folder_path =
+        g_settings_get_string(settings, "destination-folder-path");
+
+    if (destination_folder_path != NULL && destination_folder_path[0] != '\0') {
+        return;
+    }
+
+    const gchar *music_directory_path =
+        g_get_user_special_dir(G_USER_DIRECTORY_MUSIC);
+
+    if (music_directory_path != NULL) {
+        g_settings_set_string(
+            settings,
+            "destination-folder-path",
+            music_directory_path
+        );
+    }
+}
+
 static void kirk_application_startup(GApplication *app) {
     KirkApplication *self = KIRK_APPLICATION(app);
 
@@ -85,26 +105,8 @@ static void kirk_application_startup(GApplication *app) {
         "app.quit",
         quit_accels
     );
-}
 
-static void maybe_override_destination_folder_path(GSettings *settings) {
-    g_autofree const gchar *destination_folder_path =
-        g_settings_get_string(settings, "destination-folder-path");
-
-    if (destination_folder_path != NULL && destination_folder_path[0] != '\0') {
-        return;
-    }
-
-    const gchar *music_directory_path =
-        g_get_user_special_dir(G_USER_DIRECTORY_MUSIC);
-
-    if (music_directory_path != NULL) {
-        g_settings_set_string(
-            settings,
-            "destination-folder-path",
-            music_directory_path
-        );
-    }
+    maybe_override_destination_folder_path(self->settings);
 }
 
 static void kirk_application_activate(GApplication *app) {
@@ -112,8 +114,6 @@ static void kirk_application_activate(GApplication *app) {
 
     KirkApplicationWindow *win = kirk_application_window_new(self);
     gtk_window_present(GTK_WINDOW(win));
-
-    maybe_override_destination_folder_path(self->settings);
 }
 
 static void kirk_application_shutdown(GApplication *app) {
