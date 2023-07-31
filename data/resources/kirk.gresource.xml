@@ -20,6 +20,7 @@
 -->
 <gresources>
   <gresource prefix="/paveloom/apps/Kirk">
+    <file preprocess="xml-stripblanks" compressed="true">gtk/kirk-add-release-window.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">gtk/kirk-application-window.ui</file>
     <file preprocess="xml-stripblanks" compressed="true">gtk/kirk-preferences-window.ui</file>
   </gresource>

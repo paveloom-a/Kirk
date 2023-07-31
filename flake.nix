@@ -14,13 +14,13 @@
       };
 
       llvm = pkgs.llvmPackages_16;
-      llvmStdenv = pkgs.stdenvAdapters.useMoldLinker (llvm.stdenv.override {
+      llvmStdenv = llvm.stdenv.override {
         cc = llvm.stdenv.cc.override {
           inherit (llvm) bintools;
         };
-      });
+      };
       ccacheStdenv = pkgs.ccacheStdenv.override {
-        stdenv = llvmStdenv;
+        stdenv = pkgs.stdenvAdapters.useMoldLinker llvmStdenv;
       };
 
       nativeBuildInputsRelease = with pkgs; [
@@ -59,9 +59,9 @@
       devShells.default = ccacheStdenv.mkDerivation {
         name = "kirk-env";
 
-        inherit buildInputs;
-
         nativeBuildInputs = nativeBuildInputsRelease ++ nativeBuildInputsDebug;
+
+        inherit buildInputs;
 
         env = {
           GLIB_SUPP_FILE = "${pkgs.glib.dev}/share/glib-2.0/valgrind/glib.supp";
@@ -80,9 +80,9 @@
 
         src = ./.;
 
-        inherit buildInputs;
-
         nativeBuildInputs = nativeBuildInputsRelease;
+
+        inherit buildInputs;
 
         mesonBuildType = "release";
       };

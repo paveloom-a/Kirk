@@ -18,21 +18,25 @@
 
 #pragma once
 
+#include "src/kirk-application-window.h"
+
 #include <adwaita.h>
 
 G_BEGIN_DECLS
 
-#define KIRK_TYPE_APPLICATION kirk_application_get_type()
-#define KIRK_DEFAULT_APPLICATION KIRK_APPLICATION(g_application_get_default())
+#define KIRK_TYPE_ADD_RELEASE_WINDOW kirk_add_release_window_get_type()
 
 G_DECLARE_FINAL_TYPE(
-    KirkApplication,
-    kirk_application,
+    KirkAddReleaseWindow,
+    kirk_add_release_window,
     KIRK,
-    APPLICATION,
-    AdwApplication
+    ADD_RELEASE_WINDOW,
+    AdwWindow
 )
 
-KirkApplication *kirk_application_new();
+KirkAddReleaseWindow *kirk_add_release_window_new(
+    KirkApplication *app,
+    KirkApplicationWindow *app_win
+);
 
 G_END_DECLS

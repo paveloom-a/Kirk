@@ -19,6 +19,8 @@
 #include "src/kirk-application-window.h"
 
 #include "include/config.h"
+#include "src/kirk-add-release-window.h"
+#include "src/kirk-preferences-window.h"
 
 #include <adwaita.h>
 
@@ -26,9 +28,6 @@ struct _KirkApplicationWindow {
     AdwApplicationWindow parent;
 
     GSettings *settings;
-
-    GtkWidget *greet_button;
-    GtkWidget *quit_button;
 };
 
 G_DEFINE_TYPE(
@@ -37,9 +36,7 @@ G_DEFINE_TYPE(
     ADW_TYPE_APPLICATION_WINDOW
 )
 
-static void kirk_application_window_init(KirkApplicationWindow *self) {
-    gtk_widget_init_template(GTK_WIDGET(self));
-
+static void prepare_settings(KirkApplicationWindow *self) {
     self->settings = g_settings_new(APP_ID);
 
     g_settings_bind(
@@ -65,8 +62,10 @@ static void kirk_application_window_init(KirkApplicationWindow *self) {
     );
 }
 
-static void greet_button_clicked(GtkButton *button, gpointer user_data) {
-    g_print("Hello, world!\n");
+static void kirk_application_window_init(KirkApplicationWindow *self) {
+    gtk_widget_init_template(GTK_WIDGET(self));
+
+    prepare_settings(self);
 }
 
 static void kirk_application_window_dispose(GObject *object) {
@@ -77,6 +76,29 @@ static void kirk_application_window_dispose(GObject *object) {
     gtk_widget_dispose_template(GTK_WIDGET(self), KIRK_TYPE_APPLICATION_WINDOW);
 
     G_OBJECT_CLASS(kirk_application_window_parent_class)->dispose(object);
+}
+
+static void add_release(
+    GtkWidget *widget,
+    const gchar *action_name,
+    GVariant *parameter
+) {
+    KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(widget);
+    KirkAddReleaseWindow *add_release_win =
+        kirk_add_release_window_new(KIRK_DEFAULT_APPLICATION, self);
+    gtk_window_present(GTK_WINDOW(add_release_win));
+}
+
+static void open_preferences(
+    GtkWidget *widget,
+    const gchar *action_name,
+    GVariant *parameter
+) {
+    KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(widget);
+
+    KirkPreferencesWindow *preferences_win =
+        kirk_preferences_window_new(KIRK_DEFAULT_APPLICATION, self);
+    gtk_window_present(GTK_WINDOW(preferences_win));
 }
 
 static void kirk_application_window_class_init(  //
@@ -91,19 +113,33 @@ static void kirk_application_window_class_init(  //
 
     G_OBJECT_CLASS(klass)->dispose = kirk_application_window_dispose;
 
-    gtk_widget_class_bind_template_child(
+    gtk_widget_class_install_action(
         widget_class,
-        KirkApplicationWindow,
-        greet_button
+        "win.add-release",
+        NULL,
+        add_release
     );
-    gtk_widget_class_bind_template_child(
+    gtk_widget_class_install_action(
         widget_class,
-        KirkApplicationWindow,
-        quit_button
+        "win.show-preferences",
+        NULL,
+        open_preferences
     );
 
-    gtk_widget_class_bind_template_callback(widget_class, greet_button_clicked);
-    gtk_widget_class_bind_template_callback(widget_class, gtk_window_destroy);
+    gtk_widget_class_add_binding_action(
+        widget_class,
+        GDK_KEY_A,
+        GDK_CONTROL_MASK,
+        "win.add-release",
+        NULL
+    );
+    gtk_widget_class_add_binding_action(
+        widget_class,
+        GDK_KEY_comma,
+        GDK_CONTROL_MASK,
+        "win.show-preferences",
+        NULL
+    );
 }
 
 KirkApplicationWindow *kirk_application_window_new(KirkApplication *app) {

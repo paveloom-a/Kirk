@@ -20,7 +20,6 @@
 
 #include "include/config.h"
 #include "src/kirk-application-window.h"
-#include "src/kirk-preferences-window.h"
 
 #include <adwaita.h>
 
@@ -36,19 +35,7 @@ static void kirk_application_init(KirkApplication *self) {
     self->settings = g_settings_new(APP_ID);
 }
 
-static void open_preferences(
-    GSimpleAction *action,
-    GVariant *parameter,
-    gpointer user_data
-) {
-    KirkApplication *self = KIRK_APPLICATION(user_data);
-    GtkWindow *win = gtk_application_get_active_window(GTK_APPLICATION(self));
-    KirkPreferencesWindow *prefs_win =
-        kirk_preferences_window_new(self, KIRK_APPLICATION_WINDOW(win));
-    gtk_window_present(GTK_WINDOW(prefs_win));
-}
-
-static void quit_application(
+static void quit(
     GSimpleAction *action,
     GVariant *parameter,
     gpointer user_data
@@ -56,9 +43,29 @@ static void quit_application(
     g_application_quit(G_APPLICATION(user_data));
 }
 
-static void maybe_override_destination_folder_path(GSettings *settings) {
+static void prepare_actions(KirkApplication *self) {
+    GtkApplication *app = GTK_APPLICATION(self);
+
+    const GActionEntry entries[] = {
+        {.name = "quit", .activate = quit},
+    };
+    g_action_map_add_action_entries(
+        G_ACTION_MAP(self),
+        entries,
+        G_N_ELEMENTS(entries),
+        self
+    );
+
+    gtk_application_set_accels_for_action(
+        app,
+        "app.quit",
+        (const gchar *const[]){"<primary>q", NULL}
+    );
+}
+
+static void prepare_settings(KirkApplication *self) {
     g_autofree const gchar *destination_folder_path =
-        g_settings_get_string(settings, "destination-folder-path");
+        g_settings_get_string(self->settings, "destination-folder-path");
 
     if (destination_folder_path != NULL && destination_folder_path[0] != '\0') {
         return;
@@ -69,7 +76,7 @@ static void maybe_override_destination_folder_path(GSettings *settings) {
 
     if (music_directory_path != NULL) {
         g_settings_set_string(
-            settings,
+            self->settings,
             "destination-folder-path",
             music_directory_path
         );
@@ -79,34 +86,10 @@ static void maybe_override_destination_folder_path(GSettings *settings) {
 static void kirk_application_startup(GApplication *app) {
     KirkApplication *self = KIRK_APPLICATION(app);
 
+    prepare_actions(self);
+    prepare_settings(self);
+
     G_APPLICATION_CLASS(kirk_application_parent_class)->startup(app);
-
-    const GActionEntry entries[] = {
-        {.name = "preferences", .activate = open_preferences},
-        {.name = "quit", .activate = quit_application},
-    };
-    g_action_map_add_action_entries(
-        G_ACTION_MAP(self),
-        entries,
-        G_N_ELEMENTS(entries),
-        self
-    );
-
-    const char *preferences_accels[] = {"<primary>comma", NULL};
-    gtk_application_set_accels_for_action(
-        GTK_APPLICATION(self),
-        "app.preferences",
-        preferences_accels
-    );
-
-    const char *quit_accels[] = {"<primary>q", NULL};
-    gtk_application_set_accels_for_action(
-        GTK_APPLICATION(self),
-        "app.quit",
-        quit_accels
-    );
-
-    maybe_override_destination_folder_path(self->settings);
 }
 
 static void kirk_application_activate(GApplication *app) {

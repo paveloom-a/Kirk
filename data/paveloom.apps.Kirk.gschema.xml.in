@@ -24,13 +24,13 @@
       <default>""</default>
     </key>
     <key name="window-height" type="i">
-      <default>250</default>
+      <default>550</default>
     </key>
     <key name="window-maximized" type="b">
       <default>false</default>
     </key>
     <key name="window-width" type="i">
-      <default>250</default>
+      <default>550</default>
     </key>
   </schema>
 </schemalist>

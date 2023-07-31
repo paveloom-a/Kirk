@@ -21,14 +21,21 @@ using Gtk 4.0;
 using Adw 1;
 
 template $KirkApplicationWindow : Adw.ApplicationWindow {
-  height-request: 250;
+  height-request: 550;
   title: _("Kirk");
-  width-request: 250;
+  width-request: 550;
 
   content: Box {
     orientation: vertical;
 
     Adw.HeaderBar {
+      [start]
+      Button {
+        action-name: "win.add-release";
+        icon-name: "list-add-symbolic";
+        tooltip-text: _("Add Release");
+      }
+
       [end]
       MenuButton {
         icon-name: "open-menu-symbolic";
@@ -37,42 +44,24 @@ template $KirkApplicationWindow : Adw.ApplicationWindow {
         tooltip-text: _("Main Menu");
       }
     }
-
-    Box {
-      halign: center;
-      orientation: vertical;
-      valign: center;
-      vexpand: true;
-
-      Button greet_button {
-        label: _("Greet the world");
-        clicked => $greet_button_clicked();
-        styles ["suggested-action"]
-      }
-
-      Button quit_button {
-        label: _("Quit");
-        clicked => $gtk_window_destroy() swapped;
-        styles ["destructive-action"]
-      }
-    }
   };
 }
 
 menu menubar {
   section {
     item {
-      action: "app.preferences";
+      accel: "<control>comma";
+      action: "win.show-preferences";
       label: _("Preferences");
     }
 
     item {
-      action: "app.shortcuts";
+      action: "win.show-shortcuts";
       label: _("Keyboard Shortcuts");
     }
 
     item {
-      action: "app.about";
+      action: "win.about";
       label: _("About App");
     }
   }

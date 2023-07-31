@@ -16,23 +16,38 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#pragma once
+using Gtk 4.0;
 
-#include <adwaita.h>
+using Adw 1;
 
-G_BEGIN_DECLS
+template $KirkAddReleaseWindow : Adw.Window {
+  default-height: 400;
+  default-width: 400;
+  height-request: 400;
+  modal: true;
+  title: _("Add Release");
+  width-request: 400;
 
-#define KIRK_TYPE_APPLICATION kirk_application_get_type()
-#define KIRK_DEFAULT_APPLICATION KIRK_APPLICATION(g_application_get_default())
+  ShortcutController {
+    Shortcut {
+      trigger: "Escape";
+      action: "action(window.close)";
+    }
+  }
 
-G_DECLARE_FINAL_TYPE(
-    KirkApplication,
-    kirk_application,
-    KIRK,
-    APPLICATION,
-    AdwApplication
-)
+  content: Box {
+    orientation: vertical;
 
-KirkApplication *kirk_application_new();
+    Adw.HeaderBar {}
 
-G_END_DECLS
+    Adw.PreferencesPage {
+
+      Adw.PreferencesGroup {
+
+        Adw.EntryRow {
+          title: _("Search for a release or insert a link");
+        }
+      }
+    }
+  };
+}

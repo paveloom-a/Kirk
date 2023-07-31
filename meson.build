@@ -67,6 +67,7 @@ subdir('include')
 subdir('po')
 
 sources = files(
+  'src/kirk-add-release-window.c',
   'src/kirk-application-window.c',
   'src/kirk-application.c',
   'src/kirk-preferences-window.c',

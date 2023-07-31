@@ -1,4 +1,5 @@
 blp_file_names = [
+  'kirk-add-release-window.blp',
   'kirk-application-window.blp',
   'kirk-preferences-window.blp',
 ]
