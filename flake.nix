@@ -54,6 +54,7 @@
 
       buildInputs = with pkgs; [
         libadwaita
+        libsecret
       ];
     in {
       devShells.default = ccacheStdenv.mkDerivation {
@@ -70,6 +71,7 @@
             glib
             gtk4
             libadwaita
+            libsecret
           ]);
         };
       };

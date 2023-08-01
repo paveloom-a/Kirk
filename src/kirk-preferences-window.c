@@ -19,14 +19,18 @@
 #include "src/kirk-preferences-window.h"
 
 #include "include/config.h"
+#include "src/kirk-secret-schema.h"
 
 #include <adwaita.h>
+#include <libsecret/secret.h>
 
 struct _KirkPreferencesWindow {
     AdwPreferencesWindow parent;
 
     GSettings *settings;
 
+    GtkWidget *qobuz_user_id_entry_row;
+    GtkWidget *qobuz_token_password_entry_row;
     GtkWidget *destination_folder_entry_row;
 };
 
@@ -59,7 +63,9 @@ static void select_destination_folder_finish(
     );
 }
 
-static void select_destination_folder(GtkButton *button, gpointer self) {
+static void select_destination_folder(GtkButton *button, gpointer user_data) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
+
     g_autoptr(GtkFileDialog) file_dialog = gtk_file_dialog_new();
     gtk_file_dialog_select_folder(
         file_dialog,
@@ -70,11 +76,80 @@ static void select_destination_folder(GtkButton *button, gpointer self) {
     );
 }
 
-static void kirk_preferences_window_init(KirkPreferencesWindow *self) {
-    gtk_widget_init_template(GTK_WIDGET(self));
+static void update_qobuz_secrets_finish(
+    GObject *source_object,
+    GAsyncResult *result,
+    gpointer user_data
+) {
+    secret_password_store_finish(result, NULL);
+}
 
+static void update_qobuz_secrets(GtkEditable *editable, gpointer user_data) {
+    const gchar *token = gtk_editable_get_text(editable);
+
+    secret_password_store(
+        KIRK_SECRET_SCHEMA,
+        SECRET_COLLECTION_DEFAULT,
+        "Kirk: Qobuz token",
+        token,
+        NULL,
+        update_qobuz_secrets_finish,
+        NULL,
+        "schema",
+        APP_ID,
+        "service",
+        "qobuz",
+        NULL
+    );
+}
+
+static void prepare_qobuz_secrets_finish(
+    GObject *source_object,
+    GAsyncResult *result,
+    gpointer user_data
+) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
+
+    g_autofree const gchar *token = secret_password_lookup_finish(result, NULL);
+
+    if (token == NULL) {
+        return;
+    }
+
+    gtk_editable_set_text(
+        GTK_EDITABLE(self->qobuz_token_password_entry_row),
+        token
+    );
+}
+
+static void prepare_qobuz_secrets(KirkPreferencesWindow *self) {
+    secret_password_lookup(
+        KIRK_SECRET_SCHEMA,
+        NULL,
+        prepare_qobuz_secrets_finish,
+        self,
+        "schema",
+        APP_ID,
+        "service",
+        "qobuz",
+        NULL
+    );
+}
+
+static void prepare_secrets(KirkPreferencesWindow *self) {
+    prepare_qobuz_secrets(self);
+}
+
+static void prepare_settings(KirkPreferencesWindow *self) {
     self->settings = g_settings_new(APP_ID);
 
+    g_settings_bind(
+        self->settings,
+        "qobuz-user-id",
+        G_OBJECT(self->qobuz_user_id_entry_row),
+        "text",
+        G_SETTINGS_BIND_DEFAULT
+    );
     g_settings_bind(
         self->settings,
         "destination-folder-path",
@@ -82,6 +157,13 @@ static void kirk_preferences_window_init(KirkPreferencesWindow *self) {
         "text",
         G_SETTINGS_BIND_DEFAULT
     );
+}
+
+static void kirk_preferences_window_init(KirkPreferencesWindow *self) {
+    gtk_widget_init_template(GTK_WIDGET(self));
+
+    prepare_secrets(self);
+    prepare_settings(self);
 }
 
 static void kirk_preferences_window_dispose(GObject *object) {
@@ -109,9 +191,20 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass *klass
     gtk_widget_class_bind_template_child(
         widget_class,
         KirkPreferencesWindow,
+        qobuz_user_id_entry_row
+    );
+    gtk_widget_class_bind_template_child(
+        widget_class,
+        KirkPreferencesWindow,
+        qobuz_token_password_entry_row
+    );
+    gtk_widget_class_bind_template_child(
+        widget_class,
+        KirkPreferencesWindow,
         destination_folder_entry_row
     );
 
+    gtk_widget_class_bind_template_callback(widget_class, update_qobuz_secrets);
     gtk_widget_class_bind_template_callback(
         widget_class,
         select_destination_folder

@@ -25,18 +25,22 @@ cd debug
 ninja && ./kirk
 ```
 
-To build in the `release` mode, run
+To build in the `release` mode, run `nix build` (the result is the target of the `result` symbolic link). To run the build immediately, run `nix run` instead.
 
-```bash
-meson --buildtype=release release
-cd release
-ninja && ./kirk
-```
-
-Alternatively, you can build or run the Nix package via `nix build` and `nix run`, respectively.
-
-You might also want to create a symlink of the `compile_commands.json` file from the `debug` mode build directory in the root of the repository, so that the tooling can see it:
+You might also want to create a symbolic link of the `compile_commands.json` file from the `debug` mode build directory in the root of the repository, so that the tooling can see it:
 
 ```bash
 ln -s debug/compile_commands.json
+```
+
+To check for memory leaks, run:
+
+```bash
+ninja && valgrind \
+    --leak-check=full \
+    --show-leak-kinds=definite \
+    --suppressions=$GLIB_SUPP_FILE \
+    --suppressions=$GTK_SUPP_FILE \
+    --suppressions=../kirk.supp \
+    ./kirk
 ```

@@ -25,3 +25,9 @@
 ##### GCC
 - [ ] Provide an easy way to switch
 - [ ] Allow testing for both Clang and GCC
+
+##### Add a feature to export/import settings
+
+##### Debug the size of the Nix closure
+- https://jade.fyi/nixcon2022
+- Nuke Xorg support?

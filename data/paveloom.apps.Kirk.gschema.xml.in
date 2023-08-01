@@ -23,6 +23,9 @@
     <key name="destination-folder-path" type="s">
       <default>""</default>
     </key>
+    <key name="qobuz-user-id" type="s">
+      <default>""</default>
+    </key>
     <key name="window-height" type="i">
       <default>550</default>
     </key>

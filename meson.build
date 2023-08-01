@@ -56,6 +56,7 @@ conf.set10('APP_DEBUG_MODE_ON', APP_DEBUG_MODE_ON)
 
 dependencies = [
   dependency('libadwaita-1', version: '>=1.3.3', include_type: 'system'),
+  dependency('libsecret-1', version: '>=0.20.5', include_type: 'system'),
 ]
 
 cc = meson.get_compiler('c')
@@ -71,6 +72,7 @@ sources = files(
   'src/kirk-application-window.c',
   'src/kirk-application.c',
   'src/kirk-preferences-window.c',
+  'src/kirk-secret-schema.c',
   'src/main.c',
 )
 

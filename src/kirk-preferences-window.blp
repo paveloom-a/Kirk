@@ -28,6 +28,32 @@ template $KirkPreferencesWindow : Adw.PreferencesWindow {
   width-request: 400;
 
   Adw.PreferencesPage {
+    icon-name: "folder-download-symbolic";
+    title: _("Downloading");
+
+    Adw.PreferencesGroup {
+      title: "Qobuz";
+
+      Adw.EntryRow qobuz_user_id_entry_row {
+        title: _("User ID");
+      }
+
+      Adw.PasswordEntryRow qobuz_token_password_entry_row {
+        title: _("Token");
+        changed => $update_qobuz_secrets();
+      }
+
+      Button {
+        halign: end;
+        label: "Verify account data";
+        margin-top: 10;
+      }
+    }
+  }
+
+  Adw.PreferencesPage {
+    icon-name: "media-floppy-symbolic";
+    title: _("Saving");
 
     Adw.PreferencesGroup {
 
