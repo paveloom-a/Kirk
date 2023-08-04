@@ -42,8 +42,12 @@
         clang-tools_16
         cppcheck
         cpplint
+        curl
         gnome.devhelp
+        iproute2
         ltex-ls
+        netcat
+        nettools
         nil
         nvd
         shellcheck

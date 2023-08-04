@@ -23,11 +23,19 @@
 - https://developer.gnome.org/hig
 
 ##### GCC
-- [ ] Provide an easy way to switch
-- [ ] Allow testing for both Clang and GCC
+- Provide an easy way to switch
+- Allow testing for both Clang and GCC
 
 ##### Add a feature to export/import settings
 
-##### Debug the size of the Nix closure
+##### Debug the size of the Nix package closure
 - https://jade.fyi/nixcon2022
 - Nuke Xorg support?
+- Debug the size of the build-time closure, too?
+- Use `-march=native` by default?
+
+##### Qobuz: retrieve `app_id`
+
+##### Close properly on an interrupt signal
+
+##### Put some of the boilerplate into macros

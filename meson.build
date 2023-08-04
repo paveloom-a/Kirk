@@ -72,6 +72,7 @@ sources = files(
   'src/kirk-application-window.c',
   'src/kirk-application.c',
   'src/kirk-preferences-window.c',
+  'src/kirk-qobuz-client.c',
   'src/kirk-secret-schema.c',
   'src/main.c',
 )

@@ -86,6 +86,63 @@
    fun:dri_flush
 }
 
+# g_dbus_message_new_from_blob
+{
+   g_dbus_message_new_from_blob
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:g_malloc
+   fun:g_variant_new_from_children
+   fun:g_variant_builder_end
+   fun:parse_value_from_blob.isra.0
+   fun:g_dbus_message_new_from_blob
+   fun:_g_dbus_worker_do_read_cb
+   fun:g_task_return_now
+   fun:complete_in_idle_cb
+   fun:g_main_context_dispatch
+   fun:g_main_context_iterate.constprop.0
+   fun:g_main_loop_run
+}
+
+# gdk_wayland_clipboard_read_async
+{
+   gdk_wayland_clipboard_read_async
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:g_malloc0
+   fun:g_type_create_instance
+   fun:g_object_new_internal
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:g_task_new
+   fun:gdk_wayland_clipboard_read_async
+   fun:gdk_clipboard_read_value_internal
+   fun:gdk_clipboard_read_text_async
+   fun:gtk_text_paste_clipboard
+   fun:g_closure_invoke
+}
+
+# glthread_unmarshal_batch
+{
+   glthread_unmarshal_batch
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:posix_memalign
+   fun:si_alloc_buffer_struct
+   fun:si_buffer_create
+   fun:u_upload_alloc
+   fun:st_upload_constants
+   fun:prepare_draw.constprop.0
+   fun:st_draw_gallium
+   fun:_mesa_draw_arrays.part.0
+   fun:_mesa_unmarshal_DrawArrays
+   fun:glthread_unmarshal_batch
+   fun:_mesa_glthread_finish
+   fun:_mesa_marshal_GetQueryObjectiv
+}
+
 # FcPatternObjectInsertElt
 {
    FcPatternObjectInsertElt.1

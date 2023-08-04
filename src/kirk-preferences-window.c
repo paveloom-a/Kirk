@@ -19,6 +19,7 @@
 #include "src/kirk-preferences-window.h"
 
 #include "include/config.h"
+#include "src/kirk-qobuz-client.h"
 #include "src/kirk-secret-schema.h"
 
 #include <adwaita.h>
@@ -29,8 +30,14 @@ struct _KirkPreferencesWindow {
 
     GSettings *settings;
 
+    GCancellable *cancellable;
+
     GtkWidget *qobuz_user_id_entry_row;
     GtkWidget *qobuz_token_password_entry_row;
+    GtkWidget *qobuz_authorization_request_button;
+    GtkWidget *qobuz_authorization_request_button_content;
+    gulong qobuz_authorization_request_button_handler_id;
+
     GtkWidget *destination_folder_entry_row;
 };
 
@@ -39,6 +46,141 @@ G_DEFINE_TYPE(
     kirk_preferences_window,
     ADW_TYPE_PREFERENCES_WINDOW
 )
+
+static void qobuz_set_verification_availability(KirkPreferencesWindow *self) {
+    const gchar *user_id =
+        gtk_editable_get_text(GTK_EDITABLE(self->qobuz_user_id_entry_row));
+    const gchar *token = gtk_editable_get_text(  //
+        GTK_EDITABLE(self->qobuz_token_password_entry_row)
+    );
+
+    gtk_widget_set_sensitive(
+        GTK_WIDGET(self->qobuz_authorization_request_button),
+        !(user_id[0] == '\0' || token[0] == '\0')
+    );
+}
+
+static void qobuz_user_id_changed(GtkEditable *editable, gpointer user_data) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
+
+    qobuz_set_verification_availability(self);
+}
+
+static void qobuz_update_token_finish(
+    GObject *source_object,
+    GAsyncResult *result,
+    gpointer user_data
+) {
+    kirk_secret_schema_store_password_finish(result, NULL);
+}
+
+static void qobuz_set_token(const gchar *token) {
+    kirk_secret_schema_store_password(
+        "Kirk: Qobuz token",
+        token,
+        "qobuz",
+        qobuz_update_token_finish
+    );
+}
+
+static void qobuz_token_changed(GtkEditable *editable, gpointer user_data) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
+    const gchar *token = gtk_editable_get_text(editable);
+
+    qobuz_set_verification_availability(self);
+    qobuz_set_token(token);
+}
+
+static void qobuz_send_authorization_request(
+    GtkButton *button,
+    gpointer user_data
+);
+
+static void qobuz_cancel_authorization_request(
+    GtkButton *button,
+    gpointer user_data
+);
+
+static void qobuz_reset_authorization_request_button(  //
+    KirkPreferencesWindow *self
+) {
+    adw_button_content_set_label(
+        ADW_BUTTON_CONTENT(self->qobuz_authorization_request_button_content),
+        "Send authorization request"
+    );
+
+    g_signal_handler_disconnect(
+        self->qobuz_authorization_request_button,
+        self->qobuz_authorization_request_button_handler_id
+    );
+    self->qobuz_authorization_request_button_handler_id = g_signal_connect(
+        self->qobuz_authorization_request_button,
+        "clicked",
+        G_CALLBACK(qobuz_send_authorization_request),
+        self
+    );
+}
+
+static void qobuz_cancel_authorization_request(
+    GtkButton *button,
+    gpointer user_data
+) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
+
+    g_cancellable_cancel(self->cancellable);
+
+    qobuz_reset_authorization_request_button(self);
+}
+
+static void qobuz_send_authorization_request_finish(
+    GObject *source_object,
+    GAsyncResult *result,
+    gpointer user_data
+) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
+
+    KirkQobuzClientResult *client_result =
+        g_task_propagate_pointer(G_TASK(result), NULL);
+
+    AdwToast *toast = adw_toast_new(client_result->message);
+    adw_toast_set_timeout(toast, 2);
+    adw_preferences_window_add_toast(ADW_PREFERENCES_WINDOW(self), toast);
+
+    kirk_qobuz_client_result_free(client_result);
+
+    qobuz_reset_authorization_request_button(self);
+}
+
+static void qobuz_send_authorization_request(
+    GtkButton *button,
+    gpointer user_data
+) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
+
+    adw_button_content_set_label(
+        ADW_BUTTON_CONTENT(self->qobuz_authorization_request_button_content),
+        "Cancel authorization request"
+    );
+
+    g_signal_handler_disconnect(
+        self->qobuz_authorization_request_button,
+        self->qobuz_authorization_request_button_handler_id
+    );
+    self->qobuz_authorization_request_button_handler_id = g_signal_connect(
+        self->qobuz_authorization_request_button,
+        "clicked",
+        G_CALLBACK(qobuz_cancel_authorization_request),
+        self
+    );
+
+    self->cancellable = g_cancellable_new();
+    kirk_qobuz_client_send_authorization_request(
+        self->settings,
+        self->cancellable,
+        qobuz_send_authorization_request_finish,
+        self
+    );
+}
 
 static void select_destination_folder_finish(
     GObject *source_object,
@@ -76,70 +218,6 @@ static void select_destination_folder(GtkButton *button, gpointer user_data) {
     );
 }
 
-static void update_qobuz_secrets_finish(
-    GObject *source_object,
-    GAsyncResult *result,
-    gpointer user_data
-) {
-    secret_password_store_finish(result, NULL);
-}
-
-static void update_qobuz_secrets(GtkEditable *editable, gpointer user_data) {
-    const gchar *token = gtk_editable_get_text(editable);
-
-    secret_password_store(
-        KIRK_SECRET_SCHEMA,
-        SECRET_COLLECTION_DEFAULT,
-        "Kirk: Qobuz token",
-        token,
-        NULL,
-        update_qobuz_secrets_finish,
-        NULL,
-        "schema",
-        APP_ID,
-        "service",
-        "qobuz",
-        NULL
-    );
-}
-
-static void prepare_qobuz_secrets_finish(
-    GObject *source_object,
-    GAsyncResult *result,
-    gpointer user_data
-) {
-    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
-
-    g_autofree const gchar *token = secret_password_lookup_finish(result, NULL);
-
-    if (token == NULL) {
-        return;
-    }
-
-    gtk_editable_set_text(
-        GTK_EDITABLE(self->qobuz_token_password_entry_row),
-        token
-    );
-}
-
-static void prepare_qobuz_secrets(KirkPreferencesWindow *self) {
-    secret_password_lookup(
-        KIRK_SECRET_SCHEMA,
-        NULL,
-        prepare_qobuz_secrets_finish,
-        self,
-        "schema",
-        APP_ID,
-        "service",
-        "qobuz",
-        NULL
-    );
-}
-
-static void prepare_secrets(KirkPreferencesWindow *self) {
-    prepare_qobuz_secrets(self);
-}
-
 static void prepare_settings(KirkPreferencesWindow *self) {
     self->settings = g_settings_new(APP_ID);
 
@@ -159,17 +237,69 @@ static void prepare_settings(KirkPreferencesWindow *self) {
     );
 }
 
+static void prepare_qobuz_token_finish(
+    GObject *source_object,
+    GAsyncResult *result,
+    gpointer user_data
+) {
+    KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
+
+    gchar *token = kirk_secret_schema_lookup_password_finish(result, NULL);
+
+    if (token == NULL) {
+        qobuz_set_token("");
+    } else {
+        gtk_editable_set_text(
+            GTK_EDITABLE(self->qobuz_token_password_entry_row),
+            token
+        );
+        g_free(token);
+    }
+
+    qobuz_set_verification_availability(self);
+}
+
+static void prepare_qobuz_token(KirkPreferencesWindow *self) {
+    secret_password_lookup(
+        KIRK_SECRET_SCHEMA,
+        NULL,
+        prepare_qobuz_token_finish,
+        self,
+        "schema",
+        APP_ID,
+        "service",
+        "qobuz",
+        NULL
+    );
+}
+
+static void prepare_secrets(KirkPreferencesWindow *self) {
+    prepare_qobuz_token(self);
+}
+
+static void prepare_handlers(KirkPreferencesWindow *self) {
+    self->qobuz_authorization_request_button_handler_id = g_signal_connect(
+        self->qobuz_authorization_request_button,
+        "clicked",
+        G_CALLBACK(qobuz_send_authorization_request),
+        self
+    );
+}
+
 static void kirk_preferences_window_init(KirkPreferencesWindow *self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
-    prepare_secrets(self);
     prepare_settings(self);
+    prepare_secrets(self);
+    prepare_handlers(self);
 }
 
 static void kirk_preferences_window_dispose(GObject *object) {
     KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(object);
 
     g_clear_object(&self->settings);
+
+    g_cancellable_cancel(self->cancellable);
 
     gtk_widget_dispose_template(GTK_WIDGET(self), KIRK_TYPE_PREFERENCES_WINDOW);
 
@@ -201,10 +331,26 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass *klass
     gtk_widget_class_bind_template_child(
         widget_class,
         KirkPreferencesWindow,
+        qobuz_authorization_request_button
+    );
+    gtk_widget_class_bind_template_child(
+        widget_class,
+        KirkPreferencesWindow,
+        qobuz_authorization_request_button_content
+    );
+
+    gtk_widget_class_bind_template_child(
+        widget_class,
+        KirkPreferencesWindow,
         destination_folder_entry_row
     );
 
-    gtk_widget_class_bind_template_callback(widget_class, update_qobuz_secrets);
+    gtk_widget_class_bind_template_callback(
+        widget_class,
+        qobuz_user_id_changed
+    );
+    gtk_widget_class_bind_template_callback(widget_class, qobuz_token_changed);
+
     gtk_widget_class_bind_template_callback(
         widget_class,
         select_destination_folder

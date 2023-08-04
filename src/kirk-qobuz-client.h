@@ -18,33 +18,26 @@
 
 #pragma once
 
-#include <libsecret/secret.h>
+#include <adwaita.h>
 
 G_BEGIN_DECLS
 
-const SecretSchema *kirk_secret_schema_get_type();
+#define QOBUZ_HOST "www.qobuz.com"
 
-#define KIRK_SECRET_SCHEMA kirk_secret_schema_get_type()
+#define QOBUZ_API_PATH "/api.json/0.2"
+#define QOBUZ_LOGIN_PATH QOBUZ_API_PATH "/user/login"
 
-void kirk_secret_schema_store_password_finish(
-    GAsyncResult *result,
-    GError **error
-);
+#define QOBUZ_BUFFER_SIZE 1024
 
-void kirk_secret_schema_store_password(
-    const gchar *label,
-    const gchar *password,
-    const gchar *service,
-    GAsyncReadyCallback callback
-);
+typedef struct {
+    gint status_code;
+    gchar *message;
+} KirkQobuzClientResult;
 
-gchar* kirk_secret_schema_lookup_password_finish(
-    GAsyncResult *result,
-    GError **error
-);
+void kirk_qobuz_client_result_free(KirkQobuzClientResult *self);
 
-void kirk_secret_schema_lookup_password(
-    const gchar *service,
+void kirk_qobuz_client_send_authorization_request(
+    GSettings *settings,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data

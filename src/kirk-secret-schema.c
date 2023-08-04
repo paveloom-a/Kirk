@@ -16,6 +16,8 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#include "src/kirk-secret-schema.h"
+
 #include "include/config.h"
 
 #include <libsecret/secret.h>
@@ -30,4 +32,59 @@ const SecretSchema *kirk_secret_schema_get_type() {
             {NULL, 0},
         }};
     return &schema;
+}
+
+void kirk_secret_schema_store_password_finish(
+    GAsyncResult *result,
+    GError **error
+) {
+    secret_password_store_finish(result, error);
+}
+
+void kirk_secret_schema_store_password(
+    const gchar *label,
+    const gchar *password,
+    const gchar *service,
+    GAsyncReadyCallback callback
+) {
+    secret_password_store(
+        KIRK_SECRET_SCHEMA,
+        SECRET_COLLECTION_DEFAULT,
+        label,
+        password,
+        NULL,
+        callback,
+        NULL,
+        "schema",
+        APP_ID,
+        "service",
+        service,
+        NULL
+    );
+}
+
+gchar *kirk_secret_schema_lookup_password_finish(
+    GAsyncResult *result,
+    GError **error
+) {
+    return secret_password_lookup_finish(result, error);
+}
+
+void kirk_secret_schema_lookup_password(
+    const gchar *service,
+    GCancellable *cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data
+) {
+    secret_password_lookup(
+        KIRK_SECRET_SCHEMA,
+        cancellable,
+        callback,
+        user_data,
+        "schema",
+        APP_ID,
+        "service",
+        service,
+        NULL
+    );
 }
