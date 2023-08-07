@@ -1,4 +1,4 @@
-{
+rec {
   description = "WIP";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -12,6 +12,7 @@
       pkgs = import nixpkgs {
         inherit system;
       };
+      lib = pkgs.lib;
 
       llvm = pkgs.llvmPackages_16;
       llvmStdenv = llvm.stdenv.override {
@@ -49,6 +50,8 @@
         netcat
         nettools
         nil
+        nix-output-monitor
+        nix-tree
         nvd
         shellcheck
         valgrind
@@ -71,7 +74,7 @@
         env = {
           GLIB_SUPP_FILE = "${pkgs.glib.dev}/share/glib-2.0/valgrind/glib.supp";
           GTK_SUPP_FILE = "${pkgs.gtk4}/share/gtk-4.0/valgrind/gtk.supp";
-          XDG_DATA_DIRS = pkgs.lib.makeSearchPathOutput "devdoc" "share" (with pkgs; [
+          XDG_DATA_DIRS = lib.makeSearchPathOutput "devdoc" "share" (with pkgs; [
             glib
             gtk4
             libadwaita
@@ -91,6 +94,14 @@
         inherit buildInputs;
 
         mesonBuildType = "release";
+
+        meta = {
+          inherit description;
+          homepage = "https://github.com/paveloom-a/Kirk";
+          maintainers = [lib.maintainers.paveloom];
+          license = lib.licenses.gpl3Plus;
+          platforms = lib.platforms.linux;
+        };
       };
     });
 }
