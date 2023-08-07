@@ -31,5 +31,3 @@
 ##### Qobuz: retrieve `app_id`
 
 ##### Close properly on an interrupt signal
-
-##### Put some of the boilerplate into macros

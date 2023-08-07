@@ -33,7 +33,7 @@ You might also want to create a symbolic link of the `compile_commands.json` fil
 ln -s debug/compile_commands.json
 ```
 
-To check for memory leaks, run:
+To lint the code, run `ninja lint`. To check for memory leaks, run:
 
 ```bash
 ninja && valgrind \
