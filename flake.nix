@@ -78,6 +78,7 @@ rec {
         env = {
           GLIB_SUPP_FILE = "${pkgs.glib.dev}/share/glib-2.0/valgrind/glib.supp";
           GTK_SUPP_FILE = "${pkgs.gtk4}/share/gtk-4.0/valgrind/gtk.supp";
+          NIX_HARDENING_ENABLE = "";
           XDG_DATA_DIRS = nixpkgs.lib.makeSearchPathOutput "devdoc" "share" (with pkgs; [
             glib
             gtk4

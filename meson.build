@@ -34,7 +34,6 @@ elif get_option('buildtype') == 'debug'
   cc_flags = [
     '-ferror-limit=500',
     '-g3',
-    '-U_FORTIFY_SOURCE',
     '-Wconversion',
     '-Wdouble-promotion',
     '-Wno-sign-conversion',
