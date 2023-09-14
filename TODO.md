@@ -41,6 +41,3 @@
     - Can we even decrypt the traffic?
 - Switch to using `libsoup`
 - Switch to using HTTP/2
-
-##### Remove the `flake-utils` Nix dependency
-- https://journal.platonic.systems/nix-flake-architecture-in-practice

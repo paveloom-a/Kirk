@@ -7,12 +7,16 @@ rec {
     self,
     nixpkgs,
     flake-utils,
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
+  }: let
+    platforms = [
+      "aarch64-linux"
+      "x86_64-linux"
+    ];
+  in
+    flake-utils.lib.eachSystem platforms (system: let
       pkgs = import nixpkgs {
         inherit system;
       };
-      lib = pkgs.lib;
 
       llvm = pkgs.llvmPackages_16;
       llvmStdenv = llvm.stdenv.override {
@@ -74,7 +78,7 @@ rec {
         env = {
           GLIB_SUPP_FILE = "${pkgs.glib.dev}/share/glib-2.0/valgrind/glib.supp";
           GTK_SUPP_FILE = "${pkgs.gtk4}/share/gtk-4.0/valgrind/gtk.supp";
-          XDG_DATA_DIRS = lib.makeSearchPathOutput "devdoc" "share" (with pkgs; [
+          XDG_DATA_DIRS = nixpkgs.lib.makeSearchPathOutput "devdoc" "share" (with pkgs; [
             glib
             gtk4
             libadwaita
@@ -95,12 +99,12 @@ rec {
 
         mesonBuildType = "release";
 
-        meta = {
+        meta = with nixpkgs.lib; {
           inherit description;
           homepage = "https://github.com/paveloom-a/Kirk";
-          maintainers = [lib.maintainers.paveloom];
-          license = lib.licenses.gpl3Plus;
-          platforms = lib.platforms.linux;
+          license = licenses.gpl3Plus;
+          inherit platforms;
+          maintainers = [maintainers.paveloom];
         };
       };
     });
