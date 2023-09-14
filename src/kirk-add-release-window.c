@@ -57,22 +57,11 @@ static void kirk_add_release_window_class_init(KirkAddReleaseWindowClass *klass
     );
 
     object_class->dispose = kirk_add_release_window_dispose;
-
-    // gtk_widget_class_bind_template_child(
-    //     widget_class,
-    //     KirkAddReleaseWindow,
-    //     destination_folder_entry_row
-    // );
-
-    // gtk_widget_class_bind_template_callback(
-    //     widget_class,
-    //     select_destination_folder
-    // );
 }
 
 KirkAddReleaseWindow *kirk_add_release_window_new(
-    KirkApplication *app,
-    KirkApplicationWindow *app_win
+    const KirkApplication *app,
+    const KirkApplicationWindow *app_win
 ) {
     return g_object_new(
         KIRK_TYPE_ADD_RELEASE_WINDOW,

@@ -38,7 +38,7 @@ void kirk_secret_schema_store_password(
     GAsyncReadyCallback callback
 );
 
-gchar* kirk_secret_schema_lookup_password_finish(
+gchar *kirk_secret_schema_lookup_password_finish(
     GAsyncResult *result,
     GError **error
 );

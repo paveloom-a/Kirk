@@ -64,7 +64,7 @@ static void prepare_actions(KirkApplication *self) {
 }
 
 static void prepare_settings(KirkApplication *self) {
-    g_autofree const gchar *destination_folder_path =
+    const g_autofree gchar *destination_folder_path =
         g_settings_get_string(self->settings, "destination-folder-path");
 
     if (destination_folder_path != NULL && destination_folder_path[0] != '\0') {

@@ -35,8 +35,8 @@ G_DECLARE_FINAL_TYPE(
 )
 
 KirkAddReleaseWindow *kirk_add_release_window_new(
-    KirkApplication *app,
-    KirkApplicationWindow *app_win
+    const KirkApplication *app,
+    const KirkApplicationWindow *app_win
 );
 
 G_END_DECLS
