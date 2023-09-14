@@ -1,5 +1,25 @@
 # Kirk Valgrind suppressions file
 
+# https://gitlab.gnome.org/GNOME/glib/-/merge_requests/3583
+{
+   g_tcp_connection_close_async
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:g_malloc0
+   fun:g_type_create_instance
+   fun:g_object_new_internal
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:g_task_new
+   fun:g_tcp_connection_close_async
+   fun:g_io_stream_close_async
+   fun:kirk_qobuz_client_close_connection
+   fun:kirk_qobuz_client_read_login_response_finish
+   fun:async_ready_callback_wrapper
+   fun:g_task_return_now
+}
+
 # gtk_file_dialog_select_folder
 {
    gtk_file_dialog_select_folder.1
