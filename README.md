@@ -20,7 +20,7 @@ Allow `direnv` to load the environment by executing `direnv allow`.
 Then, to build in the `debug` mode, run
 
 ```bash
-meson debug
+meson setup debug
 cd debug
 ninja && ./kirk
 ```
