@@ -83,7 +83,7 @@ static void add_release(
     const gchar *action_name,
     GVariant *parameter
 ) {
-    KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(widget);
+    const KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(widget);
     KirkAddReleaseWindow *add_release_win =
         kirk_add_release_window_new(KIRK_DEFAULT_APPLICATION, self);
     gtk_window_present(GTK_WINDOW(add_release_win));
@@ -94,7 +94,7 @@ static void open_preferences(
     const gchar *action_name,
     GVariant *parameter
 ) {
-    KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(widget);
+    const KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(widget);
 
     KirkPreferencesWindow *preferences_win =
         kirk_preferences_window_new(KIRK_DEFAULT_APPLICATION, self);
@@ -142,6 +142,6 @@ static void kirk_application_window_class_init(  //
     );
 }
 
-KirkApplicationWindow *kirk_application_window_new(KirkApplication *app) {
+KirkApplicationWindow *kirk_application_window_new(const KirkApplication *app) {
     return g_object_new(KIRK_TYPE_APPLICATION_WINDOW, "application", app, NULL);
 }

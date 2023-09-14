@@ -66,6 +66,7 @@ rec {
       buildInputs = with pkgs; [
         libadwaita
         libsecret
+        libsoup_3
       ];
     in {
       devShells.default = ccacheStdenv.mkDerivation {
@@ -84,6 +85,7 @@ rec {
             gtk4
             libadwaita
             libsecret
+            libsoup_3
           ]);
         };
       };

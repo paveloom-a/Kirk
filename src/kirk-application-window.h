@@ -34,6 +34,6 @@ G_DECLARE_FINAL_TYPE(
     AdwApplicationWindow
 )
 
-KirkApplicationWindow *kirk_application_window_new(KirkApplication *app);
+KirkApplicationWindow *kirk_application_window_new(const KirkApplication *app);
 
 G_END_DECLS

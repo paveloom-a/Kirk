@@ -139,14 +139,11 @@ static void qobuz_send_authorization_request_finish(
 ) {
     KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(user_data);
 
-    KirkQobuzClientResult *client_result =
-        g_task_propagate_pointer(G_TASK(result), NULL);
+    gchar *message = g_task_propagate_pointer(G_TASK(result), NULL);
 
-    AdwToast *toast = adw_toast_new(client_result->message);
+    AdwToast *toast = adw_toast_new(message);
     adw_toast_set_timeout(toast, 2);
     adw_preferences_window_add_toast(ADW_PREFERENCES_WINDOW(self), toast);
-
-    kirk_qobuz_client_result_free(client_result);
 
     qobuz_reset_authorization_request_button(self);
 }
@@ -174,7 +171,7 @@ static void qobuz_send_authorization_request(
     );
 
     self->cancellable = g_cancellable_new();
-    kirk_qobuz_client_send_authorization_request(
+    kirk_qobuz_client_try_to_authorize(
         self->settings,
         self->cancellable,
         qobuz_send_authorization_request_finish,
@@ -358,8 +355,8 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass *klass
 }
 
 KirkPreferencesWindow *kirk_preferences_window_new(
-    KirkApplication *app,
-    KirkApplicationWindow *app_win
+    const KirkApplication *app,
+    const KirkApplicationWindow *app_win
 ) {
     return g_object_new(
         KIRK_TYPE_PREFERENCES_WINDOW,

@@ -93,7 +93,7 @@ static void kirk_application_startup(GApplication *app) {
 }
 
 static void kirk_application_activate(GApplication *app) {
-    KirkApplication *self = KIRK_APPLICATION(app);
+    const KirkApplication *self = KIRK_APPLICATION(app);
 
     KirkApplicationWindow *win = kirk_application_window_new(self);
     gtk_window_present(GTK_WINDOW(win));

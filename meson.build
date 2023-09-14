@@ -54,8 +54,9 @@ conf.set('APP_VERSION', APP_VERSION)
 conf.set10('APP_DEBUG_MODE_ON', APP_DEBUG_MODE_ON)
 
 dependencies = [
-  dependency('libadwaita-1', version: '>=1.3.3', include_type: 'system'),
+  dependency('libadwaita-1', version: '>=1.3.4', include_type: 'system'),
   dependency('libsecret-1', version: '>=0.20.5', include_type: 'system'),
+  dependency('libsoup-3.0', version: '>=3.4.2', include_type: 'system'),
 ]
 
 cc = meson.get_compiler('c')

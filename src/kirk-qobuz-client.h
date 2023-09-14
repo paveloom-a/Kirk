@@ -22,21 +22,7 @@
 
 G_BEGIN_DECLS
 
-#define QOBUZ_HOST "www.qobuz.com"
-
-#define QOBUZ_API_PATH "/api.json/0.2"
-#define QOBUZ_LOGIN_PATH QOBUZ_API_PATH "/user/login"
-
-#define QOBUZ_BUFFER_SIZE 1024
-
-typedef struct {
-    gint status_code;
-    gchar *message;
-} KirkQobuzClientResult;
-
-void kirk_qobuz_client_result_free(KirkQobuzClientResult *self);
-
-void kirk_qobuz_client_send_authorization_request(
+void kirk_qobuz_client_try_to_authorize(
     GSettings *settings,
     GCancellable *cancellable,
     GAsyncReadyCallback callback,
