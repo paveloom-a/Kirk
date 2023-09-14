@@ -31,3 +31,16 @@
 ##### Qobuz: retrieve `app_id`
 
 ##### Close properly on an interrupt signal
+
+##### Replace the magic numbers in the provider code
+
+##### Wrap the TCP connection in TSL
+- Check in Wireshark:
+    - Credentials tools
+    - HTTP statistics (is it visible?)
+    - Can we even decrypt the traffic?
+- Switch to using `libsoup`
+- Switch to using HTTP/2
+
+##### Remove the `flake-utils` Nix dependency
+- https://journal.platonic.systems/nix-flake-architecture-in-practice

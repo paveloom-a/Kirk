@@ -99,6 +99,7 @@ static void kirk_qobuz_client_return_result(GTask *task) {
         client_result,
         (GDestroyNotify)kirk_qobuz_client_result_free
     );
+
     g_object_unref(task);
 }
 
@@ -241,7 +242,7 @@ static void kirk_qobuz_client_send_login_request(GTask *task) {
         self->token,
         " HTTP/1.1\r\n"
         "Host: " QOBUZ_HOST "\r\n"
-        "Accept: application/json; charset=utf-8\r\n"
+        "Accept: application/json\r\n"
         "\r\n",
         NULL
     );
@@ -276,6 +277,11 @@ static void kirk_qobuz_client_connect_finish(
         kirk_qobuz_client_return_result(task);
         return;
     }
+
+    g_tcp_connection_set_graceful_disconnect(
+        G_TCP_CONNECTION(self->connection),
+        TRUE
+    );
 
     kirk_qobuz_client_send_login_request(task);
 }
