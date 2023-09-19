@@ -37,7 +37,6 @@ typedef struct {
     SoupSession* session;
 
     gchar* app_id;
-    gchar* user_id;
     gchar* token;
 
     KirkQobuzClientStatus status;
@@ -45,7 +44,6 @@ typedef struct {
 
 static void kirk_qobuz_client_free(KirkQobuzClient* self) {
     g_object_unref(self->session);
-    g_free(self->user_id);
     secret_password_free(self->token);
     g_free(self);
 }
@@ -130,11 +128,18 @@ static void kirk_qobuz_client_send_authorization_request(GTask* task) {
         QOBUZ_HOST,
         QOBUZ_LOGIN_PATH,
         kirk_uri_key_value("app_id", self->app_id),
-        kirk_uri_key_value("user_id", self->user_id),
-        kirk_uri_key_value("user_auth_token", self->token),
         NULL
     );
     SoupMessage* msg = soup_message_new(SOUP_METHOD_GET, uri);
+
+    SoupMessageHeaders* request_headers = soup_message_get_request_headers(msg);
+    const g_autofree gchar* authorization_header_value =
+        g_strconcat("Bearer ", self->token, NULL);
+    soup_message_headers_append(
+        request_headers,
+        "Authorization",
+        authorization_header_value
+    );
 
     soup_session_send_async(
         self->session,
@@ -189,7 +194,6 @@ void kirk_qobuz_client_try_to_authorize(
     qobuz_client->session = soup_session_new();
 
     qobuz_client->app_id = "950096963";
-    qobuz_client->user_id = g_settings_get_string(settings, "qobuz-user-id");
 
     GTask* task = g_task_new(NULL, cancellable, callback, user_data);
     g_task_set_check_cancellable(task, FALSE);

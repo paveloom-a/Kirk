@@ -32,7 +32,6 @@ struct _KirkPreferencesWindow {
 
     GCancellable* cancellable;
 
-    GtkWidget* qobuz_user_id_entry_row;
     GtkWidget* qobuz_token_password_entry_row;
     GtkWidget* qobuz_authorization_request_button;
     GtkWidget* qobuz_authorization_request_button_content;
@@ -48,22 +47,14 @@ G_DEFINE_TYPE(
 )
 
 static void qobuz_set_verification_availability(KirkPreferencesWindow* self) {
-    const gchar* user_id =
-        gtk_editable_get_text(GTK_EDITABLE(self->qobuz_user_id_entry_row));
     const gchar* token = gtk_editable_get_text(  //
         GTK_EDITABLE(self->qobuz_token_password_entry_row)
     );
 
     gtk_widget_set_sensitive(
         GTK_WIDGET(self->qobuz_authorization_request_button),
-        !(user_id[0] == '\0' || token[0] == '\0')
+        token[0] != '\0'
     );
-}
-
-static void qobuz_user_id_changed(GtkEditable* editable, gpointer user_data) {
-    KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(user_data);
-
-    qobuz_set_verification_availability(self);
 }
 
 static void qobuz_update_token_finish(
@@ -220,13 +211,6 @@ static void prepare_settings(KirkPreferencesWindow* self) {
 
     g_settings_bind(
         self->settings,
-        "qobuz-user-id",
-        G_OBJECT(self->qobuz_user_id_entry_row),
-        "text",
-        G_SETTINGS_BIND_DEFAULT
-    );
-    g_settings_bind(
-        self->settings,
         "destination-folder-path",
         G_OBJECT(self->destination_folder_entry_row),
         "text",
@@ -318,11 +302,6 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass* klass
     gtk_widget_class_bind_template_child(
         widget_class,
         KirkPreferencesWindow,
-        qobuz_user_id_entry_row
-    );
-    gtk_widget_class_bind_template_child(
-        widget_class,
-        KirkPreferencesWindow,
         qobuz_token_password_entry_row
     );
     gtk_widget_class_bind_template_child(
@@ -342,10 +321,6 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass* klass
         destination_folder_entry_row
     );
 
-    gtk_widget_class_bind_template_callback(
-        widget_class,
-        qobuz_user_id_changed
-    );
     gtk_widget_class_bind_template_callback(widget_class, qobuz_token_changed);
 
     gtk_widget_class_bind_template_callback(

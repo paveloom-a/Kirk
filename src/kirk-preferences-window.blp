@@ -34,11 +34,6 @@ template $KirkPreferencesWindow : Adw.PreferencesWindow {
     Adw.PreferencesGroup {
       title: "Qobuz";
 
-      Adw.EntryRow qobuz_user_id_entry_row {
-        title: _("User ID");
-        changed => $qobuz_user_id_changed();
-      }
-
       Adw.PasswordEntryRow qobuz_token_password_entry_row {
         title: _("Token");
         changed => $qobuz_token_changed();
