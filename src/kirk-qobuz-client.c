@@ -21,13 +21,9 @@
 #include "include/config.h"
 #include "src/kirk-preferences-window.h"
 #include "src/kirk-secret-schema.h"
+#include "src/kirk-uri.h"
 
 #include <libsoup/soup.h>
-
-#define QOBUZ_HOST "www.qobuz.com"
-
-#define QOBUZ_API_PATH "/api.json/0.2"
-#define QOBUZ_LOGIN_PATH QOBUZ_API_PATH "/user/login"
 
 typedef enum {
     KIRK_QOBUZ_CLIENT_STATE_CANCELLED,
@@ -120,19 +116,25 @@ static void kirk_qobuz_client_send_authorization_request_finish(
     kirk_qobuz_client_return_result(task);
 }
 
+#define QOBUZ_SCHEME "http://"
+#define QOBUZ_HOST "www.qobuz.com"
+
+#define QOBUZ_API_PATH "/api.json/0.2"
+#define QOBUZ_LOGIN_PATH QOBUZ_API_PATH "/user/login"
+
 static void kirk_qobuz_client_send_authorization_request(GTask* task) {
     const KirkQobuzClient* self = g_task_get_task_data(task);
 
-    const g_autofree gchar* uri_string = g_strconcat(
-        "http://" QOBUZ_HOST QOBUZ_LOGIN_PATH "?app_id=",
-        self->app_id,
-        "&user_id=",
-        self->user_id,
-        "&user_auth_token=",
-        self->token,
+    const g_autofree gchar* uri = kirk_uri_new(
+        QOBUZ_SCHEME,
+        QOBUZ_HOST,
+        QOBUZ_LOGIN_PATH,
+        kirk_uri_key_value("app_id", self->app_id),
+        kirk_uri_key_value("user_id", self->user_id),
+        kirk_uri_key_value("user_auth_token", self->token),
         NULL
     );
-    SoupMessage* msg = soup_message_new(SOUP_METHOD_GET, uri_string);
+    SoupMessage* msg = soup_message_new(SOUP_METHOD_GET, uri);
 
     soup_session_send_async(
         self->session,
