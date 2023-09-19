@@ -294,9 +294,9 @@ static void kirk_preferences_window_init(KirkPreferencesWindow *self) {
 static void kirk_preferences_window_dispose(GObject *object) {
     KirkPreferencesWindow *self = KIRK_PREFERENCES_WINDOW(object);
 
-    g_clear_object(&self->settings);
-
     g_cancellable_cancel(self->cancellable);
+
+    g_clear_object(&self->settings);
 
     gtk_widget_dispose_template(GTK_WIDGET(self), KIRK_TYPE_PREFERENCES_WINDOW);
 

@@ -38,3 +38,12 @@
     - HTTP statistics (is it visible?)
     - Can we even decrypt the traffic?
 - Switch to using HTTP/2
+
+##### Construct a query for URLs from pairs of key-values using a function with variadic arguments
+
+##### Don't strip debugging symbols in dependencies for debug builds
+- https://nixos.wiki/wiki/Debug_Symbols
+
+##### Update to LLVM 17
+
+##### Add `clang-tidy` to `lint.bash`
