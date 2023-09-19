@@ -32,13 +32,6 @@
 
 ##### Close properly on an interrupt signal
 
-##### Wrap the TCP connection in TSL
-- Check in Wireshark:
-    - Credentials tools
-    - HTTP statistics (is it visible?)
-    - Can we even decrypt the traffic?
-- Switch to using HTTP/2
-
 ##### Don't strip debugging symbols in dependencies for debug builds
 - https://nixos.wiki/wiki/Debug_Symbols
 

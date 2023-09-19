@@ -114,7 +114,7 @@ static void kirk_qobuz_client_send_authorization_request_finish(
     kirk_qobuz_client_return_result(task);
 }
 
-#define QOBUZ_SCHEME "http://"
+#define QOBUZ_SCHEME "https://"
 #define QOBUZ_HOST "www.qobuz.com"
 
 #define QOBUZ_API_PATH "/api.json/0.2"
