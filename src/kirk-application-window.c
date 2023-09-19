@@ -27,7 +27,7 @@
 struct _KirkApplicationWindow {
     AdwApplicationWindow parent;
 
-    GSettings *settings;
+    GSettings* settings;
 };
 
 G_DEFINE_TYPE(
@@ -36,7 +36,7 @@ G_DEFINE_TYPE(
     ADW_TYPE_APPLICATION_WINDOW
 )
 
-static void prepare_settings(KirkApplicationWindow *self) {
+static void prepare_settings(KirkApplicationWindow* self) {
     self->settings = g_settings_new(APP_ID);
 
     g_settings_bind(
@@ -62,14 +62,14 @@ static void prepare_settings(KirkApplicationWindow *self) {
     );
 }
 
-static void kirk_application_window_init(KirkApplicationWindow *self) {
+static void kirk_application_window_init(KirkApplicationWindow* self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     prepare_settings(self);
 }
 
-static void kirk_application_window_dispose(GObject *object) {
-    KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(object);
+static void kirk_application_window_dispose(GObject* object) {
+    KirkApplicationWindow* self = KIRK_APPLICATION_WINDOW(object);
 
     g_clear_object(&self->settings);
 
@@ -79,32 +79,32 @@ static void kirk_application_window_dispose(GObject *object) {
 }
 
 static void add_release(
-    GtkWidget *widget,
-    const gchar *action_name,
-    GVariant *parameter
+    GtkWidget* widget,
+    const gchar* action_name,
+    GVariant* parameter
 ) {
-    const KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(widget);
-    KirkAddReleaseWindow *add_release_win =
+    const KirkApplicationWindow* self = KIRK_APPLICATION_WINDOW(widget);
+    KirkAddReleaseWindow* add_release_win =
         kirk_add_release_window_new(KIRK_DEFAULT_APPLICATION, self);
     gtk_window_present(GTK_WINDOW(add_release_win));
 }
 
 static void open_preferences(
-    GtkWidget *widget,
-    const gchar *action_name,
-    GVariant *parameter
+    GtkWidget* widget,
+    const gchar* action_name,
+    GVariant* parameter
 ) {
-    const KirkApplicationWindow *self = KIRK_APPLICATION_WINDOW(widget);
+    const KirkApplicationWindow* self = KIRK_APPLICATION_WINDOW(widget);
 
-    KirkPreferencesWindow *preferences_win =
+    KirkPreferencesWindow* preferences_win =
         kirk_preferences_window_new(KIRK_DEFAULT_APPLICATION, self);
     gtk_window_present(GTK_WINDOW(preferences_win));
 }
 
 static void kirk_application_window_class_init(  //
-    KirkApplicationWindowClass *klass
+    KirkApplicationWindowClass* klass
 ) {
-    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+    GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(klass);
 
     gtk_widget_class_set_template_from_resource(
         widget_class,
@@ -142,6 +142,6 @@ static void kirk_application_window_class_init(  //
     );
 }
 
-KirkApplicationWindow *kirk_application_window_new(const KirkApplication *app) {
+KirkApplicationWindow* kirk_application_window_new(const KirkApplication* app) {
     return g_object_new(KIRK_TYPE_APPLICATION_WINDOW, "application", app, NULL);
 }

@@ -34,9 +34,9 @@ G_DECLARE_FINAL_TYPE(
     AdwPreferencesWindow
 )
 
-KirkPreferencesWindow *kirk_preferences_window_new(
-    const KirkApplication *app,
-    const KirkApplicationWindow *app_win
+KirkPreferencesWindow* kirk_preferences_window_new(
+    const KirkApplication* app,
+    const KirkApplicationWindow* app_win
 );
 
 G_END_DECLS

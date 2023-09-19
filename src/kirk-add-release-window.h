@@ -34,9 +34,9 @@ G_DECLARE_FINAL_TYPE(
     AdwWindow
 )
 
-KirkAddReleaseWindow *kirk_add_release_window_new(
-    const KirkApplication *app,
-    const KirkApplicationWindow *app_win
+KirkAddReleaseWindow* kirk_add_release_window_new(
+    const KirkApplication* app,
+    const KirkApplicationWindow* app_win
 );
 
 G_END_DECLS

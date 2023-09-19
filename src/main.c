@@ -24,19 +24,19 @@
 // Necessary for debug builds when the GSettings schema is not installed yet
 static void try_override_schema_dir() {
     g_autoptr(GError) error = NULL;
-    const g_autofree gchar *process_cwd_path =
+    const g_autofree gchar* process_cwd_path =
         g_file_read_link("/proc/self/cwd", &error);
 
     if (error != NULL) {
         g_error("Error reading the link: %s", error->message);
     }
 
-    const g_autofree gchar *gsettings_schema_dir =
+    const g_autofree gchar* gsettings_schema_dir =
         g_build_filename(process_cwd_path, "data", NULL);
     g_setenv("GSETTINGS_SCHEMA_DIR", gsettings_schema_dir, FALSE);
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
 #ifdef APP_DEBUG_MODE_ON
     try_override_schema_dir();
 #endif

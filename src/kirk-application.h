@@ -33,6 +33,6 @@ G_DECLARE_FINAL_TYPE(
     AdwApplication
 )
 
-KirkApplication *kirk_application_new();
+KirkApplication* kirk_application_new();
 
 G_END_DECLS

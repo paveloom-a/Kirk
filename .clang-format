@@ -10,6 +10,7 @@ IndentWidth: 4
 InsertBraces: true
 KeepEmptyLinesAtTheStartOfBlocks: false
 PenaltyReturnTypeOnItsOwnLine: 999
+PointerAlignment: Left
 QualifierAlignment: Custom
 QualifierOrder: [inline, static, const, volatile, friend, constexpr, restrict, type]
 SeparateDefinitionBlocks: Always

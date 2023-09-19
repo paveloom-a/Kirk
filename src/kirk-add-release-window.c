@@ -25,19 +25,19 @@
 struct _KirkAddReleaseWindow {
     AdwWindow parent;
 
-    GSettings *settings;
+    GSettings* settings;
 };
 
 G_DEFINE_TYPE(KirkAddReleaseWindow, kirk_add_release_window, ADW_TYPE_WINDOW)
 
-static void kirk_add_release_window_init(KirkAddReleaseWindow *self) {
+static void kirk_add_release_window_init(KirkAddReleaseWindow* self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     self->settings = g_settings_new(APP_ID);
 }
 
-static void kirk_add_release_window_dispose(GObject *object) {
-    KirkAddReleaseWindow *self = KIRK_ADD_RELEASE_WINDOW(object);
+static void kirk_add_release_window_dispose(GObject* object) {
+    KirkAddReleaseWindow* self = KIRK_ADD_RELEASE_WINDOW(object);
 
     g_clear_object(&self->settings);
 
@@ -46,10 +46,10 @@ static void kirk_add_release_window_dispose(GObject *object) {
     G_OBJECT_CLASS(kirk_add_release_window_parent_class)->dispose(object);
 }
 
-static void kirk_add_release_window_class_init(KirkAddReleaseWindowClass *klass
+static void kirk_add_release_window_class_init(KirkAddReleaseWindowClass* klass
 ) {
-    GObjectClass *object_class = G_OBJECT_CLASS(klass);
-    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
+    GObjectClass* object_class = G_OBJECT_CLASS(klass);
+    GtkWidgetClass* widget_class = GTK_WIDGET_CLASS(klass);
 
     gtk_widget_class_set_template_from_resource(
         widget_class,
@@ -59,9 +59,9 @@ static void kirk_add_release_window_class_init(KirkAddReleaseWindowClass *klass
     object_class->dispose = kirk_add_release_window_dispose;
 }
 
-KirkAddReleaseWindow *kirk_add_release_window_new(
-    const KirkApplication *app,
-    const KirkApplicationWindow *app_win
+KirkAddReleaseWindow* kirk_add_release_window_new(
+    const KirkApplication* app,
+    const KirkApplicationWindow* app_win
 ) {
     return g_object_new(
         KIRK_TYPE_ADD_RELEASE_WINDOW,

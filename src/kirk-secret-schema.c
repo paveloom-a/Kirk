@@ -22,7 +22,7 @@
 
 #include <libsecret/secret.h>
 
-const SecretSchema *kirk_secret_schema_get_type() {
+const SecretSchema* kirk_secret_schema_get_type() {
     static const SecretSchema schema = {
         .name = APP_ID,
         .flags = SECRET_SCHEMA_NONE,
@@ -35,16 +35,16 @@ const SecretSchema *kirk_secret_schema_get_type() {
 }
 
 void kirk_secret_schema_store_password_finish(
-    GAsyncResult *result,
-    GError **error
+    GAsyncResult* result,
+    GError** error
 ) {
     secret_password_store_finish(result, error);
 }
 
 void kirk_secret_schema_store_password(
-    const gchar *label,
-    const gchar *password,
-    const gchar *service,
+    const gchar* label,
+    const gchar* password,
+    const gchar* service,
     GAsyncReadyCallback callback
 ) {
     secret_password_store(
@@ -63,16 +63,16 @@ void kirk_secret_schema_store_password(
     );
 }
 
-gchar *kirk_secret_schema_lookup_password_finish(
-    GAsyncResult *result,
-    GError **error
+gchar* kirk_secret_schema_lookup_password_finish(
+    GAsyncResult* result,
+    GError** error
 ) {
     return secret_password_lookup_finish(result, error);
 }
 
 void kirk_secret_schema_lookup_password(
-    const gchar *service,
-    GCancellable *cancellable,
+    const gchar* service,
+    GCancellable* cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data
 ) {

@@ -26,25 +26,25 @@
 struct _KirkApplication {
     AdwApplication parent;
 
-    GSettings *settings;
+    GSettings* settings;
 };
 
 G_DEFINE_TYPE(KirkApplication, kirk_application, ADW_TYPE_APPLICATION)
 
-static void kirk_application_init(KirkApplication *self) {
+static void kirk_application_init(KirkApplication* self) {
     self->settings = g_settings_new(APP_ID);
 }
 
 static void quit(
-    GSimpleAction *action,
-    GVariant *parameter,
+    GSimpleAction* action,
+    GVariant* parameter,
     gpointer user_data
 ) {
     g_application_quit(G_APPLICATION(user_data));
 }
 
-static void prepare_actions(KirkApplication *self) {
-    GtkApplication *app = GTK_APPLICATION(self);
+static void prepare_actions(KirkApplication* self) {
+    GtkApplication* app = GTK_APPLICATION(self);
 
     const GActionEntry entries[] = {
         {.name = "quit", .activate = quit},
@@ -59,19 +59,19 @@ static void prepare_actions(KirkApplication *self) {
     gtk_application_set_accels_for_action(
         app,
         "app.quit",
-        (const gchar *const[]){"<primary>q", NULL}
+        (const gchar* const[]){"<primary>q", NULL}
     );
 }
 
-static void prepare_settings(KirkApplication *self) {
-    const g_autofree gchar *destination_folder_path =
+static void prepare_settings(KirkApplication* self) {
+    const g_autofree gchar* destination_folder_path =
         g_settings_get_string(self->settings, "destination-folder-path");
 
     if (destination_folder_path != NULL && destination_folder_path[0] != '\0') {
         return;
     }
 
-    const gchar *music_directory_path =
+    const gchar* music_directory_path =
         g_get_user_special_dir(G_USER_DIRECTORY_MUSIC);
 
     if (music_directory_path != NULL) {
@@ -83,8 +83,8 @@ static void prepare_settings(KirkApplication *self) {
     }
 }
 
-static void kirk_application_startup(GApplication *app) {
-    KirkApplication *self = KIRK_APPLICATION(app);
+static void kirk_application_startup(GApplication* app) {
+    KirkApplication* self = KIRK_APPLICATION(app);
 
     prepare_actions(self);
     prepare_settings(self);
@@ -92,30 +92,30 @@ static void kirk_application_startup(GApplication *app) {
     G_APPLICATION_CLASS(kirk_application_parent_class)->startup(app);
 }
 
-static void kirk_application_activate(GApplication *app) {
-    const KirkApplication *self = KIRK_APPLICATION(app);
+static void kirk_application_activate(GApplication* app) {
+    const KirkApplication* self = KIRK_APPLICATION(app);
 
-    KirkApplicationWindow *win = kirk_application_window_new(self);
+    KirkApplicationWindow* win = kirk_application_window_new(self);
     gtk_window_present(GTK_WINDOW(win));
 }
 
-static void kirk_application_shutdown(GApplication *app) {
-    KirkApplication *self = KIRK_APPLICATION(app);
+static void kirk_application_shutdown(GApplication* app) {
+    KirkApplication* self = KIRK_APPLICATION(app);
 
     g_clear_object(&self->settings);
 
     G_APPLICATION_CLASS(kirk_application_parent_class)->shutdown(app);
 }
 
-static void kirk_application_class_init(KirkApplicationClass *klass) {
-    GApplicationClass *app_klass = G_APPLICATION_CLASS(klass);
+static void kirk_application_class_init(KirkApplicationClass* klass) {
+    GApplicationClass* app_klass = G_APPLICATION_CLASS(klass);
 
     app_klass->startup = kirk_application_startup;
     app_klass->activate = kirk_application_activate;
     app_klass->shutdown = kirk_application_shutdown;
 }
 
-KirkApplication *kirk_application_new() {
+KirkApplication* kirk_application_new() {
     return g_object_new(
         KIRK_TYPE_APPLICATION,
         "application-id",

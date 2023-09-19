@@ -22,30 +22,30 @@
 
 G_BEGIN_DECLS
 
-const SecretSchema *kirk_secret_schema_get_type();
+const SecretSchema* kirk_secret_schema_get_type();
 
 #define KIRK_SECRET_SCHEMA kirk_secret_schema_get_type()
 
 void kirk_secret_schema_store_password_finish(
-    GAsyncResult *result,
-    GError **error
+    GAsyncResult* result,
+    GError** error
 );
 
 void kirk_secret_schema_store_password(
-    const gchar *label,
-    const gchar *password,
-    const gchar *service,
+    const gchar* label,
+    const gchar* password,
+    const gchar* service,
     GAsyncReadyCallback callback
 );
 
-gchar *kirk_secret_schema_lookup_password_finish(
-    GAsyncResult *result,
-    GError **error
+gchar* kirk_secret_schema_lookup_password_finish(
+    GAsyncResult* result,
+    GError** error
 );
 
 void kirk_secret_schema_lookup_password(
-    const gchar *service,
-    GCancellable *cancellable,
+    const gchar* service,
+    GCancellable* cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data
 );
