@@ -123,13 +123,7 @@ static void kirk_qobuz_client_send_authorization_request_finish(
 static void kirk_qobuz_client_send_authorization_request(GTask* task) {
     const KirkQobuzClient* self = g_task_get_task_data(task);
 
-    const g_autofree gchar* uri = kirk_uri_new(
-        QOBUZ_SCHEME,
-        QOBUZ_HOST,
-        QOBUZ_LOGIN_PATH,
-        kirk_uri_key_value("app_id", self->app_id),
-        NULL
-    );
+    const gchar* uri = QOBUZ_SCHEME QOBUZ_HOST QOBUZ_LOGIN_PATH;
     SoupMessage* msg = soup_message_new(SOUP_METHOD_GET, uri);
 
     SoupMessageHeaders* request_headers = soup_message_get_request_headers(msg);
@@ -140,6 +134,7 @@ static void kirk_qobuz_client_send_authorization_request(GTask* task) {
         "Authorization",
         authorization_header_value
     );
+    soup_message_headers_append(request_headers, "X-App-ID", self->app_id);
 
     soup_session_send_async(
         self->session,
