@@ -48,6 +48,7 @@ rec {
         cppcheck
         cpplint
         curl
+        gdb
         gnome.devhelp
         iproute2
         ltex-ls
@@ -57,6 +58,7 @@ rec {
         nix-output-monitor
         nix-tree
         nvd
+        rr
         shellcheck
         valgrind
         yamlfmt
