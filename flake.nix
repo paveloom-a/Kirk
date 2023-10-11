@@ -1,6 +1,6 @@
 rec {
   description = "WIP";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.nixpkgs.url = "github:paveloom/nixpkgs/system";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
   outputs = {
@@ -16,6 +16,7 @@ rec {
     flake-utils.lib.eachSystem platforms (system: let
       pkgs = import nixpkgs {
         inherit system;
+        config.allowUnfree = true;
       };
 
       llvm = pkgs.llvmPackages_16;
@@ -58,6 +59,7 @@ rec {
         nix-output-monitor
         nix-tree
         nvd
+        pvs-studio
         rr
         shellcheck
         valgrind

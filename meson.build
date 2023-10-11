@@ -93,6 +93,9 @@ if get_option('buildtype') == 'debug'
   find_program('clang-check')
   find_program('cppcheck')
   find_program('cpplint')
+  find_program('clang-tidy')
+  find_program('scan-build')
+  find_program('pvs-studio-analyzer')
   find_program('desktop-file-validate')
   find_program('glib-compile-schemas')
   custom_target('lint',

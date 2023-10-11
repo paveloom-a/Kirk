@@ -26,6 +26,24 @@ cppcheck \
 
 cpplint --verbose=0 --quiet "${SOURCES[@]}"
 
+clang-tidy --quiet "${SOURCES[@]}"
+
+ninja -C "$MESON_CURRENT_BUILD_DIR" scan-build
+
+pvs-studio-analyzer analyze \
+  --analysis-mode '64;GA;OP;CS;MISRA;AUTOSAR;OWASP' \
+  --exclude-path "$MESON_CURRENT_BUILD_DIR/data/resources" \
+  --exclude-path "/nix/store/*" \
+  --file "$MESON_CURRENT_BUILD_DIR/compile_commands.json" \
+  --output-file "$MESON_CURRENT_BUILD_DIR/PVS-Studio.log" \
+  --rules-config "$MESON_PROJECT_SOURCE_ROOT/.pvsconfig"
+rm -rf "$MESON_CURRENT_BUILD_DIR/pvs-studio"
+plog-converter \
+  --analyzer '64:1,2,3;GA:1,2,3;OP:1,2,3;CS:1,2,3;MISRA:1,2,3;AUTOSAR:1,2,3;OWASP:1,2,3' \
+  --output "$MESON_CURRENT_BUILD_DIR/pvs-studio" \
+  --renderTypes fullhtml \
+  "$MESON_CURRENT_BUILD_DIR/PVS-Studio.log"
+
 desktop-file-validate "$MESON_CURRENT_BUILD_DIR/data/$APP_ID.desktop"
 
 glib-compile-schemas \

@@ -37,5 +37,4 @@
 
 ##### Update to LLVM 17
 
-##### Add `clang-tidy` to `lint.bash`
-- https://nrk.neocities.org/articles/c-static-analyzers
+##### Switch to C++

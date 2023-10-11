@@ -51,7 +51,7 @@ static void kirk_qobuz_client_free(KirkQobuzClient* self) {
 static void kirk_qobuz_client_return_result(GTask* task) {
     const KirkQobuzClient* self = g_task_get_task_data(task);
 
-    gchar* message;
+    gchar* message = NULL;
     switch (self->status) {
     case KIRK_QOBUZ_CLIENT_STATE_CANCELLED:
         message = "Qobuz: operation was cancelled!";
@@ -79,7 +79,7 @@ static void kirk_qobuz_client_return_result(GTask* task) {
 
 #define kirk_qobuz_client_return_if_cancelled(self, task)                      \
     if (g_cancellable_is_cancelled(g_task_get_cancellable(task))) {            \
-        self->status = KIRK_QOBUZ_CLIENT_STATE_CANCELLED;                      \
+        (self)->status = KIRK_QOBUZ_CLIENT_STATE_CANCELLED;                    \
         kirk_qobuz_client_return_result(task);                                 \
         return;                                                                \
     }
