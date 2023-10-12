@@ -32,8 +32,10 @@ if get_option('buildtype') == 'release'
   ]
 elif get_option('buildtype') == 'debug'
   cc_flags = [
+    '-fdebug-macro',
     '-ferror-limit=500',
     '-g3',
+    '-gdwarf-5',
     '-Wconversion',
     '-Wdouble-promotion',
     '-Wno-sign-conversion',
