@@ -38,3 +38,5 @@
 ##### Update to LLVM 17
 
 ##### Switch to C++
+
+##### Verify that `scan-build` works

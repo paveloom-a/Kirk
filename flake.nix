@@ -20,11 +20,11 @@ rec {
       };
 
       llvm = pkgs.llvmPackages_16;
-      llvmStdenv = llvm.stdenv.override {
-        cc = llvm.stdenv.cc.override {
+      llvmStdenv = llvm.stdenv.override (old: {
+        cc = old.cc.override {
           inherit (llvm) bintools;
         };
-      };
+      });
       ccacheStdenv = pkgs.ccacheStdenv.override {
         stdenv = pkgs.stdenvAdapters.useMoldLinker llvmStdenv;
       };

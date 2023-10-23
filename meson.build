@@ -26,6 +26,8 @@ APP_DEBUG_MODE_ON = get_option('buildtype') == 'debug'
 if get_option('buildtype') == 'release'
   cc_flags = []
   override_options = [
+    # Use the LLD linker for LTO. In Nixpkgs, the LLVM gold plugin is disabled
+    # for LLVM 16 because of https://github.com/llvm/llvm-project/issues/61350
     'b_lto=true',
     'strip=true',
     'warning_level=0',
