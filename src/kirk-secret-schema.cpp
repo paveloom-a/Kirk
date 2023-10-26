@@ -29,7 +29,7 @@ const SecretSchema* kirk_secret_schema_get_type() {
         .attributes = {
             {"schema", SECRET_SCHEMA_ATTRIBUTE_STRING},
             {"service", SECRET_SCHEMA_ATTRIBUTE_STRING},
-            {NULL, 0},
+            {nullptr, SECRET_SCHEMA_ATTRIBUTE_STRING},
         }};
     return &schema;
 }
@@ -52,9 +52,9 @@ void kirk_secret_schema_store_password(
         SECRET_COLLECTION_DEFAULT,
         label,
         password,
-        NULL,
+        nullptr,
         callback,
-        NULL,
+        nullptr,
         "schema",
         APP_ID,
         "service",

@@ -62,7 +62,7 @@ static void qobuz_update_token_finish(
     GAsyncResult* result,
     gpointer user_data
 ) {
-    kirk_secret_schema_store_password_finish(result, NULL);
+    kirk_secret_schema_store_password_finish(result, nullptr);
 }
 
 static void qobuz_set_token(const gchar* token) {
@@ -130,7 +130,8 @@ static void qobuz_send_authorization_request_finish(
 ) {
     KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(user_data);
 
-    gchar* message = g_task_propagate_pointer(G_TASK(result), NULL);
+    auto message =
+        static_cast<gchar*>(g_task_propagate_pointer(G_TASK(result), nullptr));
 
     AdwToast* toast = adw_toast_new(message);
     adw_toast_set_timeout(toast, 2);
@@ -179,9 +180,9 @@ static void select_destination_folder_finish(
     GtkFileDialog* file_dialog = GTK_FILE_DIALOG(source_object);
 
     g_autoptr(GFile) file =
-        gtk_file_dialog_select_folder_finish(file_dialog, result, NULL);
+        gtk_file_dialog_select_folder_finish(file_dialog, result, nullptr);
 
-    if (file == NULL) {
+    if (!file) {
         return;
     }
 
@@ -200,7 +201,7 @@ static void select_destination_folder(GtkButton* button, gpointer user_data) {
     gtk_file_dialog_select_folder(
         file_dialog,
         GTK_WINDOW(self),
-        NULL,
+        nullptr,
         select_destination_folder_finish,
         self
     );
@@ -225,16 +226,16 @@ static void prepare_qobuz_token_finish(
 ) {
     KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(user_data);
 
-    gchar* token = kirk_secret_schema_lookup_password_finish(result, NULL);
+    gchar* token = kirk_secret_schema_lookup_password_finish(result, nullptr);
 
-    if (token == NULL) {
-        qobuz_set_token("");
-    } else {
+    if (token) {
         gtk_editable_set_text(
             GTK_EDITABLE(self->qobuz_token_password_entry_row),
             token
         );
         g_free(token);
+    } else {
+        qobuz_set_token("");
     }
 
     qobuz_set_verification_availability(self);
@@ -243,7 +244,7 @@ static void prepare_qobuz_token_finish(
 static void prepare_qobuz_token(KirkPreferencesWindow* self) {
     secret_password_lookup(
         KIRK_SECRET_SCHEMA,
-        NULL,
+        nullptr,
         prepare_qobuz_token_finish,
         self,
         "schema",
@@ -333,12 +334,12 @@ KirkPreferencesWindow* kirk_preferences_window_new(
     const KirkApplication* app,
     const KirkApplicationWindow* app_win
 ) {
-    return g_object_new(
+    return static_cast<KirkPreferencesWindow*>(g_object_new(
         KIRK_TYPE_PREFERENCES_WINDOW,
         "application",
         app,
         "transient-for",
         app_win,
         NULL
-    );
+    ));
 }

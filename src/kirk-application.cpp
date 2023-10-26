@@ -56,25 +56,22 @@ static void prepare_actions(KirkApplication* self) {
         self
     );
 
-    gtk_application_set_accels_for_action(
-        app,
-        "app.quit",
-        (const gchar* const[]){"<primary>q", NULL}
-    );
+    const gchar* const accels[] = {"<primary>q", nullptr};
+    gtk_application_set_accels_for_action(app, "app.quit", accels);
 }
 
 static void prepare_settings(KirkApplication* self) {
     const g_autofree gchar* destination_folder_path =
         g_settings_get_string(self->settings, "destination-folder-path");
 
-    if (destination_folder_path != NULL && destination_folder_path[0] != '\0') {
+    if (destination_folder_path && destination_folder_path[0]) {
         return;
     }
 
     const gchar* music_directory_path =
         g_get_user_special_dir(G_USER_DIRECTORY_MUSIC);
 
-    if (music_directory_path != NULL) {
+    if (music_directory_path) {
         g_settings_set_string(
             self->settings,
             "destination-folder-path",
@@ -116,12 +113,12 @@ static void kirk_application_class_init(KirkApplicationClass* klass) {
 }
 
 KirkApplication* kirk_application_new() {
-    return g_object_new(
+    return static_cast<KirkApplication*>(g_object_new(
         KIRK_TYPE_APPLICATION,
         "application-id",
         APP_ID,
         "flags",
         G_APPLICATION_HANDLES_OPEN,
         NULL
-    );
+    ));
 }

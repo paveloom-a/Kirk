@@ -4,7 +4,7 @@ mapfile -t SOURCES < <(
   find \
     "$MESON_PROJECT_SOURCE_ROOT/src" \
     -type f \
-    -name "*.c" -o -name "*.h")
+    -name "*.c" -o -name "*.cpp" -o -name "*.h")
 
 appstream-util validate \
   "$MESON_CURRENT_BUILD_DIR/data/$APP_ID.metainfo.xml"
@@ -17,8 +17,7 @@ cppcheck \
   --inconclusive \
   --library=gtk \
   --quiet \
-  --suppress=missingIncludeSystem \
-  --suppress=unusedFunction \
+  --suppressions-list="$MESON_PROJECT_SOURCE_ROOT"/.cppcheck \
   --verbose \
   -I "$MESON_CURRENT_BUILD_DIR" \
   -I "$MESON_PROJECT_SOURCE_ROOT" \

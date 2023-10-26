@@ -20,7 +20,7 @@ rec {
       };
 
       llvm = pkgs.llvmPackages_16;
-      llvmStdenv = llvm.stdenv.override (old: {
+      llvmStdenv = llvm.libcxxStdenv.override (old: {
         cc = old.cc.override {
           inherit (llvm) bintools;
         };
@@ -52,6 +52,7 @@ rec {
         gdb
         gnome.devhelp
         iproute2
+        libxml2
         ltex-ls
         netcat
         nettools

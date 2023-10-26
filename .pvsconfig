@@ -2,7 +2,7 @@
 //-V::111,122
 
 # Casting pointers is expected in a GTK application
-//-V::1027,2545,2571,2590,2611
+//-V::1027,2545,2571,2578,2590,2597,2611,3546,3551,3552
 
 # We use a copyleft license
 //-V::1042
@@ -10,17 +10,29 @@
 # Returning early is okay
 //-V::2506
 
+# Dynamic memory allocations are fine
+//-V::2511
+
 # It's fine to lose constness on string literals
 //-V::2532
 
 # Unused parameters are okay
-//-V::2537
+//-V::2537,3523
 
 # We don't always need to use a return value
-//-V::2547
+//-V::2547,3527
+
+# Indexing pointers to character arrays is okay
+//-V::2563,3539
+
+# Implicit conversions to `bool` are okay
+//-V::2570,3545
 
 # Identifiers starting with "_" are expected by the C macros
-//-V::2573
+//-V::2573,3547
+
+# Declarations in global namespace are fine
+//-V::2575,3549
 
 # No arguments marked with f() is fine for the C23 standard
 //-V::2601
@@ -32,14 +44,14 @@
 //-V::2615
 
 # External macros
-//-V:G_DECLARE_FINAL_TYPE:524,809,2507,2544,2568,2570,2584,2590,2611,2614
-//-V:G_DEFINE_TYPE:201,2507,2531,2544,2547,2562,2572,2590,2594
+//-V:G_DECLARE_FINAL_TYPE:524,809,2507,2544,2568,2570,2584,2590,2597,2611,2614,3504,3545,3546,3552
+//-V:G_DEFINE_TYPE:201,2507,2531,2544,2547,2562,2563,2572,2578,2590,2594,2597,3504,3539,3546,3551,3552
 //-V:G_N_ELEMENTS:2572
 //-V:G_OBJECT:2544
 //-V:G_OBJECT_CLASS:2544
-//-V:g_clear_object:2507,2584
-//-V:g_error:2507
+//-V:g_clear_object:516,2507,2584,3504
+//-V:g_error:2507,3504
 //-V:g_signal_connect:2531
 
 # External functions
-//-V:soup_message_new:2018,2528,2544,2567,2594
+//-V:soup_message_new:2018,2528,2544,2567,2594,3519

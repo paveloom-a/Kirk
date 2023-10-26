@@ -1,3 +1,4 @@
+AccessModifierOffset: -4
 AlignAfterOpenBracket: BlockIndent
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
@@ -5,6 +6,7 @@ AllowShortBlocksOnASingleLine: Empty
 BinPackArguments: false
 BinPackParameters: false
 IncludeBlocks: Regroup
+IndentAccessModifiers: false
 IndentPPDirectives: AfterHash
 IndentWidth: 4
 InsertBraces: true
@@ -12,6 +14,7 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 PenaltyReturnTypeOnItsOwnLine: 999
 PointerAlignment: Left
 QualifierAlignment: Custom
-QualifierOrder: [inline, static, const, volatile, friend, constexpr, restrict, type]
+QualifierOrder: [inline, static, constexpr, const, volatile, friend, restrict, type]
 SeparateDefinitionBlocks: Always
+SpaceBeforeCpp11BracedList: true
 SpacesBeforeTrailingComments: 2

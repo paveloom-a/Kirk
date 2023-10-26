@@ -25,22 +25,25 @@
 
 #include <libsoup/soup.h>
 
-typedef enum {
-    KIRK_QOBUZ_CLIENT_STATE_CANCELLED,
-    KIRK_QOBUZ_CLIENT_STATE_MISSING_TOKEN,
-    KIRK_QOBUZ_CLIENT_STATE_FAILED_CONNECTION,
-    KIRK_QOBUZ_CLIENT_STATE_FAILED_AUTHORIZATION,
-    KIRK_QOBUZ_CLIENT_STATE_SUCCESSFUL_AUTHORIZATION
-} KirkQobuzClientStatus;
+enum class KirkQobuzClientStatus {
+    cancelled,
+    missing_token,
+    invalid_message,
+    failed_connection,
+    failed_authorization,
+    successful_authorization
+};
 
-typedef struct {
+struct KirkQobuzClient {
     SoupSession* session;
 
     gchar* app_id;
     gchar* token;
 
     KirkQobuzClientStatus status;
-} KirkQobuzClient;
+};
+
+#define KIRK_QOBUZ_CLIENT(o) (static_cast<KirkQobuzClient*>(o))
 
 static void kirk_qobuz_client_free(KirkQobuzClient* self) {
     g_object_unref(self->session);
@@ -49,23 +52,27 @@ static void kirk_qobuz_client_free(KirkQobuzClient* self) {
 }
 
 static void kirk_qobuz_client_return_result(GTask* task) {
-    const KirkQobuzClient* self = g_task_get_task_data(task);
+    const KirkQobuzClient* const self =
+        KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
 
-    gchar* message = NULL;
+    const gchar* message = nullptr;
     switch (self->status) {
-    case KIRK_QOBUZ_CLIENT_STATE_CANCELLED:
+    case KirkQobuzClientStatus::cancelled:
         message = "Qobuz: operation was cancelled!";
         break;
-    case KIRK_QOBUZ_CLIENT_STATE_MISSING_TOKEN:
+    case KirkQobuzClientStatus::missing_token:
         message = "Qobuz: coudln't lookup the token!";
         break;
-    case KIRK_QOBUZ_CLIENT_STATE_FAILED_CONNECTION:
+    case KirkQobuzClientStatus::invalid_message:
+        message = "Qobuz: invalid message!";
+        break;
+    case KirkQobuzClientStatus::failed_connection:
         message = "Qobuz: couldn't connect to the server!";
         break;
-    case KIRK_QOBUZ_CLIENT_STATE_FAILED_AUTHORIZATION:
+    case KirkQobuzClientStatus::failed_authorization:
         message = "Qobuz: authorization failed!";
         break;
-    case KIRK_QOBUZ_CLIENT_STATE_SUCCESSFUL_AUTHORIZATION:
+    case KirkQobuzClientStatus::successful_authorization:
         message = "Qobuz: successful authorization!";
         break;
     default:
@@ -73,13 +80,13 @@ static void kirk_qobuz_client_return_result(GTask* task) {
         break;
     }
 
-    g_task_return_pointer(task, message, NULL);
+    g_task_return_pointer(task, const_cast<gchar*>(message), nullptr);
     g_object_unref(task);
 }
 
 #define kirk_qobuz_client_return_if_cancelled(self, task)                      \
     if (g_cancellable_is_cancelled(g_task_get_cancellable(task))) {            \
-        (self)->status = KIRK_QOBUZ_CLIENT_STATE_CANCELLED;                    \
+        (self)->status = KirkQobuzClientStatus::cancelled;                     \
         kirk_qobuz_client_return_result(task);                                 \
         return;                                                                \
     }
@@ -90,25 +97,25 @@ static void kirk_qobuz_client_send_authorization_request_finish(
     gpointer user_data
 ) {
     GTask* task = G_TASK(user_data);
-    KirkQobuzClient* self = g_task_get_task_data(task);
+    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
 
     kirk_qobuz_client_return_if_cancelled(self, task);
 
-    soup_session_send_finish(self->session, result, NULL);
+    soup_session_send_finish(self->session, result, nullptr);
     SoupMessage* msg =
         soup_session_get_async_result_message(self->session, result);
 
-    if (msg == NULL) {
-        self->status = KIRK_QOBUZ_CLIENT_STATE_FAILED_CONNECTION;
+    if (!msg) {
+        self->status = KirkQobuzClientStatus::failed_connection;
         kirk_qobuz_client_return_result(task);
         return;
     }
 
-    SoupStatus status = soup_message_get_status(msg);
+    const SoupStatus status = soup_message_get_status(msg);
     if (status == SOUP_STATUS_OK) {
-        self->status = KIRK_QOBUZ_CLIENT_STATE_SUCCESSFUL_AUTHORIZATION;
+        self->status = KirkQobuzClientStatus::successful_authorization;
     } else {
-        self->status = KIRK_QOBUZ_CLIENT_STATE_FAILED_AUTHORIZATION;
+        self->status = KirkQobuzClientStatus::failed_authorization;
     }
 
     kirk_qobuz_client_return_result(task);
@@ -121,10 +128,16 @@ static void kirk_qobuz_client_send_authorization_request_finish(
 #define QOBUZ_LOGIN_PATH QOBUZ_API_PATH "/user/login"
 
 static void kirk_qobuz_client_send_authorization_request(GTask* task) {
-    const KirkQobuzClient* self = g_task_get_task_data(task);
+    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
 
-    const gchar* uri = QOBUZ_SCHEME QOBUZ_HOST QOBUZ_LOGIN_PATH;
-    SoupMessage* msg = soup_message_new(SOUP_METHOD_GET, uri);
+    const gchar* const uri = QOBUZ_SCHEME QOBUZ_HOST QOBUZ_LOGIN_PATH;
+    SoupMessage* const msg = soup_message_new(SOUP_METHOD_GET, uri);
+
+    if (!msg) {
+        self->status = KirkQobuzClientStatus::invalid_message;
+        kirk_qobuz_client_return_result(task);
+        return;
+    }
 
     SoupMessageHeaders* request_headers = soup_message_get_request_headers(msg);
     const g_autofree gchar* authorization_header_value =
@@ -152,14 +165,14 @@ static void kirk_qobuz_client_lookup_token_finish(
     gpointer user_data
 ) {
     GTask* task = G_TASK(user_data);
-    KirkQobuzClient* self = g_task_get_task_data(task);
+    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
 
     kirk_qobuz_client_return_if_cancelled(self, task);
 
-    gchar* token = kirk_secret_schema_lookup_password_finish(result, NULL);
+    gchar* token = kirk_secret_schema_lookup_password_finish(result, nullptr);
 
-    if (token == NULL || token[0] == '\0') {
-        self->status = KIRK_QOBUZ_CLIENT_STATE_MISSING_TOKEN;
+    if (!token || !token[0]) {
+        self->status = KirkQobuzClientStatus::missing_token;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -184,18 +197,17 @@ void kirk_qobuz_client_try_to_authorize(
     GAsyncReadyCallback callback,
     gpointer user_data
 ) {
-    KirkQobuzClient* qobuz_client = g_malloc0(sizeof(KirkQobuzClient));
+    auto qobuz_client = new KirkQobuzClient;
 
     qobuz_client->session = soup_session_new();
+    qobuz_client->app_id = const_cast<gchar*>("950096963");
 
-    qobuz_client->app_id = "950096963";
-
-    GTask* task = g_task_new(NULL, cancellable, callback, user_data);
-    g_task_set_check_cancellable(task, FALSE);
+    GTask* task = g_task_new(nullptr, cancellable, callback, user_data);
+    g_task_set_check_cancellable(task, false);
     g_task_set_task_data(
         task,
         qobuz_client,
-        (GDestroyNotify)kirk_qobuz_client_free
+        reinterpret_cast<GDestroyNotify>(kirk_qobuz_client_free)
     );
 
     kirk_qobuz_client_lookup_token(task);
