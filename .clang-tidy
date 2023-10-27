@@ -1,6 +1,7 @@
 Checks: >
     *,
     -altera-*,
+    -concurrency-mt-unsafe,
     -cppcoreguidelines-avoid-c-arrays,
     -cppcoreguidelines-macro-usage,
     -cppcoreguidelines-owning-memory,
@@ -9,6 +10,7 @@ Checks: >
     -cppcoreguidelines-pro-type-const-cast,
     -cppcoreguidelines-pro-type-reinterpret-cast,
     -cppcoreguidelines-pro-type-vararg,
+    -fuchsia-*,
     -hicpp-avoid-c-arrays,
     -hicpp-no-array-decay,
     -hicpp-vararg,

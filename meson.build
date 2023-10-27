@@ -65,6 +65,8 @@ add_project_arguments(compiler.get_supported_arguments(cpp_flags), language: 'cp
 add_project_link_arguments(compiler.get_supported_link_arguments(cpp_link_flags), language : 'cpp')
 
 dependencies = [
+  dependency('glib-2.0', version: '>=2.76.4', include_type: 'system'),
+  dependency('gtk4', version: '>=4.10.4', include_type: 'system'),
   dependency('libadwaita-1', version: '>=1.3.5', include_type: 'system'),
   dependency('libsecret-1', version: '>=0.20.5', include_type: 'system'),
   dependency('libsoup-3.0', version: '>=3.4.2', include_type: 'system'),

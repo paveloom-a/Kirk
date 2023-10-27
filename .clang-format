@@ -5,6 +5,7 @@ AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Empty
 BinPackArguments: false
 BinPackParameters: false
+EmptyLineBeforeAccessModifier: Never
 IncludeBlocks: Regroup
 IndentAccessModifiers: false
 IndentPPDirectives: AfterHash
@@ -15,6 +16,6 @@ PenaltyReturnTypeOnItsOwnLine: 999
 PointerAlignment: Left
 QualifierAlignment: Custom
 QualifierOrder: [inline, static, constexpr, const, volatile, friend, restrict, type]
-SeparateDefinitionBlocks: Always
+SeparateDefinitionBlocks: Leave
 SpaceBeforeCpp11BracedList: true
 SpacesBeforeTrailingComments: 2

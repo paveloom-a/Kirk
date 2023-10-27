@@ -20,20 +20,14 @@
 #include "src/kirk-application.h"
 
 #include <adwaita.h>
+#include <filesystem>
 
 // Necessary for debug builds when the GSettings schema is not installed yet
 static void try_override_schema_dir() {
-    g_autoptr(GError) error = nullptr;
-    const g_autofree gchar* process_cwd_path =
-        g_file_read_link("/proc/self/cwd", &error);
-
-    if (error) {
-        g_error("Error reading the link: %s", error->message);
-    }
-
-    const g_autofree gchar* gsettings_schema_dir =
-        g_build_filename(process_cwd_path, "data", nullptr);
-    g_setenv("GSETTINGS_SCHEMA_DIR", gsettings_schema_dir, false);
+    std::filesystem::path process_cwd_path =
+        std::filesystem::canonical("/proc/self/cwd");
+    std::filesystem::path gsettings_schema_dir = process_cwd_path / "data";
+    setenv("GSETTINGS_SCHEMA_DIR", gsettings_schema_dir.c_str(), true);
 }
 
 int main(int argc, char** argv) {
