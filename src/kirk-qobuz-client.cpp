@@ -48,7 +48,7 @@ struct KirkQobuzClient {
 static void kirk_qobuz_client_free(KirkQobuzClient* self) {
     g_object_unref(self->session);
     secret_password_free(self->token);
-    g_free(self);
+    delete self;
 }
 
 static void kirk_qobuz_client_return_result(GTask* task) {

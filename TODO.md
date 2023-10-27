@@ -22,18 +22,11 @@
 - https://developer.gnome.org/documentation/guidelines/accessibility.html
 - https://developer.gnome.org/hig
 
-##### GCC
-- Provide an easy way to switch
-- Allow testing for both Clang and GCC
-
 ##### Add a feature to export/import settings
 
 ##### Qobuz: retrieve `app_id`
 
 ##### Close properly on an interrupt signal
-
-##### Don't strip debugging symbols in dependencies for debug builds
-- https://nixos.wiki/wiki/Debug_Symbols
 
 ##### Update to LLVM 17
 
