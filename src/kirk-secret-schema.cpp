@@ -29,6 +29,7 @@ const SecretSchema* kirk_secret_schema_get_type() {
         .attributes = {
             {"schema", SECRET_SCHEMA_ATTRIBUTE_STRING},
             {"service", SECRET_SCHEMA_ATTRIBUTE_STRING},
+            {"parameter", SECRET_SCHEMA_ATTRIBUTE_STRING},
             {nullptr, SECRET_SCHEMA_ATTRIBUTE_STRING},
         }};
     return &schema;
@@ -41,10 +42,19 @@ void kirk_secret_schema_store_password_finish(
     secret_password_store_finish(result, error);
 }
 
+void kirk_secret_schema_store_password_callback(
+    GObject* source_object,
+    GAsyncResult* result,
+    gpointer user_data
+) {
+    kirk_secret_schema_store_password_finish(result, nullptr);
+}
+
 void kirk_secret_schema_store_password(
     const gchar* label,
     const gchar* password,
     const gchar* service,
+    const gchar* parameter,
     GAsyncReadyCallback callback
 ) {
     secret_password_store(
@@ -59,7 +69,29 @@ void kirk_secret_schema_store_password(
         APP_ID,
         "service",
         service,
+        "parameter",
+        parameter,
         NULL
+    );
+}
+
+void kirk_secret_schema_store_qobuz_token(const gchar* token) {
+    kirk_secret_schema_store_password(
+        "Kirk: Qobuz token",
+        token,
+        "qobuz",
+        "token",
+        kirk_secret_schema_store_password_callback
+    );
+}
+
+void kirk_secret_schema_store_qobuz_app_id(const gchar* app_id) {
+    kirk_secret_schema_store_password(
+        "Kirk: Qobuz application ID",
+        app_id,
+        "qobuz",
+        "app_id",
+        kirk_secret_schema_store_password_callback
     );
 }
 
@@ -72,6 +104,7 @@ gchar* kirk_secret_schema_lookup_password_finish(
 
 void kirk_secret_schema_lookup_password(
     const gchar* service,
+    const gchar* parameter,
     GCancellable* cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data
@@ -85,6 +118,8 @@ void kirk_secret_schema_lookup_password(
         APP_ID,
         "service",
         service,
+        "parameter",
+        parameter,
         NULL
     );
 }

@@ -20,6 +20,23 @@
    fun:g_task_return_now
 }
 
+# g_task_run_in_thread
+{
+   g_task_run_in_thread
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:strdup
+   fun:convert_hostent_to_gaih_addrtuple
+   fun:getaddrinfo
+   fun:do_lookup_by_name
+   fun:g_task_thread_pool_thread
+   fun:g_thread_pool_thread_proxy
+   fun:g_thread_proxy
+   fun:start_thread
+   fun:clone
+}
+
 # gtk_file_dialog_select_folder
 {
    gtk_file_dialog_select_folder.1

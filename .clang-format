@@ -5,6 +5,7 @@ AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Empty
 BinPackArguments: false
 BinPackParameters: false
+BreakStringLiterals: false
 EmptyLineBeforeAccessModifier: Never
 IncludeBlocks: Regroup
 IndentAccessModifiers: false

@@ -23,7 +23,14 @@
 G_BEGIN_DECLS
 
 void kirk_qobuz_client_try_to_authorize(
-    GSettings* settings,
+    GObject* source_object,
+    GCancellable* cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data
+);
+
+void kirk_qobuz_client_try_to_fetch_app_id(
+    GObject* source_object,
     GCancellable* cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data

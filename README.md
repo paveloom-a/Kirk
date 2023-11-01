@@ -33,7 +33,13 @@ You might also want to create a symbolic link of the `compile_commands.json` fil
 ln -s debug/compile_commands.json
 ```
 
-To lint the code, run `ninja lint`. To check for memory leaks, run:
+To lint the code, run `ninja lint`.
+
+To record the program execution, run `ninja && rr record ./kirk`. To replay it, run `rr replay`.
+
+To decode TLS messages, create a key log file via `ninja && SSLKEYLOGFILE=ssl_keylog ./kirk`, use it with [Wireshark](https://www.wireshark.org) afterward.
+
+To check for memory leaks, run:
 
 ```bash
 ninja && valgrind \

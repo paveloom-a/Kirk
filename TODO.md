@@ -25,9 +25,13 @@
 ##### Add a feature to export/import settings
 
 ##### Qobuz: retrieve `app_id`
-
-##### Close properly on an interrupt signal
+- Progress indicator (Nautilus spinner?)
+- Cancel button
 
 ##### Update to LLVM 17
 
 ##### Verify that `scan-build` works
+
+##### Qobuz: report if the subscription has expired
+
+##### Use `GtkStack` for the cancellation button of the authorization sequence, too

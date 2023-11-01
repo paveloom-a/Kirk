@@ -39,6 +39,33 @@ template $KirkPreferencesWindow : Adw.PreferencesWindow {
         changed => $qobuz_token_changed();
       }
 
+      Adw.PasswordEntryRow qobuz_app_id_password_entry_row {
+        title: _("Application ID");
+        changed => $qobuz_app_id_changed();
+
+        [suffix]
+        Gtk.Stack qobuz_fetch_app_id_stack {
+
+          Gtk.StackPage {
+            child: Gtk.Button qobuz_fetch_app_id_button {
+              icon-name: "document-save-symbolic";
+              tooltip-text: _("Fetch Application ID");
+              valign: center;
+              clicked => $qobuz_fetch_app_id();
+              styles ["flat"]
+            };
+          }
+
+          Gtk.StackPage {
+            child: Gtk.Spinner qobuz_fetch_app_id_spinner {
+              focusable: true;
+              spinning: true;
+              valign: center;
+            };
+          }
+        }
+      }
+
       Button qobuz_authorization_request_button {
         halign: end;
         margin-top: 10;

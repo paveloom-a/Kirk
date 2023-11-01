@@ -31,12 +31,23 @@ void kirk_secret_schema_store_password_finish(
     GError** error
 );
 
+void kirk_secret_schema_store_password_callback(
+    GObject* source_object,
+    GAsyncResult* result,
+    gpointer user_data
+);
+
 void kirk_secret_schema_store_password(
     const gchar* label,
     const gchar* password,
     const gchar* service,
+    const gchar* parameter,
     GAsyncReadyCallback callback
 );
+
+void kirk_secret_schema_store_qobuz_token(const gchar* token);
+
+void kirk_secret_schema_store_qobuz_app_id(const gchar* app_id);
 
 gchar* kirk_secret_schema_lookup_password_finish(
     GAsyncResult* result,
@@ -45,6 +56,7 @@ gchar* kirk_secret_schema_lookup_password_finish(
 
 void kirk_secret_schema_lookup_password(
     const gchar* service,
+    const gchar* parameter,
     GCancellable* cancellable,
     GAsyncReadyCallback callback,
     gpointer user_data
