@@ -37,9 +37,9 @@ struct _KirkPreferencesWindow {
     GtkWidget* qobuz_fetch_app_id_stack;
     GtkWidget* qobuz_fetch_app_id_button;
     GtkWidget* qobuz_fetch_app_id_spinner;
-    GtkWidget* qobuz_authorization_request_button;
-    GtkWidget* qobuz_authorization_request_button_content;
-    gulong qobuz_authorization_request_button_handler_id;
+    GtkWidget* qobuz_authorization_request_button_stack;
+    GtkWidget* qobuz_send_authorization_request_button;
+    GtkWidget* qobuz_cancel_authorization_request_button;
 
     GtkWidget* destination_folder_entry_row;
 };
@@ -60,7 +60,7 @@ static void qobuz_set_authorization_availability(KirkPreferencesWindow* self) {
     );
 
     gtk_widget_set_sensitive(
-        GTK_WIDGET(self->qobuz_authorization_request_button),
+        GTK_WIDGET(self->qobuz_authorization_request_button_stack),
         (token && token[0]) && (app_id && app_id[0])
     );
 }
@@ -75,46 +75,6 @@ static void qobuz_cancel_authorization_request(
     gpointer user_data
 );
 
-static void qobuz_set_authorization_request_button_to_send(
-    KirkPreferencesWindow* self
-) {
-    adw_button_content_set_label(
-        ADW_BUTTON_CONTENT(self->qobuz_authorization_request_button_content),
-        "Send authorization request"
-    );
-
-    g_signal_handler_disconnect(
-        self->qobuz_authorization_request_button,
-        self->qobuz_authorization_request_button_handler_id
-    );
-    self->qobuz_authorization_request_button_handler_id = g_signal_connect(
-        self->qobuz_authorization_request_button,
-        "clicked",
-        G_CALLBACK(qobuz_send_authorization_request),
-        self
-    );
-}
-
-static void qobuz_set_authorization_request_button_to_cancel(
-    KirkPreferencesWindow* self
-) {
-    adw_button_content_set_label(
-        ADW_BUTTON_CONTENT(self->qobuz_authorization_request_button_content),
-        "Cancel authorization request"
-    );
-
-    g_signal_handler_disconnect(
-        self->qobuz_authorization_request_button,
-        self->qobuz_authorization_request_button_handler_id
-    );
-    self->qobuz_authorization_request_button_handler_id = g_signal_connect(
-        self->qobuz_authorization_request_button,
-        "clicked",
-        G_CALLBACK(qobuz_cancel_authorization_request),
-        self
-    );
-}
-
 static void qobuz_cancel_authorization_request(
     GtkButton* button,
     gpointer user_data
@@ -123,7 +83,11 @@ static void qobuz_cancel_authorization_request(
 
     g_cancellable_cancel(self->cancellable);
 
-    qobuz_set_authorization_request_button_to_send(self);
+    gtk_stack_set_visible_child(
+        GTK_STACK(self->qobuz_authorization_request_button_stack),
+        self->qobuz_send_authorization_request_button
+    );
+    gtk_widget_grab_focus(self->qobuz_send_authorization_request_button);
 }
 
 static void qobuz_send_authorization_request_finish(
@@ -139,7 +103,13 @@ static void qobuz_send_authorization_request_finish(
     adw_toast_set_timeout(toast, 2);
     adw_preferences_window_add_toast(ADW_PREFERENCES_WINDOW(self), toast);
 
-    qobuz_set_authorization_request_button_to_send(self);
+    gtk_stack_set_visible_child(
+        GTK_STACK(self->qobuz_authorization_request_button_stack),
+        self->qobuz_send_authorization_request_button
+    );
+    if (gtk_widget_has_focus(self->qobuz_cancel_authorization_request_button)) {
+        gtk_widget_grab_focus(self->qobuz_send_authorization_request_button);
+    }
 }
 
 static void qobuz_send_authorization_request(
@@ -148,7 +118,11 @@ static void qobuz_send_authorization_request(
 ) {
     KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(user_data);
 
-    qobuz_set_authorization_request_button_to_cancel(self);
+    gtk_stack_set_visible_child(
+        GTK_STACK(self->qobuz_authorization_request_button_stack),
+        self->qobuz_cancel_authorization_request_button
+    );
+    gtk_widget_grab_focus(self->qobuz_cancel_authorization_request_button);
 
     self->cancellable = g_cancellable_new();
     kirk_qobuz_client_try_to_authorize(
@@ -240,21 +214,11 @@ static void prepare_secrets(KirkPreferencesWindow* self) {
     qobuz_lookup_app_id(self);
 }
 
-static void prepare_handlers(KirkPreferencesWindow* self) {
-    self->qobuz_authorization_request_button_handler_id = g_signal_connect(
-        self->qobuz_authorization_request_button,
-        "clicked",
-        G_CALLBACK(qobuz_send_authorization_request),
-        self
-    );
-}
-
 static void kirk_preferences_window_init(KirkPreferencesWindow* self) {
     gtk_widget_init_template(GTK_WIDGET(self));
 
     prepare_settings(self);
     prepare_secrets(self);
-    prepare_handlers(self);
 }
 
 static void kirk_preferences_window_dispose(GObject* object) {
@@ -407,12 +371,17 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass* klass
     gtk_widget_class_bind_template_child(
         widget_class,
         KirkPreferencesWindow,
-        qobuz_authorization_request_button
+        qobuz_authorization_request_button_stack
     );
     gtk_widget_class_bind_template_child(
         widget_class,
         KirkPreferencesWindow,
-        qobuz_authorization_request_button_content
+        qobuz_send_authorization_request_button
+    );
+    gtk_widget_class_bind_template_child(
+        widget_class,
+        KirkPreferencesWindow,
+        qobuz_cancel_authorization_request_button
     );
 
     gtk_widget_class_bind_template_child(
@@ -424,6 +393,14 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass* klass
     gtk_widget_class_bind_template_callback(widget_class, qobuz_token_changed);
     gtk_widget_class_bind_template_callback(widget_class, qobuz_app_id_changed);
     gtk_widget_class_bind_template_callback(widget_class, qobuz_fetch_app_id);
+    gtk_widget_class_bind_template_callback(
+        widget_class,
+        qobuz_send_authorization_request
+    );
+    gtk_widget_class_bind_template_callback(
+        widget_class,
+        qobuz_cancel_authorization_request
+    );
 
     gtk_widget_class_bind_template_callback(
         widget_class,

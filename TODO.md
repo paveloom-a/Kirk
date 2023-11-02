@@ -33,5 +33,3 @@
 ##### Verify that `scan-build` works
 
 ##### Qobuz: report if the subscription has expired
-
-##### Use `GtkStack` for the cancellation button of the authorization sequence, too

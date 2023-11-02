@@ -66,15 +66,33 @@ template $KirkPreferencesWindow : Adw.PreferencesWindow {
         }
       }
 
-      Button qobuz_authorization_request_button {
-        halign: end;
-        margin-top: 10;
-        sensitive: false;
+      Gtk.Stack qobuz_authorization_request_button_stack {
 
-        child: Adw.ButtonContent qobuz_authorization_request_button_content {
-          icon-name: "dialog-information-symbolic";
-          label: _("Send authorization request");
-        };
+        Gtk.StackPage {
+          child: Gtk.Button qobuz_send_authorization_request_button {
+            halign: end;
+            margin-top: 10;
+            clicked => $qobuz_send_authorization_request();
+
+            child: Adw.ButtonContent {
+              icon-name: "dialog-information-symbolic";
+              label: _("Send authorization request");
+            };
+          };
+        }
+
+        Gtk.StackPage {
+          child: Gtk.Button qobuz_cancel_authorization_request_button {
+            halign: end;
+            margin-top: 10;
+            clicked => $qobuz_cancel_authorization_request();
+
+            child: Adw.ButtonContent {
+              icon-name: "dialog-information-symbolic";
+              label: _("Cancel authorization request");
+            };
+          };
+        }
       }
     }
   }
