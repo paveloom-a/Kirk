@@ -116,13 +116,13 @@ static void kirk_application_window_class_init(  //
     gtk_widget_class_install_action(
         widget_class,
         "win.add-release",
-        nullptr,
+        NULL,
         add_release
     );
     gtk_widget_class_install_action(
         widget_class,
         "win.show-preferences",
-        nullptr,
+        NULL,
         open_preferences
     );
 
@@ -131,19 +131,17 @@ static void kirk_application_window_class_init(  //
         GDK_KEY_A,
         GDK_CONTROL_MASK,
         "win.add-release",
-        nullptr
+        NULL
     );
     gtk_widget_class_add_binding_action(
         widget_class,
         GDK_KEY_comma,
         GDK_CONTROL_MASK,
         "win.show-preferences",
-        nullptr
+        NULL
     );
 }
 
 KirkApplicationWindow* kirk_application_window_new(const KirkApplication* app) {
-    return static_cast<KirkApplicationWindow*>(
-        g_object_new(KIRK_TYPE_APPLICATION_WINDOW, "application", app, NULL)
-    );
+    return g_object_new(KIRK_TYPE_APPLICATION_WINDOW, "application", app, NULL);
 }

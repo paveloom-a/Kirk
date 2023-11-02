@@ -63,12 +63,12 @@ KirkAddReleaseWindow* kirk_add_release_window_new(
     const KirkApplication* app,
     const KirkApplicationWindow* app_win
 ) {
-    return static_cast<KirkAddReleaseWindow*>(g_object_new(
+    return g_object_new(
         KIRK_TYPE_ADD_RELEASE_WINDOW,
         "application",
         app,
         "transient-for",
         app_win,
         NULL
-    ));
+    );
 }

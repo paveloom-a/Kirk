@@ -56,7 +56,7 @@ static void prepare_actions(KirkApplication* self) {
         self
     );
 
-    const gchar* const accels[] = {"<primary>q", nullptr};
+    const gchar* const accels[] = {"<primary>q", NULL};
     gtk_application_set_accels_for_action(app, "app.quit", accels);
 }
 
@@ -113,12 +113,12 @@ static void kirk_application_class_init(KirkApplicationClass* klass) {
 }
 
 KirkApplication* kirk_application_new() {
-    return static_cast<KirkApplication*>(g_object_new(
+    return g_object_new(
         KIRK_TYPE_APPLICATION,
         "application-id",
         APP_ID,
         "flags",
         G_APPLICATION_HANDLES_OPEN,
         NULL
-    ));
+    );
 }

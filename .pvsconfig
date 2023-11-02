@@ -19,14 +19,14 @@
 # Unused parameters are okay
 //-V::2537,3523
 
+# Implicit conversions to `bool` are okay
+//-V::2544,2570,2584,3545
+
 # We don't always need to use a return value
 //-V::2547,3527
 
 # Indexing pointers to character arrays is okay
 //-V::2563,3539
-
-# Implicit conversions to `bool` are okay
-//-V::2570,3545
 
 # Identifiers starting with "_" are expected by the C macros
 //-V::2573,3547

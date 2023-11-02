@@ -133,8 +133,7 @@ static void qobuz_send_authorization_request_finish(
 ) {
     KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(source_object);
 
-    auto message =
-        static_cast<gchar*>(g_task_propagate_pointer(G_TASK(result), nullptr));
+    const gchar* message = g_task_propagate_pointer(G_TASK(result), NULL);
 
     AdwToast* toast = adw_toast_new(message);
     adw_toast_set_timeout(toast, 2);
@@ -156,7 +155,7 @@ static void qobuz_send_authorization_request(
         G_OBJECT(self),
         self->cancellable,
         qobuz_send_authorization_request_finish,
-        nullptr
+        NULL
     );
 }
 
@@ -179,7 +178,7 @@ static void qobuz_lookup_token_finish(
 ) {
     KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(user_data);
 
-    gchar* token = kirk_secret_schema_lookup_password_finish(result, nullptr);
+    gchar* token = kirk_secret_schema_lookup_password_finish(result, NULL);
 
     if (token) {
         gtk_editable_set_text(
@@ -198,7 +197,7 @@ static void qobuz_lookup_token(KirkPreferencesWindow* self) {
     kirk_secret_schema_lookup_password(
         "qobuz",
         "token",
-        nullptr,
+        NULL,
         qobuz_lookup_token_finish,
         self
     );
@@ -211,7 +210,7 @@ static void qobuz_lookup_app_id_finish(
 ) {
     KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(user_data);
 
-    gchar* app_id = kirk_secret_schema_lookup_password_finish(result, nullptr);
+    gchar* app_id = kirk_secret_schema_lookup_password_finish(result, NULL);
 
     if (app_id) {
         gtk_editable_set_text(
@@ -230,7 +229,7 @@ static void qobuz_lookup_app_id(KirkPreferencesWindow* self) {
     kirk_secret_schema_lookup_password(
         "qobuz",
         "app_id",
-        nullptr,
+        NULL,
         qobuz_lookup_app_id_finish,
         self
     );
@@ -305,8 +304,7 @@ static void qobuz_fetch_app_id_finish(
         gtk_widget_grab_focus(self->qobuz_fetch_app_id_button);
     }
 
-    auto message =
-        static_cast<gchar*>(g_task_propagate_pointer(G_TASK(result), nullptr));
+    const gchar* message = g_task_propagate_pointer(G_TASK(result), NULL);
 
     AdwToast* toast = adw_toast_new(message);
     adw_toast_set_timeout(toast, 2);
@@ -329,7 +327,7 @@ static void qobuz_fetch_app_id(GtkButton* button, gpointer user_data) {
         G_OBJECT(self),
         self->cancellable,
         qobuz_fetch_app_id_finish,
-        nullptr
+        NULL
     );
 }
 
@@ -342,7 +340,7 @@ static void select_destination_folder_finish(
     GtkFileDialog* file_dialog = GTK_FILE_DIALOG(source_object);
 
     g_autoptr(GFile) file =
-        gtk_file_dialog_select_folder_finish(file_dialog, result, nullptr);
+        gtk_file_dialog_select_folder_finish(file_dialog, result, NULL);
 
     if (!file) {
         return;
@@ -363,7 +361,7 @@ static void select_destination_folder(GtkButton* button, gpointer user_data) {
     gtk_file_dialog_select_folder(
         file_dialog,
         GTK_WINDOW(self),
-        nullptr,
+        NULL,
         select_destination_folder_finish,
         self
     );
@@ -437,12 +435,12 @@ KirkPreferencesWindow* kirk_preferences_window_new(
     const KirkApplication* app,
     const KirkApplicationWindow* app_win
 ) {
-    return static_cast<KirkPreferencesWindow*>(g_object_new(
+    return g_object_new(
         KIRK_TYPE_PREFERENCES_WINDOW,
         "application",
         app,
         "transient-for",
         app_win,
         NULL
-    ));
+    );
 }

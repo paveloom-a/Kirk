@@ -30,7 +30,7 @@ const SecretSchema* kirk_secret_schema_get_type() {
             {"schema", SECRET_SCHEMA_ATTRIBUTE_STRING},
             {"service", SECRET_SCHEMA_ATTRIBUTE_STRING},
             {"parameter", SECRET_SCHEMA_ATTRIBUTE_STRING},
-            {nullptr, SECRET_SCHEMA_ATTRIBUTE_STRING},
+            {NULL, SECRET_SCHEMA_ATTRIBUTE_STRING},
         }};
     return &schema;
 }
@@ -47,7 +47,7 @@ void kirk_secret_schema_store_password_callback(
     GAsyncResult* result,
     gpointer user_data
 ) {
-    kirk_secret_schema_store_password_finish(result, nullptr);
+    kirk_secret_schema_store_password_finish(result, NULL);
 }
 
 void kirk_secret_schema_store_password(
@@ -62,9 +62,9 @@ void kirk_secret_schema_store_password(
         SECRET_COLLECTION_DEFAULT,
         label,
         password,
-        nullptr,
+        NULL,
         callback,
-        nullptr,
+        NULL,
         "schema",
         APP_ID,
         "service",

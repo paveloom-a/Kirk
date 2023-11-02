@@ -25,75 +25,72 @@
 
 #include <libsoup/soup.h>
 
-enum class KirkQobuzClientStatus {
-    cancelled,
-    invalid_message,
-    failed_connection,
+typedef enum {
+    KIRK_QOBUZ_CLIENT_STATUS_CANCELLED,
+    KIRK_QOBUZ_CLIENT_STATUS_INVALID_MESSAGE,
+    KIRK_QOBUZ_CLIENT_STATUS_FAILED_CONNECTION,
 
-    missing_token,
-    missing_app_id,
-    failed_authorization,
-    successful_authorization,
+    KIRK_QOBUZ_CLIENT_STATUS_MISSING_TOKEN,
+    KIRK_QOBUZ_CLIENT_STATUS_MISSING_APP_ID,
+    KIRK_QOBUZ_CLIENT_STATUS_FAILED_AUTHORIZATION,
+    KIRK_QOBUZ_CLIENT_STATUS_SUCCESSFUL_AUTHORIZATION,
 
-    failed_to_find_the_bundle_url,
-    failed_to_find_the_app_id,
-    fetched_the_app_id,
-};
+    KIRK_QOBUZ_CLIENT_STATUS_FAILED_TO_FIND_THE_BUNDLE_URL,
+    KIRK_QOBUZ_CLIENT_STATUS_FAILED_TO_FIND_THE_APP_ID,
+    KIRK_QOBUZ_CLIENT_STATUS_FETCHED_THE_APP_ID,
+} KirkQobuzClientStatus;
 
-struct KirkQobuzClient {
-    SoupSession* session = {};
+typedef struct {
+    SoupSession* session;
 
-    gchar* app_id = {};
-    gchar* token = {};
+    gchar* app_id;
+    gchar* token;
 
     KirkQobuzClientStatus status;
-};
-
-#define KIRK_QOBUZ_CLIENT(o) (static_cast<KirkQobuzClient*>(o))
+} KirkQobuzClient;
 
 static void kirk_qobuz_client_free(KirkQobuzClient* self) {
     g_object_unref(self->session);
     secret_password_free(self->token);
     secret_password_free(self->app_id);
-    delete self;
+    g_free(self);
 }
 
 static void kirk_qobuz_client_return_result(GTask* task) {
-    const KirkQobuzClient* const self =
-        KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    const KirkQobuzClient* const self = g_task_get_task_data(task);
 
-    const gchar* message = nullptr;
+    gchar* message = NULL;
     switch (self->status) {
-    case KirkQobuzClientStatus::cancelled:
+    case KIRK_QOBUZ_CLIENT_STATUS_CANCELLED:
         message = "Qobuz: operation was cancelled!";
         break;
-    case KirkQobuzClientStatus::invalid_message:
+    case KIRK_QOBUZ_CLIENT_STATUS_INVALID_MESSAGE:
         message = "Qobuz: invalid message!";
         break;
-    case KirkQobuzClientStatus::failed_connection:
+    case KIRK_QOBUZ_CLIENT_STATUS_FAILED_CONNECTION:
         message = "Qobuz: couldn't connect to the server!";
         break;
 
-    case KirkQobuzClientStatus::missing_token:
+    case KIRK_QOBUZ_CLIENT_STATUS_MISSING_TOKEN:
         message = "Qobuz: coudln't lookup the token!";
         break;
-    case KirkQobuzClientStatus::missing_app_id:
+    case KIRK_QOBUZ_CLIENT_STATUS_MISSING_APP_ID:
         message = "Qobuz: coudln't lookup the app ID!";
         break;
-    case KirkQobuzClientStatus::failed_authorization:
+    case KIRK_QOBUZ_CLIENT_STATUS_FAILED_AUTHORIZATION:
         message = "Qobuz: authorization failed!";
         break;
-    case KirkQobuzClientStatus::successful_authorization:
+    case KIRK_QOBUZ_CLIENT_STATUS_SUCCESSFUL_AUTHORIZATION:
         message = "Qobuz: successful authorization!";
         break;
 
-    case KirkQobuzClientStatus::failed_to_find_the_bundle_url:
+    case KIRK_QOBUZ_CLIENT_STATUS_FAILED_TO_FIND_THE_BUNDLE_URL:
         message = "Qobuz: failed to find the bundle URL!";
         break;
-    case KirkQobuzClientStatus::failed_to_find_the_app_id:
+    case KIRK_QOBUZ_CLIENT_STATUS_FAILED_TO_FIND_THE_APP_ID:
         message = "Qobuz: failed to find the application ID!";
         break;
-    case KirkQobuzClientStatus::fetched_the_app_id:
+    case KIRK_QOBUZ_CLIENT_STATUS_FETCHED_THE_APP_ID:
         message = "Qobuz: fetched the application ID!";
         break;
 
@@ -102,20 +99,20 @@ static void kirk_qobuz_client_return_result(GTask* task) {
         break;
     }
 
-    g_task_return_pointer(task, (gpointer)(message), nullptr);
+    g_task_return_pointer(task, message, NULL);
     g_object_unref(task);
 }
 
 #define kirk_qobuz_client_return_if_window_closed(task)                        \
     if (!gtk_widget_is_visible(GTK_WIDGET(g_task_get_source_object(task)))) {  \
-        g_task_return_pointer(task, nullptr, nullptr);                         \
+        g_task_return_pointer(task, NULL, NULL);                               \
         g_object_unref(task);                                                  \
         return;                                                                \
     }
 
 #define kirk_qobuz_client_return_if_cancelled(self, task)                      \
     if (g_cancellable_is_cancelled(g_task_get_cancellable(task))) {            \
-        (self)->status = KirkQobuzClientStatus::cancelled;                     \
+        (self)->status = KIRK_QOBUZ_CLIENT_STATUS_CANCELLED;                   \
         kirk_qobuz_client_return_result(task);                                 \
         return;                                                                \
     }
@@ -135,39 +132,39 @@ static void kirk_qobuz_client_send_authorization_request_finish(
     gpointer user_data
 ) {
     GTask* task = G_TASK(user_data);
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
     kirk_qobuz_client_return_if_window_closed(task);
     kirk_qobuz_client_return_if_cancelled(self, task);
 
-    soup_session_send_finish(self->session, result, nullptr);
+    soup_session_send_finish(self->session, result, NULL);
     SoupMessage* msg =
         soup_session_get_async_result_message(self->session, result);
 
     if (!msg) {
-        self->status = KirkQobuzClientStatus::failed_connection;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_FAILED_CONNECTION;
         kirk_qobuz_client_return_result(task);
         return;
     }
 
     const SoupStatus status = soup_message_get_status(msg);
     if (status == SOUP_STATUS_OK) {
-        self->status = KirkQobuzClientStatus::successful_authorization;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_SUCCESSFUL_AUTHORIZATION;
     } else {
-        self->status = KirkQobuzClientStatus::failed_authorization;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_FAILED_AUTHORIZATION;
     }
 
     kirk_qobuz_client_return_result(task);
 }
 
 static void kirk_qobuz_client_send_authorization_request(GTask* task) {
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
     const gchar* const url = QOBUZ_SCHEME QOBUZ_MAIN_HOST QOBUZ_LOGIN_PATH;
     SoupMessage* const msg = soup_message_new(SOUP_METHOD_GET, url);
 
     if (!msg) {
-        self->status = KirkQobuzClientStatus::invalid_message;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_INVALID_MESSAGE;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -198,15 +195,15 @@ static void kirk_qobuz_client_lookup_app_id_finish(
     gpointer user_data
 ) {
     GTask* task = G_TASK(user_data);
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
     kirk_qobuz_client_return_if_window_closed(task);
     kirk_qobuz_client_return_if_cancelled(self, task);
 
-    gchar* app_id = kirk_secret_schema_lookup_password_finish(result, nullptr);
+    gchar* app_id = kirk_secret_schema_lookup_password_finish(result, NULL);
 
     if (!app_id || !app_id[0]) {
-        self->status = KirkQobuzClientStatus::missing_token;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_MISSING_TOKEN;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -232,15 +229,15 @@ static void kirk_qobuz_client_lookup_token_finish(
     gpointer user_data
 ) {
     GTask* task = G_TASK(user_data);
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
     kirk_qobuz_client_return_if_window_closed(task);
     kirk_qobuz_client_return_if_cancelled(self, task);
 
-    gchar* token = kirk_secret_schema_lookup_password_finish(result, nullptr);
+    gchar* token = kirk_secret_schema_lookup_password_finish(result, NULL);
 
     if (!token || !token[0]) {
-        self->status = KirkQobuzClientStatus::missing_token;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_MISSING_TOKEN;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -266,16 +263,16 @@ void kirk_qobuz_client_try_to_authorize(
     GAsyncReadyCallback callback,
     gpointer user_data
 ) {
-    auto qobuz_client = new KirkQobuzClient;
+    KirkQobuzClient* qobuz_client = g_malloc0(sizeof(KirkQobuzClient));
 
     qobuz_client->session = soup_session_new();
 
     GTask* task = g_task_new(source_object, cancellable, callback, user_data);
-    g_task_set_check_cancellable(task, false);
+    g_task_set_check_cancellable(task, FALSE);
     g_task_set_task_data(
         task,
         qobuz_client,
-        reinterpret_cast<GDestroyNotify>(kirk_qobuz_client_free)
+        (GDestroyNotify)kirk_qobuz_client_free
     );
 
     kirk_qobuz_client_lookup_token(task);
@@ -283,14 +280,14 @@ void kirk_qobuz_client_try_to_authorize(
 
 // Fetch application ID sequence
 
-struct RegexSearchClosure {
-    const gchar* (*regex_search_function)(GBytes*);
+typedef struct {
+    gchar* (*regex_search_function)(GBytes*);
     GBytes* bytes;
-};
+} RegexSearchClosure;
 
 static void regex_search_data_free(RegexSearchClosure* closure) {
     g_bytes_unref(closure->bytes);
-    delete closure;
+    g_free(closure);
 }
 
 static void regex_search_thread_cb(
@@ -299,10 +296,10 @@ static void regex_search_thread_cb(
     gpointer task_data,
     GCancellable* cancellable
 ) {
-    auto closure = static_cast<RegexSearchClosure*>(task_data);
+    RegexSearchClosure* closure = task_data;
 
-    const gchar* match = closure->regex_search_function(closure->bytes);
-    g_task_return_pointer(task, (gpointer)match, nullptr);
+    gchar* match = closure->regex_search_function(closure->bytes);
+    g_task_return_pointer(task, match, NULL);
 }
 
 static void regex_search_async(
@@ -311,13 +308,9 @@ static void regex_search_async(
     GAsyncReadyCallback callback,
     gpointer user_data
 ) {
-    GTask* task = g_task_new(nullptr, cancellable, callback, user_data);
-    g_task_set_return_on_cancel(task, false);
-    g_task_set_task_data(
-        task,
-        closure,
-        reinterpret_cast<GDestroyNotify>(regex_search_data_free)
-    );
+    GTask* task = g_task_new(NULL, cancellable, callback, user_data);
+    g_task_set_return_on_cancel(task, FALSE);
+    g_task_set_task_data(task, closure, (GDestroyNotify)regex_search_data_free);
 
     g_task_run_in_thread(task, regex_search_thread_cb);
 
@@ -330,19 +323,18 @@ static void kirk_qobuz_client_find_the_app_id_finish(
     gpointer user_data
 ) {
     GTask* task = G_TASK(user_data);
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
-    auto g_autofree app_id = static_cast<const gchar*>(  //
-        g_task_propagate_pointer(G_TASK(result), nullptr)
-    );
+    const g_autofree gchar* app_id =
+        g_task_propagate_pointer(G_TASK(result), NULL);
 
     kirk_qobuz_client_return_if_window_closed(task);
     kirk_qobuz_client_return_if_cancelled(self, task);
 
     if (app_id) {
-        self->status = KirkQobuzClientStatus::fetched_the_app_id;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_FETCHED_THE_APP_ID;
     } else {
-        self->status = KirkQobuzClientStatus::failed_to_find_the_app_id;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_FAILED_TO_FIND_THE_APP_ID;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -352,22 +344,21 @@ static void kirk_qobuz_client_find_the_app_id_finish(
     kirk_qobuz_client_return_result(task);
 }
 
-static const gchar* kirk_qobuz_client_find_the_app_id(GBytes* bytes) {
-    auto body = static_cast<const gchar*>(g_bytes_get_data(bytes, nullptr));
+static gchar* kirk_qobuz_client_find_the_app_id(GBytes* bytes) {
+    const gchar* body = g_bytes_get_data(bytes, NULL);
 
     g_autoptr(GRegex) regex = g_regex_new(
         "production:\\{api:\\{appId:\"(\\d{9})\",appSecret:\"\\w{32}",
         G_REGEX_DEFAULT,
         G_REGEX_MATCH_DEFAULT,
-        nullptr
+        NULL
     );
 
-    g_autoptr(GMatchInfo) match_info = nullptr;
-    const gboolean matched =
-        g_regex_match(regex, body, G_REGEX_MATCH_DEFAULT, &match_info);
+    g_autoptr(GMatchInfo) match_info = NULL;
+    const gboolean matched = g_regex_match(regex, body, 0, &match_info);
 
     if (!matched) {
-        return nullptr;
+        return NULL;
     }
 
     return g_match_info_fetch(match_info, 1);
@@ -379,8 +370,10 @@ static void kirk_qobuz_client_find_the_app_id_async(
     GAsyncReadyCallback callback,
     gpointer user_data
 ) {
-    auto data =
-        new RegexSearchClosure {kirk_qobuz_client_find_the_app_id, bytes};
+    RegexSearchClosure* data = g_malloc(sizeof(RegexSearchClosure));
+    data->regex_search_function = kirk_qobuz_client_find_the_app_id;
+    data->bytes = bytes;
+
     regex_search_async(data, cancellable, callback, user_data);
 }
 
@@ -390,16 +383,16 @@ static void kirk_qobuz_client_fetch_the_bundle_finish(
     gpointer user_data
 ) {
     GTask* task = G_TASK(user_data);
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
     kirk_qobuz_client_return_if_window_closed(task);
     kirk_qobuz_client_return_if_cancelled(self, task);
 
     GBytes* bytes =
-        soup_session_send_and_read_finish(self->session, result, nullptr);
+        soup_session_send_and_read_finish(self->session, result, NULL);
 
     if (!bytes) {
-        self->status = KirkQobuzClientStatus::failed_connection;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_FAILED_CONNECTION;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -416,12 +409,12 @@ static void kirk_qobuz_client_fetch_the_bundle(
     GTask* task,
     const gchar* bundle_url
 ) {
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
     SoupMessage* const msg = soup_message_new(SOUP_METHOD_GET, bundle_url);
 
     if (!msg) {
-        self->status = KirkQobuzClientStatus::invalid_message;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_INVALID_MESSAGE;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -437,23 +430,22 @@ static void kirk_qobuz_client_fetch_the_bundle(
 }
 
 static void kirk_qobuz_client_find_the_bundle_url(GTask* task, GBytes* bytes) {
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
-    auto body = static_cast<const gchar*>(g_bytes_get_data(bytes, nullptr));
+    const gchar* body = g_bytes_get_data(bytes, NULL);
 
     g_autoptr(GRegex) regex = g_regex_new(
         "<script src=\"(/resources/\\d+\\.\\d+\\.\\d+-[a-z]\\d{3}/bundle\\.js)\"></script>",
         G_REGEX_DEFAULT,
         G_REGEX_MATCH_DEFAULT,
-        nullptr
+        NULL
     );
 
-    g_autoptr(GMatchInfo) match_info = nullptr;
-    const gboolean matched =
-        g_regex_match(regex, body, G_REGEX_MATCH_DEFAULT, &match_info);
+    g_autoptr(GMatchInfo) match_info = NULL;
+    const gboolean matched = g_regex_match(regex, body, 0, &match_info);
 
     if (!matched) {
-        self->status = KirkQobuzClientStatus::failed_to_find_the_bundle_url;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_FAILED_TO_FIND_THE_BUNDLE_URL;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -473,16 +465,16 @@ static void kirk_qobuz_client_fetch_the_play_host_page_finish(
     gpointer user_data
 ) {
     GTask* task = G_TASK(user_data);
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
     kirk_qobuz_client_return_if_window_closed(task);
     kirk_qobuz_client_return_if_cancelled(self, task);
 
     GBytes* bytes =
-        soup_session_send_and_read_finish(self->session, result, nullptr);
+        soup_session_send_and_read_finish(self->session, result, NULL);
 
     if (!bytes) {
-        self->status = KirkQobuzClientStatus::failed_connection;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_FAILED_CONNECTION;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -491,13 +483,13 @@ static void kirk_qobuz_client_fetch_the_play_host_page_finish(
 }
 
 static void kirk_qobuz_client_fetch_the_play_host_page(GTask* task) {
-    KirkQobuzClient* const self = KIRK_QOBUZ_CLIENT(g_task_get_task_data(task));
+    KirkQobuzClient* const self = g_task_get_task_data(task);
 
     const gchar* const url = QOBUZ_SCHEME QOBUZ_PLAY_HOST;
     SoupMessage* const msg = soup_message_new(SOUP_METHOD_GET, url);
 
     if (!msg) {
-        self->status = KirkQobuzClientStatus::invalid_message;
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_INVALID_MESSAGE;
         kirk_qobuz_client_return_result(task);
         return;
     }
@@ -518,16 +510,15 @@ void kirk_qobuz_client_try_to_fetch_app_id(
     GAsyncReadyCallback callback,
     gpointer user_data
 ) {
-    auto qobuz_client = new KirkQobuzClient;
-
+    KirkQobuzClient* qobuz_client = g_malloc0(sizeof(KirkQobuzClient));
     qobuz_client->session = soup_session_new();
 
-    GTask* task = g_task_new(source_object, cancellable, callback, nullptr);
-    g_task_set_check_cancellable(task, false);
+    GTask* task = g_task_new(source_object, cancellable, callback, NULL);
+    g_task_set_check_cancellable(task, FALSE);
     g_task_set_task_data(
         task,
         qobuz_client,
-        reinterpret_cast<GDestroyNotify>(kirk_qobuz_client_free)
+        (GDestroyNotify)kirk_qobuz_client_free
     );
 
     kirk_qobuz_client_fetch_the_play_host_page(task);

@@ -1,6 +1,6 @@
 project(
   'kirk',
-  'cpp',
+  'c',
   version: run_command(
     'grep', '-Po', '(?<=version = ").*(?=")', 'flake.nix',
     check: true,
@@ -10,7 +10,7 @@ project(
   meson_version: '>=1.2.0',
   default_options: [
     'buildtype=debug',
-    'cpp_std=c++2a',
+    'c_std=c2x',
   ])
 
 gnome = import('gnome')
@@ -31,8 +31,8 @@ conf.set('APP_RESOURCES_PATH', APP_RESOURCES_PATH)
 conf.set('APP_VERSION', APP_VERSION)
 conf.set10('APP_DEBUG_MODE_ON', APP_DEBUG_MODE_ON)
 
-cpp_flags = []
-cpp_link_flags = ['-stdlib=libc++']
+c_flags = []
+c_link_flags = []
 override_options = []
 
 if get_option('buildtype') == 'release'
@@ -44,7 +44,7 @@ if get_option('buildtype') == 'release'
     'warning_level=0',
   ]
 elif get_option('buildtype') == 'debug'
-  cpp_flags += [
+  c_flags += [
     '-fdebug-macro',
     '-ferror-limit=500',
     '-g3',
@@ -60,9 +60,9 @@ elif get_option('buildtype') == 'debug'
   ]
 endif
 
-compiler = meson.get_compiler('cpp')
-add_project_arguments(compiler.get_supported_arguments(cpp_flags), language: 'cpp')
-add_project_link_arguments(compiler.get_supported_link_arguments(cpp_link_flags), language : 'cpp')
+compiler = meson.get_compiler('c')
+add_project_arguments(compiler.get_supported_arguments(c_flags), language: 'c')
+add_project_link_arguments(compiler.get_supported_link_arguments(c_link_flags), language : 'c')
 
 dependencies = [
   dependency('glib-2.0', version: '>=2.76.4', include_type: 'system'),
@@ -72,20 +72,20 @@ dependencies = [
   dependency('libsoup-3.0', version: '>=3.4.2', include_type: 'system'),
 ]
 
-add_project_dependencies(dependencies, language: 'cpp')
+add_project_dependencies(dependencies, language: 'c')
 
 subdir('data')
 subdir('include')
 subdir('po')
 
 sources = files(
-  'src/kirk-add-release-window.cpp',
-  'src/kirk-application-window.cpp',
-  'src/kirk-application.cpp',
-  'src/kirk-preferences-window.cpp',
-  'src/kirk-qobuz-client.cpp',
-  'src/kirk-secret-schema.cpp',
-  'src/main.cpp',
+  'src/kirk-add-release-window.c',
+  'src/kirk-application-window.c',
+  'src/kirk-application.c',
+  'src/kirk-preferences-window.c',
+  'src/kirk-qobuz-client.c',
+  'src/kirk-secret-schema.c',
+  'src/main.c',
 )
 
 executable = executable(
