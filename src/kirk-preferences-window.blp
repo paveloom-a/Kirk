@@ -57,10 +57,12 @@ template $KirkPreferencesWindow : Adw.PreferencesWindow {
           }
 
           Gtk.StackPage {
-            child: Gtk.Spinner qobuz_fetch_app_id_spinner {
-              focusable: true;
-              spinning: true;
+            child: Gtk.Button qobuz_stop_fetching_app_id_button {
+              icon-name: "process-stop-symbolic";
+              tooltip-text: _("Stop Fetching Application ID");
               valign: center;
+              clicked => $qobuz_stop_fetching_app_id();
+              styles ["flat"]
             };
           }
         }

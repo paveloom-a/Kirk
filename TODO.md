@@ -24,10 +24,6 @@
 
 ##### Add a feature to export/import settings
 
-##### Qobuz: retrieve `app_id`
-- Progress indicator (Nautilus spinner?)
-- Cancel button
-
 ##### Update to LLVM 17
 
 ##### Verify that `scan-build` works

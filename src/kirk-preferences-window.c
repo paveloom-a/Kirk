@@ -30,13 +30,14 @@ struct _KirkPreferencesWindow {
 
     GSettings* settings;
 
-    GCancellable* cancellable;
+    GCancellable* qobuz_fetch_app_id_cancellable;
+    GCancellable* qobuz_authorization_request_cancellable;
 
     GtkWidget* qobuz_token_password_entry_row;
     GtkWidget* qobuz_app_id_password_entry_row;
     GtkWidget* qobuz_fetch_app_id_stack;
     GtkWidget* qobuz_fetch_app_id_button;
-    GtkWidget* qobuz_fetch_app_id_spinner;
+    GtkWidget* qobuz_stop_fetching_app_id_button;
     GtkWidget* qobuz_authorization_request_button_stack;
     GtkWidget* qobuz_send_authorization_request_button;
     GtkWidget* qobuz_cancel_authorization_request_button;
@@ -81,13 +82,7 @@ static void qobuz_cancel_authorization_request(
 ) {
     KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(user_data);
 
-    g_cancellable_cancel(self->cancellable);
-
-    gtk_stack_set_visible_child(
-        GTK_STACK(self->qobuz_authorization_request_button_stack),
-        self->qobuz_send_authorization_request_button
-    );
-    gtk_widget_grab_focus(self->qobuz_send_authorization_request_button);
+    g_cancellable_cancel(self->qobuz_authorization_request_cancellable);
 }
 
 static void qobuz_send_authorization_request_finish(
@@ -124,10 +119,10 @@ static void qobuz_send_authorization_request(
     );
     gtk_widget_grab_focus(self->qobuz_cancel_authorization_request_button);
 
-    self->cancellable = g_cancellable_new();
+    self->qobuz_authorization_request_cancellable = g_cancellable_new();
     kirk_qobuz_client_try_to_authorize(
         G_OBJECT(self),
-        self->cancellable,
+        self->qobuz_authorization_request_cancellable,
         qobuz_send_authorization_request_finish,
         NULL
     );
@@ -224,7 +219,8 @@ static void kirk_preferences_window_init(KirkPreferencesWindow* self) {
 static void kirk_preferences_window_dispose(GObject* object) {
     KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(object);
 
-    g_cancellable_cancel(self->cancellable);
+    g_cancellable_cancel(self->qobuz_fetch_app_id_cancellable);
+    g_cancellable_cancel(self->qobuz_authorization_request_cancellable);
 
     g_clear_object(&self->settings);
 
@@ -264,7 +260,7 @@ static void qobuz_fetch_app_id_finish(
         GTK_STACK(self->qobuz_fetch_app_id_stack),
         self->qobuz_fetch_app_id_button
     );
-    if (gtk_widget_has_focus(self->qobuz_fetch_app_id_spinner)) {
+    if (gtk_widget_has_focus(self->qobuz_stop_fetching_app_id_button)) {
         gtk_widget_grab_focus(self->qobuz_fetch_app_id_button);
     }
 
@@ -282,17 +278,23 @@ static void qobuz_fetch_app_id(GtkButton* button, gpointer user_data) {
 
     gtk_stack_set_visible_child(
         GTK_STACK(self->qobuz_fetch_app_id_stack),
-        self->qobuz_fetch_app_id_spinner
+        self->qobuz_stop_fetching_app_id_button
     );
-    gtk_widget_grab_focus(self->qobuz_fetch_app_id_spinner);
+    gtk_widget_grab_focus(self->qobuz_stop_fetching_app_id_button);
 
-    self->cancellable = g_cancellable_new();
+    self->qobuz_fetch_app_id_cancellable = g_cancellable_new();
     kirk_qobuz_client_try_to_fetch_app_id(
         G_OBJECT(self),
-        self->cancellable,
+        self->qobuz_fetch_app_id_cancellable,
         qobuz_fetch_app_id_finish,
         NULL
     );
+}
+
+static void qobuz_stop_fetching_app_id(GtkButton* button, gpointer user_data) {
+    KirkPreferencesWindow* self = KIRK_PREFERENCES_WINDOW(user_data);
+
+    g_cancellable_cancel(self->qobuz_fetch_app_id_cancellable);
 }
 
 static void select_destination_folder_finish(
@@ -366,7 +368,7 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass* klass
     gtk_widget_class_bind_template_child(
         widget_class,
         KirkPreferencesWindow,
-        qobuz_fetch_app_id_spinner
+        qobuz_stop_fetching_app_id_button
     );
     gtk_widget_class_bind_template_child(
         widget_class,
@@ -393,6 +395,10 @@ static void kirk_preferences_window_class_init(KirkPreferencesWindowClass* klass
     gtk_widget_class_bind_template_callback(widget_class, qobuz_token_changed);
     gtk_widget_class_bind_template_callback(widget_class, qobuz_app_id_changed);
     gtk_widget_class_bind_template_callback(widget_class, qobuz_fetch_app_id);
+    gtk_widget_class_bind_template_callback(
+        widget_class,
+        qobuz_stop_fetching_app_id
+    );
     gtk_widget_class_bind_template_callback(
         widget_class,
         qobuz_send_authorization_request

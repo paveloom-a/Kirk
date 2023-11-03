@@ -6,4 +6,5 @@ Checks: >
     -llvm-*,
     -llvmlibc-*,
     -misc-unused-parameters,
+    -readability-identifier-length,
     -readability-implicit-bool-conversion,
