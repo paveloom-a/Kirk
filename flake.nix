@@ -69,6 +69,7 @@ rec {
       ];
 
       buildInputs = with pkgs; [
+        json-glib
         libadwaita
         libsecret
         libsoup_3

@@ -27,5 +27,3 @@
 ##### Update to LLVM 17
 
 ##### Verify that `scan-build` works
-
-##### Qobuz: report if the subscription has expired

@@ -23,6 +23,7 @@
 #include "src/kirk-secret-schema.h"
 #include "src/kirk-uri.h"
 
+#include <json-glib/json-glib.h>
 #include <libsoup/soup.h>
 
 typedef enum {
@@ -34,6 +35,7 @@ typedef enum {
     KIRK_QOBUZ_CLIENT_STATUS_MISSING_APP_ID,
     KIRK_QOBUZ_CLIENT_STATUS_FAILED_AUTHORIZATION,
     KIRK_QOBUZ_CLIENT_STATUS_SUCCESSFUL_AUTHORIZATION,
+    KIRK_QOBUZ_CLIENT_STATUS_EXPIRED_SUBSCRIPTION,
 
     KIRK_QOBUZ_CLIENT_STATUS_FAILED_TO_FIND_THE_BUNDLE_URL,
     KIRK_QOBUZ_CLIENT_STATUS_FAILED_TO_FIND_THE_APP_ID,
@@ -83,6 +85,9 @@ static void kirk_qobuz_client_return_result(GTask* task) {
     case KIRK_QOBUZ_CLIENT_STATUS_SUCCESSFUL_AUTHORIZATION:
         message = "Qobuz: successful authorization!";
         break;
+    case KIRK_QOBUZ_CLIENT_STATUS_EXPIRED_SUBSCRIPTION:
+        message = "Qobuz: subscription expired!";
+        break;
 
     case KIRK_QOBUZ_CLIENT_STATUS_FAILED_TO_FIND_THE_BUNDLE_URL:
         message = "Qobuz: failed to find the bundle URL!";
@@ -92,10 +97,6 @@ static void kirk_qobuz_client_return_result(GTask* task) {
         break;
     case KIRK_QOBUZ_CLIENT_STATUS_FETCHED_THE_APP_ID:
         message = "Qobuz: fetched the application ID!";
-        break;
-
-    default:
-        message = "Qobuz: unknown error!";
         break;
     }
 
@@ -126,6 +127,38 @@ static void kirk_qobuz_client_return_result(GTask* task) {
 
 // Authorization sequence
 
+static void kirk_qobuz_client_check_subscription_end_date(
+    GTask* task,
+    GBytes* bytes
+) {
+    KirkQobuzClient* const self = g_task_get_task_data(task);
+
+    const gchar* body = g_bytes_get_data(bytes, NULL);
+    g_autoptr(JsonNode) root_node = json_from_string(body, NULL);
+    JsonObject* root_object = json_node_get_object(root_node);
+    JsonObject* user_object =
+        json_object_get_object_member(root_object, "user");
+    JsonObject* subscription_object =
+        json_object_get_object_member(user_object, "subscription");
+    const gchar* end_date_string =
+        json_object_get_string_member(subscription_object, "end_date");
+
+    g_autoptr(GDate) end_date = g_date_new();
+    g_date_set_parse(end_date, end_date_string);
+
+    g_autoptr(GDate) now_date = g_date_new();
+    g_date_set_time_t(now_date, time(NULL));
+
+    const gint res = g_date_compare(end_date, now_date);
+    if (res < 0) {
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_EXPIRED_SUBSCRIPTION;
+    }
+
+    kirk_qobuz_client_return_result(task);
+
+    g_bytes_unref(bytes);
+}
+
 static void kirk_qobuz_client_send_authorization_request_finish(
     GObject* source_object,
     GAsyncResult* result,
@@ -137,7 +170,8 @@ static void kirk_qobuz_client_send_authorization_request_finish(
     kirk_qobuz_client_return_if_window_closed(task);
     kirk_qobuz_client_return_if_cancelled(self, task);
 
-    soup_session_send_finish(self->session, result, NULL);
+    GBytes* bytes =
+        soup_session_send_and_read_finish(self->session, result, NULL);
     SoupMessage* msg =
         soup_session_get_async_result_message(self->session, result);
 
@@ -148,13 +182,16 @@ static void kirk_qobuz_client_send_authorization_request_finish(
     }
 
     const SoupStatus status = soup_message_get_status(msg);
-    if (status == SOUP_STATUS_OK) {
-        self->status = KIRK_QOBUZ_CLIENT_STATUS_SUCCESSFUL_AUTHORIZATION;
-    } else {
+    if (status == SOUP_STATUS_BAD_REQUEST ||
+        status == SOUP_STATUS_UNAUTHORIZED) {
         self->status = KIRK_QOBUZ_CLIENT_STATUS_FAILED_AUTHORIZATION;
+        kirk_qobuz_client_return_result(task);
+        return;
     }
 
-    kirk_qobuz_client_return_result(task);
+    self->status = KIRK_QOBUZ_CLIENT_STATUS_SUCCESSFUL_AUTHORIZATION;
+
+    kirk_qobuz_client_check_subscription_end_date(task, bytes);
 }
 
 static void kirk_qobuz_client_send_authorization_request(GTask* task) {
@@ -179,7 +216,7 @@ static void kirk_qobuz_client_send_authorization_request(GTask* task) {
     );
     soup_message_headers_append(request_headers, "X-App-ID", self->app_id);
 
-    soup_session_send_async(
+    soup_session_send_and_read_async(
         self->session,
         msg,
         G_PRIORITY_DEFAULT,
