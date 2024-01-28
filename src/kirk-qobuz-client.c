@@ -25,6 +25,7 @@
 
 #include <json-glib/json-glib.h>
 #include <libsoup/soup.h>
+#include <threads.h>
 
 typedef enum {
     KIRK_QOBUZ_CLIENT_STATUS_CANCELLED,
@@ -47,6 +48,7 @@ typedef struct {
 
     gchar* app_id;
     gchar* token;
+    gchar* search_query;
 
     KirkQobuzClientStatus status;
 } KirkQobuzClient;
@@ -124,8 +126,46 @@ static void kirk_qobuz_client_return_result(GTask* task) {
 
 #define QOBUZ_API_PATH "/api.json/0.2"
 #define QOBUZ_LOGIN_PATH QOBUZ_API_PATH "/user/login"
+#define QOBUZ_SEARCH_PATH QOBUZ_API_PATH "/album/search"
 
-// Authorization sequence
+// Lookup functions
+
+static void kirk_qobuz_client_lookup_app_id_finish(
+    GObject* source_object,
+    GAsyncResult* result,
+    gpointer user_data
+) {
+    GTask* task = G_TASK(user_data);
+    KirkQobuzClient* const self = g_task_get_task_data(task);
+
+    kirk_qobuz_client_return_if_window_closed(task);
+    kirk_qobuz_client_return_if_cancelled(self, task);
+
+    gchar* app_id = kirk_secret_schema_lookup_password_finish(result, NULL);
+
+    if (!app_id || !app_id[0]) {
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_MISSING_TOKEN;
+        kirk_qobuz_client_return_result(task);
+        return;
+    }
+
+    self->app_id = app_id;
+}
+
+static void kirk_qobuz_client_lookup_app_id(
+    GTask* task,
+    GAsyncReadyCallback callback
+) {
+    kirk_secret_schema_lookup_password(
+        "qobuz",
+        "app_id",
+        g_task_get_cancellable(task),
+        callback,
+        task
+    );
+}
+
+// Send authorization request sequence
 
 static void kirk_qobuz_client_check_subscription_end_date(
     GTask* task,
@@ -226,37 +266,20 @@ static void kirk_qobuz_client_send_authorization_request(GTask* task) {
     );
 }
 
-static void kirk_qobuz_client_lookup_app_id_finish(
+static void kirk_qobuz_client_lookup_app_id_for_authorization_finish(
     GObject* source_object,
     GAsyncResult* result,
     gpointer user_data
 ) {
     GTask* task = G_TASK(user_data);
-    KirkQobuzClient* const self = g_task_get_task_data(task);
-
-    kirk_qobuz_client_return_if_window_closed(task);
-    kirk_qobuz_client_return_if_cancelled(self, task);
-
-    gchar* app_id = kirk_secret_schema_lookup_password_finish(result, NULL);
-
-    if (!app_id || !app_id[0]) {
-        self->status = KIRK_QOBUZ_CLIENT_STATUS_MISSING_TOKEN;
-        kirk_qobuz_client_return_result(task);
-        return;
-    }
-
-    self->app_id = app_id;
-
+    kirk_qobuz_client_lookup_app_id_finish(source_object, result, user_data);
     kirk_qobuz_client_send_authorization_request(task);
 }
 
-static void kirk_qobuz_client_lookup_app_id(GTask* task) {
-    kirk_secret_schema_lookup_password(
-        "qobuz",
-        "app_id",
-        g_task_get_cancellable(task),
-        kirk_qobuz_client_lookup_app_id_finish,
-        task
+static void kirk_qobuz_client_lookup_app_id_for_authorization(GTask* task) {
+    kirk_qobuz_client_lookup_app_id(
+        task,
+        kirk_qobuz_client_lookup_app_id_for_authorization_finish
     );
 }
 
@@ -281,7 +304,7 @@ static void kirk_qobuz_client_lookup_token_finish(
 
     self->token = token;
 
-    kirk_qobuz_client_lookup_app_id(task);
+    kirk_qobuz_client_lookup_app_id_for_authorization(task);
 }
 
 static void kirk_qobuz_client_lookup_token(GTask* task) {
@@ -559,4 +582,116 @@ void kirk_qobuz_client_try_to_fetch_app_id(
     );
 
     kirk_qobuz_client_fetch_the_play_host_page(task);
+}
+
+// Search for releases sequence
+
+static void kirk_qobuz_client_parse_search_results(GTask* task, GBytes* bytes) {
+    KirkQobuzClient* const self = g_task_get_task_data(task);
+
+    const gchar* body = g_bytes_get_data(bytes, NULL);
+    g_autoptr(JsonNode) root_node = json_from_string(body, NULL);
+    JsonObject* root_object = json_node_get_object(root_node);
+    JsonObject* albums_object =
+        json_object_get_object_member(root_object, "albums");
+    const JsonArray* items =
+        json_object_get_array_member(albums_object, "items");
+
+    kirk_qobuz_client_return_result(task);
+
+    g_bytes_unref(bytes);
+}
+
+static void kirk_qobuz_client_perform_a_search_query_finish(
+    GObject* source_object,
+    GAsyncResult* result,
+    gpointer user_data
+) {
+    GTask* task = G_TASK(user_data);
+    KirkQobuzClient* const self = g_task_get_task_data(task);
+
+    kirk_qobuz_client_return_if_window_closed(task);
+    kirk_qobuz_client_return_if_cancelled(self, task);
+
+    GBytes* bytes =
+        soup_session_send_and_read_finish(self->session, result, NULL);
+    SoupMessage* msg =
+        soup_session_get_async_result_message(self->session, result);
+
+    if (!msg) {
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_FAILED_CONNECTION;
+        kirk_qobuz_client_return_result(task);
+        return;
+    }
+
+    self->status = KIRK_QOBUZ_CLIENT_STATUS_SUCCESSFUL_AUTHORIZATION;
+
+    kirk_qobuz_client_parse_search_results(task, bytes);
+}
+
+static void kirk_qobuz_client_perform_a_search_query(GTask* task) {
+    KirkQobuzClient* const self = g_task_get_task_data(task);
+
+    const gchar* const url =
+        QOBUZ_SCHEME QOBUZ_MAIN_HOST QOBUZ_SEARCH_PATH "?limit=10";
+    SoupMessage* const msg = soup_message_new(SOUP_METHOD_GET, url);
+
+    if (!msg) {
+        self->status = KIRK_QOBUZ_CLIENT_STATUS_INVALID_MESSAGE;
+        kirk_qobuz_client_return_result(task);
+        return;
+    }
+
+    SoupMessageHeaders* request_headers = soup_message_get_request_headers(msg);
+    soup_message_headers_append(request_headers, "X-App-ID", self->app_id);
+    soup_message_headers_append(request_headers, "X-Query", self->search_query);
+
+    soup_session_send_and_read_async(
+        self->session,
+        msg,
+        G_PRIORITY_DEFAULT,
+        g_task_get_cancellable(task),
+        kirk_qobuz_client_perform_a_search_query_finish,
+        task
+    );
+}
+
+static void kirk_qobuz_client_lookup_app_id_for_search_finish(
+    GObject* source_object,
+    GAsyncResult* result,
+    gpointer user_data
+) {
+    GTask* task = G_TASK(user_data);
+    kirk_qobuz_client_lookup_app_id_finish(source_object, result, user_data);
+    kirk_qobuz_client_perform_a_search_query(task);
+}
+
+static void kirk_qobuz_client_lookup_app_id_for_search(GTask* task) {
+    kirk_qobuz_client_lookup_app_id(
+        task,
+        kirk_qobuz_client_lookup_app_id_for_search_finish
+    );
+}
+
+void kirk_qobuz_client_search_for_releases(
+    GObject* source_object,
+    GCancellable* cancellable,
+    GAsyncReadyCallback callback,
+    gpointer user_data,
+    gchar* search_query
+) {
+    KirkQobuzClient* qobuz_client = g_malloc0(sizeof(KirkQobuzClient));
+
+    qobuz_client->session = soup_session_new();
+    qobuz_client->search_query = search_query;
+
+    GTask* task = g_task_new(source_object, cancellable, callback, user_data);
+    g_task_set_check_cancellable(task, FALSE);
+    g_task_set_task_data(
+        task,
+        qobuz_client,
+        (GDestroyNotify)kirk_qobuz_client_free
+    );
+
+    kirk_qobuz_client_lookup_app_id_for_search(task);
 }

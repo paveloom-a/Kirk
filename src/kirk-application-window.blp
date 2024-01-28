@@ -25,19 +25,19 @@ template $KirkApplicationWindow : Adw.ApplicationWindow {
   title: _("Kirk");
   width-request: 550;
 
-  content: Box {
+  content: Gtk.Box {
     orientation: vertical;
 
     Adw.HeaderBar {
       [start]
-      Button {
+      Gtk.Button {
         action-name: "win.add-release";
         icon-name: "list-add-symbolic";
         tooltip-text: _("Add Release");
       }
 
       [end]
-      MenuButton {
+      Gtk.MenuButton {
         icon-name: "open-menu-symbolic";
         menu-model: menubar;
         primary: true;

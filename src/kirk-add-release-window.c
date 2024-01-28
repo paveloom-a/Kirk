@@ -19,6 +19,7 @@
 #include "src/kirk-add-release-window.h"
 
 #include "include/config.h"
+#include "src/kirk-add-release-window-search-item.h"
 
 #include <adwaita.h>
 
@@ -26,6 +27,9 @@ struct _KirkAddReleaseWindow {
     AdwWindow parent;
 
     GSettings* settings;
+
+    GtkWidget* search_entry;
+    GtkWidget* search_items_list_store;
 };
 
 G_DEFINE_TYPE(KirkAddReleaseWindow, kirk_add_release_window, ADW_TYPE_WINDOW)
@@ -46,6 +50,14 @@ static void kirk_add_release_window_dispose(GObject* object) {
     G_OBJECT_CLASS(kirk_add_release_window_parent_class)->dispose(object);
 }
 
+void search_for_releases(GtkSearchEntry* self, gpointer user_data) {
+    const gchar* search_query = gtk_editable_get_text(GTK_EDITABLE(self));
+
+    if (!search_query[0]) {
+        return;
+    }
+}
+
 static void kirk_add_release_window_class_init(KirkAddReleaseWindowClass* klass
 ) {
     GObjectClass* object_class = G_OBJECT_CLASS(klass);
@@ -57,6 +69,19 @@ static void kirk_add_release_window_class_init(KirkAddReleaseWindowClass* klass
     );
 
     object_class->dispose = kirk_add_release_window_dispose;
+
+    gtk_widget_class_bind_template_child(
+        widget_class,
+        KirkAddReleaseWindow,
+        search_entry
+    );
+    gtk_widget_class_bind_template_child(
+        widget_class,
+        KirkAddReleaseWindow,
+        search_items_list_store
+    );
+
+    gtk_widget_class_bind_template_callback(widget_class, search_for_releases);
 }
 
 KirkAddReleaseWindow* kirk_add_release_window_new(

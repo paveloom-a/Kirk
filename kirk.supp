@@ -20,6 +20,33 @@
    fun:g_task_return_now
 }
 
+# gtk_search_entry_init
+{
+   gtk_search_entry_init
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:g_malloc0
+   fun:g_type_create_instance
+   fun:g_object_new_internal
+   fun:g_object_new_valist
+   fun:g_object_new
+   fun:gtk_at_spi_create_context
+   fun:gtk_at_context_create
+   fun:gtk_widget_init
+   fun:g_type_create_instance
+   fun:g_object_new_internal
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:gtk_search_entry_init
+   fun:g_type_create_instance
+   fun:g_object_new_internal
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:_gtk_builder_construct
+   fun:builder_construct
+}
+
 # g_task_run_in_thread
 {
    g_task_run_in_thread

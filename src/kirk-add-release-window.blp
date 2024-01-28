@@ -19,6 +19,7 @@
 using Gtk 4.0;
 
 using Adw 1;
+using Gio 2.0;
 
 template $KirkAddReleaseWindow : Adw.Window {
   default-height: 400;
@@ -28,26 +29,65 @@ template $KirkAddReleaseWindow : Adw.Window {
   title: _("Add Release");
   width-request: 400;
 
-  ShortcutController {
-    Shortcut {
+  Gtk.ShortcutController {
+    Gtk.Shortcut {
       trigger: "Escape";
       action: "action(window.close)";
     }
   }
 
-  content: Box {
+  content: Gtk.Box {
     orientation: vertical;
 
     Adw.HeaderBar {}
 
-    Adw.PreferencesPage {
+    Adw.Clamp {
+      child: Gtk.Box {
+        margin-bottom: 10;
+        margin-end: 10;
+        margin-start: 10;
+        margin-top: 10;
+        orientation: vertical;
+        spacing: 10;
 
-      Adw.PreferencesGroup {
-
-        Adw.EntryRow {
-          title: _("Search for a release or insert a link");
+        Gtk.SearchEntry search_entry {
+          search-changed => $search_for_releases();
+          search-delay: 250;
         }
-      }
+
+        Gtk.ScrolledWindow {
+          vexpand: true;
+
+          Gtk.ListView {
+            factory: Gtk.BuilderListItemFactory {
+              template Gtk.ListItem {
+                child: Gtk.Box {
+
+                  Gtk.Box {
+                    orientation: vertical;
+
+                    Gtk.Label {
+                      halign: start;
+                      label: bind template.item as <$KirkAddReleaseWindowSearchItem>.artist;
+                      styles ["heading"]
+                    }
+
+                    Gtk.Label {
+                      halign: start;
+                      label: bind template.item as <$KirkAddReleaseWindowSearchItem>.title;
+                    }
+                  }
+                };
+              }
+            };
+            model: Gtk.SingleSelection {
+              model: Gio.ListStore search_items_list_store {
+                item-type: typeof<$KirkAddReleaseWindowSearchItem>;
+              };
+            };
+          }
+        }
+      };
     }
   };
 }

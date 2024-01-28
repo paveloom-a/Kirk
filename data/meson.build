@@ -1,4 +1,4 @@
-desktop_file = i18n.merge_file(
+i18n.merge_file(
   input: configure_file(
     input: files('paveloom.apps.Kirk.desktop.in.in'),
     output: f'@APP_ID@.desktop.in',
@@ -8,12 +8,11 @@ desktop_file = i18n.merge_file(
   type: 'desktop',
   po_dir: '../po',
   install: true,
-  install_dir: get_option('datadir') / 'applications'
+  install_dir: get_option('datadir') / 'applications',
 )
 
-appstream_file = i18n.merge_file(
-  input:
-  configure_file(
+i18n.merge_file(
+  input: configure_file(
     input: files('paveloom.apps.Kirk.metainfo.xml.in.in'),
     output: f'@APP_ID@.metainfo.xml.in',
     configuration: conf,
@@ -21,7 +20,7 @@ appstream_file = i18n.merge_file(
   output: f'@APP_ID@.metainfo.xml',
   po_dir: '../po',
   install: true,
-  install_dir: get_option('datadir') / 'metainfo'
+  install_dir: get_option('datadir') / 'metainfo',
 )
 
 gsettings_schema = configure_file(
@@ -32,13 +31,14 @@ gsettings_schema = configure_file(
 gsettings_schemas_dir = get_option('datadir') / 'glib-2.0' / 'schemas'
 
 glib_compile_schemas = find_program('glib-compile-schemas')
-custom_target('gsettings-schemas',
-    input: gsettings_schema,
-    output: 'gschemas.compiled',
-    command: [glib_compile_schemas, '--targetdir=@OUTDIR@', '@OUTDIR@'],
-    install: true,
-    install_dir: gsettings_schemas_dir,
-    build_by_default: true,
+custom_target(
+  'gsettings-schemas',
+  input: gsettings_schema,
+  output: 'gschemas.compiled',
+  command: [glib_compile_schemas, '--targetdir=@OUTDIR@', '@OUTDIR@'],
+  install: true,
+  install_dir: gsettings_schemas_dir,
+  build_by_default: true,
 )
 
 install_data(

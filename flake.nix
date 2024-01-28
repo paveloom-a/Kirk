@@ -1,5 +1,4 @@
-rec {
-  description = "WIP";
+{
   inputs.nixpkgs.url = "github:paveloom/nixpkgs/system";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -53,7 +52,6 @@ rec {
         gnome.devhelp
         iproute2
         libxml2
-        ltex-ls
         netcat
         nettools
         nil
@@ -63,9 +61,8 @@ rec {
         pvs-studio
         rr
         shellcheck
+        swift-mesonlsp
         valgrind
-        yamlfmt
-        yamllint
       ];
 
       buildInputs = with pkgs; [
@@ -89,6 +86,7 @@ rec {
           XDG_DATA_DIRS = nixpkgs.lib.makeSearchPathOutput "devdoc" "share" (with pkgs; [
             glib
             gtk4
+            json-glib
             libadwaita
             libsecret
             libsoup_3
@@ -107,14 +105,6 @@ rec {
         inherit buildInputs;
 
         mesonBuildType = "release";
-
-        meta = with nixpkgs.lib; {
-          inherit description;
-          homepage = "https://github.com/paveloom-a/Kirk";
-          license = licenses.gpl3Plus;
-          inherit platforms;
-          maintainers = [maintainers.paveloom];
-        };
       };
     });
 }

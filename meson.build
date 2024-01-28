@@ -2,7 +2,10 @@ project(
   'kirk',
   'c',
   version: run_command(
-    'grep', '-Po', '(?<=version = ").*(?=")', 'flake.nix',
+    'grep',
+    '-Po',
+    '(?<=version = ").*(?=")',
+    'flake.nix',
     check: true,
   ).stdout().strip(),
   license: 'GPL-3.0-or-later',
@@ -11,7 +14,8 @@ project(
   default_options: [
     'buildtype=debug',
     'c_std=c2x',
-  ])
+  ],
+)
 
 gnome = import('gnome')
 i18n = import('i18n')
@@ -62,15 +66,42 @@ endif
 
 compiler = meson.get_compiler('c')
 add_project_arguments(compiler.get_supported_arguments(c_flags), language: 'c')
-add_project_link_arguments(compiler.get_supported_link_arguments(c_link_flags), language : 'c')
+add_project_link_arguments(
+  compiler.get_supported_link_arguments(c_link_flags),
+  language: 'c',
+)
 
 dependencies = [
-  dependency('glib-2.0', version: '>=2.76.4', include_type: 'system'),
-  dependency('gtk4', version: '>=4.10.4', include_type: 'system'),
-  dependency('json-glib-1.0', version: '>=1.6.6', include_type: 'system'),
-  dependency('libadwaita-1', version: '>=1.3.5', include_type: 'system'),
-  dependency('libsecret-1', version: '>=0.20.5', include_type: 'system'),
-  dependency('libsoup-3.0', version: '>=3.4.2', include_type: 'system'),
+  dependency(
+    'glib-2.0',
+    version: '>=2.78.1',
+    include_type: 'system',
+  ),
+  dependency(
+    'gtk4',
+    version: '>=4.12.3',
+    include_type: 'system',
+  ),
+  dependency(
+    'json-glib-1.0',
+    version: '>=1.8.0',
+    include_type: 'system',
+  ),
+  dependency(
+    'libadwaita-1',
+    version: '>=1.4.2',
+    include_type: 'system',
+  ),
+  dependency(
+    'libsecret-1',
+    version: '>=0.21.1',
+    include_type: 'system',
+  ),
+  dependency(
+    'libsoup-3.0',
+    version: '>=3.4.4',
+    include_type: 'system',
+  ),
 ]
 
 add_project_dependencies(dependencies, language: 'c')
@@ -80,6 +111,7 @@ subdir('include')
 subdir('po')
 
 sources = files(
+  'src/kirk-add-release-window-search-item.c',
   'src/kirk-add-release-window.c',
   'src/kirk-application-window.c',
   'src/kirk-application.c',
@@ -110,22 +142,23 @@ if get_option('buildtype') == 'debug'
   find_program('pvs-studio-analyzer')
   find_program('desktop-file-validate')
   find_program('glib-compile-schemas')
-  custom_target('lint',
-      depends: executable,
-      output: 'lint',
-      command: 'lint.bash',
-      env: {
-        'APP_ID': APP_ID,
-        'MESON_CURRENT_BUILD_DIR': meson.current_build_dir(),
-        'MESON_PROJECT_SOURCE_ROOT': meson.project_source_root(),
-      },
-      console: true,
-      build_always_stale: true,
+  custom_target(
+    'lint',
+    depends: executable,
+    output: 'lint',
+    command: 'lint.bash',
+    env: {
+      'APP_ID': APP_ID,
+      'MESON_CURRENT_BUILD_DIR': meson.current_build_dir(),
+      'MESON_PROJECT_SOURCE_ROOT': meson.project_source_root(),
+    },
+    console: true,
+    build_always_stale: true,
   )
 endif
 
 gnome.post_install(
   gtk_update_icon_cache: true,
   glib_compile_schemas: true,
-  update_desktop_database: true
+  update_desktop_database: true,
 )

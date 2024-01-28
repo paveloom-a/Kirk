@@ -16,25 +16,26 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "include/config.h"
-#include "src/kirk-application.h"
+#pragma once
 
 #include <adwaita.h>
 
-// Necessary for debug builds when the GSettings schema is not installed yet
-static void try_override_schema_dir() {
-    const g_autofree gchar* process_exe_path =
-        g_file_read_link("/proc/self/exe", NULL);
-    const g_autofree gchar* process_dir_path =
-        g_path_get_dirname(process_exe_path);
-    const g_autofree gchar* gsettings_schema_dir =
-        g_build_filename(process_dir_path, "data", NULL);
-    g_setenv("GSETTINGS_SCHEMA_DIR", gsettings_schema_dir, FALSE);
-}
+G_BEGIN_DECLS
 
-int main(int argc, char** argv) {
-#ifdef APP_DEBUG_MODE_ON
-    try_override_schema_dir();
-#endif
-    return g_application_run(G_APPLICATION(kirk_application_new()), argc, argv);
-}
+#define KIRK_TYPE_ADD_RELEASE_WINDOW_SEARCH_ITEM                               \
+    kirk_add_release_window_search_item_get_type()
+
+G_DECLARE_FINAL_TYPE(
+    KirkAddReleaseWindowSearchItem,
+    kirk_add_release_window_search_item,
+    KIRK,
+    ADD_RELEASE_WINDOW_SEARCH_ITEM,
+    GObject
+)
+
+KirkAddReleaseWindowSearchItem* kirk_add_release_window_search_item_new(
+    gchar* artist,
+    gchar* title
+);
+
+G_END_DECLS

@@ -1,0 +1,34 @@
+{
+  "extensions": {
+    "recommendations": [
+      "bodil.blueprint-gtk",
+      "esbenp.prettier-vscode",
+      "jnoortheen.nix-ide",
+      "llvm-vs-code-extensions.vscode-clangd",
+      "mesonbuild.mesonbuild",
+      "ms-vscode.cpptools",
+      "redhat.vscode-yaml"
+    ]
+  },
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "mesonbuild.buildFolder": "debug",
+    "mesonbuild.downloadLanguageServer": false,
+    "nix.enableLanguageServer": true,
+    "nix.serverPath": "nil",
+    "nix.serverSettings": {
+      "nil": {
+        "formatting": {
+          "command": ["alejandra"]
+        }
+      }
+    }
+  }
+}
